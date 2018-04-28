@@ -23,10 +23,10 @@ public final class RgbFieldDataProvider implements FieldDataProvider<String> {
 		int blue = mRandom.nextInt(255);
 		if (mAlpha) {
 			int alpha = mRandom.nextInt(255);
-			return String.format("#%02x%02x%02x%02x", alpha, blue, green, red);
+			return String.format("#%02x%02x%02x%02x", alpha, red, green, blue);
 
 		} else {
-			return String.format("#%02x%02x%02x", blue, green, red);
+			return String.format("#%02x%02x%02x", red, green, blue);
 		}
 	}
 }
