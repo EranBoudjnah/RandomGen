@@ -1,4 +1,4 @@
-package com.mitteloupe.randomgem;
+package com.mitteloupe.randomgen;
 
 /**
  * Generates one value of the defined type.

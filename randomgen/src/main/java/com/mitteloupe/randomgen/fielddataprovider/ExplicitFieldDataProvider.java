@@ -1,6 +1,6 @@
-package com.mitteloupe.randomgem.fielddataprovider;
+package com.mitteloupe.randomgen.fielddataprovider;
 
-import com.mitteloupe.randomgem.FieldDataProvider;
+import com.mitteloupe.randomgen.FieldDataProvider;
 
 /**
  * Created by Eran Boudjnah on 24/04/2018.

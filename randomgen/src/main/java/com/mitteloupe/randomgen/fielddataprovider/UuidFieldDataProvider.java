@@ -1,6 +1,6 @@
-package com.mitteloupe.randomgem.fielddataprovider;
+package com.mitteloupe.randomgen.fielddataprovider;
 
-import com.mitteloupe.randomgem.FieldDataProvider;
+import com.mitteloupe.randomgen.FieldDataProvider;
 
 import java.util.UUID;
 

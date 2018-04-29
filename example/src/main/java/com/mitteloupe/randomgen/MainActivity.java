@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.mitteloupe.randomgem.RandomGen;
+import com.mitteloupe.randomgen.RandomGen;
 import com.mitteloupe.randomgen.data.Planet;
 import com.mitteloupe.randomgen.data.StarSystem;
 

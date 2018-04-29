@@ -1,1 +1,1 @@
-include ':example', ':randomgem'
+include ':example', ':randomgen'
