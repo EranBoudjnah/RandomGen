@@ -24,7 +24,7 @@ public class CustomListRangeFieldDataProvider<VALUE_TYPE> implements FieldDataPr
 
 	@Override
 	public List<VALUE_TYPE> generate() {
-		int instances = (int)(mRandom.nextDouble() * (mMaxInstances - mMinInstances + 1) + mMinInstances);
+		int instances = mRandom.nextInt(mMaxInstances - mMinInstances + 1) + mMinInstances;
 		List<VALUE_TYPE> ret = new ArrayList<>(instances);
 		for (int i = 0; i < instances; ++i) {
 			ret.add(mFieldDataProvider.generate());
