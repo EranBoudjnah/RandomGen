@@ -4,11 +4,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.mitteloupe.randomgen.RandomGen;
 import com.mitteloupe.randomgen.data.Planet;
 import com.mitteloupe.randomgen.data.StarSystem;
-
-import java.util.Arrays;
+import com.mitteloupe.randomgen.datasource.AstronomyDataSource;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 			.withField("uuid")
 			.returningUuid()
 			.withField("name")
-			.returning(Arrays.asList("Earth", "Mars", "Uranus", "Venus", "Pluto"))
+			.returning(AstronomyDataSource.getInstance().getStars())
 			.withField("diameter")
 			.returning(400L, 500L)
 			.withField("planetClass")
@@ -47,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 			.returning(2, 4, planetRandomGen)
 			.build();
 
-		// Pools of assets - colors (red, green, yellow, etc...), countries, musical notes?, animals, planet names, gender, currencies, lorem ipsum, shapes, sizes, distance units, weight units
+		// Pools of assets - countries, musical notes?, animals, gender, currencies, lorem ipsum, shapes, sizes, distance units, weight units
 		// From file
 		// Coordinate
 		// Char (random, fixed)

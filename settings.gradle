@@ -1,1 +1,1 @@
-include ':example', ':randomgen'
+include ':example', ':randomgen', ':randomgen.datasource'
