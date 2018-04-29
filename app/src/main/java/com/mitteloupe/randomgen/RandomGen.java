@@ -18,9 +18,11 @@ import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.SequentialIntegerFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.UuidFieldDataProvider;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,15 +55,31 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 			final Object value = entry.getValue().generate();
 			field.setAccessible(true);
 			try {
-				field.set(instance, value);
+				setField(instance, field, value);
 			} catch (IllegalAccessException pE) {
-				throw new IllegalArgumentException("Cannot set field " + key + " - unable to access field");
+				throw new IllegalArgumentException("Cannot set field " + key + " - unable to access field", pE);
 			} catch (IllegalArgumentException pE) {
-				throw new IllegalArgumentException("Cannot set field " + key + " due to invalid value");
+				throw new IllegalArgumentException("Cannot set field " + key + " due to invalid value", pE);
 			}
 		}
 
 		return instance;
+	}
+
+	private void setField(OUTPUT_TYPE pInstance, Field pField, Object pValue) throws IllegalAccessException, IllegalArgumentException {
+		if (isFieldArray(pField)) {
+			if (!Collection.class.isAssignableFrom(pValue.getClass())) throw new IllegalArgumentException("Expected collection value");
+			List valueAsList = (List)pValue;
+			TypedList typedList = new TypedList(pField.getType().getComponentType(), valueAsList.size());
+			pField.set(pInstance, valueAsList.toArray(typedList.get()));
+
+		} else {
+			pField.set(pInstance, pValue);
+		}
+	}
+
+	private boolean isFieldArray(Field pField) {
+		return pField.getType().isArray();
 	}
 
 	private void getAllFields() {
@@ -194,6 +212,22 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pMinInstances, final int pMaxInstances,
 		                                                   final FieldDataProvider<VALUE_TYPE> pFieldDataProvider) {
 			return mBuilder.returning(mField, new CustomListRangeFieldDataProvider<>(mRandom, pMinInstances, pMaxInstances, pFieldDataProvider));
+		}
+	}
+
+	private class TypedList<ELEMENT_TYPE> {
+		private ELEMENT_TYPE[] mTypedList;
+
+		public TypedList(Class<ELEMENT_TYPE> pElementClass, int pCapacity) {
+			// Use Array native method to create array
+			// of a type only known at run time
+			@SuppressWarnings("unchecked")
+			final ELEMENT_TYPE[] typedList = (ELEMENT_TYPE[])Array.newInstance(pElementClass, pCapacity);
+			mTypedList = typedList;
+		}
+
+		ELEMENT_TYPE[] get() {
+			return mTypedList;
 		}
 	}
 
