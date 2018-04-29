@@ -1,6 +1,8 @@
 package com.mitteloupe.randomgem;
 
 import com.mitteloupe.randomgem.fielddataprovider.BooleanFieldDataProvider;
+import com.mitteloupe.randomgem.fielddataprovider.ByteFieldDataProvider;
+import com.mitteloupe.randomgem.fielddataprovider.ByteListFieldDataProvider;
 import com.mitteloupe.randomgem.fielddataprovider.CustomListFieldDataProvider;
 import com.mitteloupe.randomgem.fielddataprovider.CustomListRangeFieldDataProvider;
 import com.mitteloupe.randomgem.fielddataprovider.DoubleFieldDataProvider;
@@ -53,10 +55,12 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 			if (!mPrivateFields.containsKey(key)) continue;
 
 			final Field field = mPrivateFields.get(key);
-			final Object value = entry.getValue().generate();
 			field.setAccessible(true);
 			try {
+				final Object value = entry.getValue().generate();
 				setField(instance, field, value);
+			} catch (ClassCastException pE) {
+				throw new IllegalArgumentException("Cannot set field " + key + " - unable to cast value", pE);
 			} catch (IllegalAccessException pE) {
 				throw new IllegalArgumentException("Cannot set field " + key + " - unable to access field", pE);
 			} catch (IllegalArgumentException pE) {
@@ -140,6 +144,18 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 
 		public Builder<RETURN_TYPE> returningBoolean() {
 			return mBuilder.returning(mField, new BooleanFieldDataProvider(mRandom));
+		}
+
+		public Builder<RETURN_TYPE> returningByte() {
+			return mBuilder.returning(mField, new ByteFieldDataProvider(mRandom));
+		}
+
+		public Builder<RETURN_TYPE> returningBytes(int pSize) {
+			return mBuilder.returning(mField, new ByteListFieldDataProvider(mRandom, pSize));
+		}
+
+		public Builder<RETURN_TYPE> returningBytes(int pMinSize, int pMaxSize) {
+			return mBuilder.returning(mField, new ByteListFieldDataProvider(mRandom, pMinSize, pMaxSize));
 		}
 
 		public Builder<RETURN_TYPE> returningDouble() {
