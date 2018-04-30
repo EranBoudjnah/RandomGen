@@ -6,6 +6,7 @@ import java.util.List;
 /**
  * Created by Eran Boudjnah on 29/04/2018.
  */
+@SuppressWarnings("unused")
 public class ColorsDataSource {
 	private static ColorsDataSource sDataSource = new ColorsDataSource();
 

@@ -242,6 +242,7 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 		 * @param pParagraphDelimiter The string to use between Lorem Ipsum paragraphs
 		 * @return A builder generating a substring of an infinite (well, kind of) Lorem Ipsum text
 		 */
+		@SuppressWarnings("WeakerAccess")
 		public Builder<RETURN_TYPE> returningLoremIpsum(int pMinLength, int pMaxLength, String pParagraphDelimiter) {
 			return mBuilder.returning(mField, new LoremIpsumFieldDataProvider(mRandom, pMinLength, pMaxLength, pParagraphDelimiter));
 		}

@@ -3,6 +3,7 @@ package com.mitteloupe.randomgen.datasource;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class AstronomyDataSource {
 	private static AstronomyDataSource sDataSource = new AstronomyDataSource();
 
