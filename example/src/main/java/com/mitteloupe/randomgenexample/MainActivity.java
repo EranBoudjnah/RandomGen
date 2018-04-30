@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 			.returning(2, 4, planetRandomGen)
 			.build();
 
-		// Pools of assets - countries, musical notes?, animals, gender, currencies, shapes, sizes, distance units, weight units
+		// Pools of assets - room types, musical notes?, animals, gender, currencies, shapes, sizes, distance units, weight units
 		// From file
 		// Coordinate
 		// Char (random, fixed)
@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
 		// standard date string
 		// numeric string (ranged/fixed length)
 		// hex string (ranged/fixed length)
-		// determine if list or array
 		// Android:
 		//   From resource?
 		//   Point
