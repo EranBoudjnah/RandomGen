@@ -1,4 +1,4 @@
-package com.mitteloupe.randomgen.data;
+package com.mitteloupe.randomgenexample.data;
 
 /**
  * Created by Eran Boudjnah on 24/04/2018.

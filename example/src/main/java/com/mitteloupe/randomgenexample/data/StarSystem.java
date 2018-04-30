@@ -1,4 +1,4 @@
-package com.mitteloupe.randomgen.data;
+package com.mitteloupe.randomgenexample.data;
 
 import java.util.Arrays;
 

@@ -1,4 +1,4 @@
-package com.mitteloupe.randomgen;
+package com.mitteloupe.randomgenexample;
 
 import org.junit.Test;
 

@@ -1,12 +1,13 @@
-package com.mitteloupe.randomgen;
+package com.mitteloupe.randomgenexample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.mitteloupe.randomgen.data.Planet;
-import com.mitteloupe.randomgen.data.StarSystem;
+import com.mitteloupe.randomgen.RandomGen;
 import com.mitteloupe.randomgen.datasource.AstronomyDataSource;
+import com.mitteloupe.randomgenexample.data.Planet;
+import com.mitteloupe.randomgenexample.data.StarSystem;
 
 public class MainActivity extends AppCompatActivity {
 
