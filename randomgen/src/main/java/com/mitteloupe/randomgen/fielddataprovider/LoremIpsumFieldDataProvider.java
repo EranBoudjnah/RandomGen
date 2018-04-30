@@ -5,6 +5,14 @@ import com.mitteloupe.randomgen.FieldDataProvider;
 import java.util.Random;
 
 /**
+ * Provides strings of Lorem Ipsum.
+ *
+ * TODO
+ * Introduce Options:
+ *   Shuffle sentences
+ *   Hard cut, Trim at word, Trim at sentence, Ellipsize
+ * Use builder pattern
+ *
  * Created by Eran Boudjnah on 24/04/2018.
  */
 @SuppressWarnings("unused")
