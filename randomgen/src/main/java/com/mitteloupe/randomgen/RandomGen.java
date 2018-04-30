@@ -15,6 +15,7 @@ import com.mitteloupe.randomgen.fielddataprovider.IntegerFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.IntegerRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.LongFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.LongRangeFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.LoremIpsumFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RandomEnumFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.SequentialIntegerFieldDataProvider;
@@ -200,6 +201,49 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 
 		public Builder<RETURN_TYPE> returningRGB(boolean pAlpha) {
 			return mBuilder.returning(mField, new RgbFieldDataProvider(mRandom, pAlpha));
+		}
+
+		/**
+		 * See {@link #returningLoremIpsum(int, int, String)}.
+		 *
+		 * @return builder generating one copy of the Lorem Ipsum text
+		 */
+		public Builder<RETURN_TYPE> returningLoremIpsum() {
+			return mBuilder.returning(mField, new LoremIpsumFieldDataProvider(mRandom));
+		}
+
+		/**
+		 * See {@link #returningLoremIpsum(int, int, String)}.
+		 *
+		 * @param pLength The number of characters to return
+		 * @return A builder generating a substring of an infinite (well, kind of) Lorem Ipsum text
+		 */
+		public Builder<RETURN_TYPE> returningLoremIpsum(int pLength) {
+			return mBuilder.returning(mField, new LoremIpsumFieldDataProvider(mRandom, pLength));
+		}
+
+		/**
+		 * See {@link #returningLoremIpsum(int, int, String)}.
+		 *
+		 * @param pMinLength The minimal number of characters to return
+		 * @param pMaxLength The maximal number of characters to return
+		 * @return A builder generating a substring of an infinite (well, kind of) Lorem Ipsum text
+		 */
+		public Builder<RETURN_TYPE> returningLoremIpsum(int pMinLength, int pMaxLength) {
+			return mBuilder.returning(mField, new LoremIpsumFieldDataProvider(mRandom, pMinLength, pMaxLength));
+		}
+
+		/**
+		 * Adds a String containing Lorem Ipsum. Length determines how many characters of Lorem Ipsum to return. The content will repeat itself if
+		 * the requested length exceeds the length of Lorem Ipsum.
+		 *
+		 * @param pMinLength The minimal number of characters to return
+		 * @param pMaxLength The maximal number of characters to return
+		 * @param pParagraphDelimiter The string to use between Lorem Ipsum paragraphs
+		 * @return A builder generating a substring of an infinite (well, kind of) Lorem Ipsum text
+		 */
+		public Builder<RETURN_TYPE> returningLoremIpsum(int pMinLength, int pMaxLength, String pParagraphDelimiter) {
+			return mBuilder.returning(mField, new LoremIpsumFieldDataProvider(mRandom, pMinLength, pMaxLength, pParagraphDelimiter));
 		}
 
 		/**

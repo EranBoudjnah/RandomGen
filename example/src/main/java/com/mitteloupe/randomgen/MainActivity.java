@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 			.returning(2, 4, planetRandomGen)
 			.build();
 
-		// Pools of assets - countries, musical notes?, animals, gender, currencies, lorem ipsum, shapes, sizes, distance units, weight units
+		// Pools of assets - countries, musical notes?, animals, gender, currencies, shapes, sizes, distance units, weight units
 		// From file
 		// Coordinate
 		// Char (random, fixed)
