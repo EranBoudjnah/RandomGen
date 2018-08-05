@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		// Create a random planet generator
 		RandomGen<Planet> planetRandomGen = new RandomGen.Builder<>(new RandomGen.InstanceProvider<Planet>() {
 			@Override
 			public Planet provideInstance() {
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 			.returning(Planet.PlanetClass.SMALL)
 			.build();
 
+		// Create a random star system with 2 to 4 planets
 		RandomGen<StarSystem> starSystemRandomGen = new RandomGen.Builder<>(new RandomGen.InstanceProvider<StarSystem>() {
 			@Override
 			public StarSystem provideInstance() {
@@ -46,25 +48,9 @@ public class MainActivity extends AppCompatActivity {
 			.returning(2, 4, planetRandomGen)
 			.build();
 
-		// Pools of assets - room types, musical notes?, animals, gender, currencies, shapes, sizes, distance units, weight units
-		// From file
-		// Coordinate
-		// Char (random, fixed)
-		// Sentences
-		// returning().or().returning()
-		// timestamp
-		// bitmaps
-		// date
-		// standard date string
-		// numeric string (ranged/fixed length)
-		// hex string (ranged/fixed length)
-		// Android:
-		//   From resource?
-		//   Point
-
 		for (int i = 0; i < 1000; ++i) {
 			StarSystem starSystem = starSystemRandomGen.generate();
-			Log.d("TAG", starSystem.toString() +
+			Log.d("RandomGen", starSystem.toString() +
 				"\n--");
 		}
 	}

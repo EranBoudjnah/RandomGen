@@ -1,0 +1,16 @@
+TODO:
+  Pools of assets - room types, musical notes?, animals, gender, currencies, shapes, sizes, distance units, weight units
+  From file
+  Coordinate
+  Char (random, fixed)
+  Sentences
+  returning().or().returning()
+  timestamp
+  bitmaps
+  date
+  standard date string
+  numeric string (ranged/fixed length)
+  hex string (ranged/fixed length)
+  Android:
+    From resource?
+    Point
