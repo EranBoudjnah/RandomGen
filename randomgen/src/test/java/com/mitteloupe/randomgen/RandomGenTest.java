@@ -1,0 +1,778 @@
+package com.mitteloupe.randomgen;
+
+import com.mitteloupe.randomgen.fielddataprovider.BooleanFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.ByteFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.ByteListFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.CustomListFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.CustomListRangeFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.DoubleFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.DoubleRangeFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.ExplicitFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.FloatFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.FloatRangeFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.GenericListFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.IntegerFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.IntegerRangeFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.LongFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.LongRangeFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.LoremIpsumFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.RandomEnumFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.SequentialIntegerFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.UuidFieldDataProvider;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+/**
+ * Created by Eran Boudjnah on 07/08/2018.
+ */
+public class RandomGenTest {
+	private RandomGen.Builder<TestPerson> mBuilder;
+	private RandomGen<TestPerson> mCut;
+
+	@Mock private FieldDataProviderFactory mFactory;
+
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+
+		mBuilder = new RandomGen.Builder<>(new RandomGen.InstanceProvider<TestPerson>() {
+			@Override
+			public TestPerson provideInstance() {
+				return new TestPerson();
+			}
+		}, mFactory);
+	}
+
+	@Test
+	public void givenBuilderReturningExplicitlyWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		final String NAME = "Superman";
+
+		ExplicitFieldDataProvider<String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
+		given(explicitFieldDataProvider.generate()).willReturn(NAME);
+
+		mCut = mBuilder
+			.withField("mName")
+			.returningExplicitly(NAME)
+			.build();
+
+		// When
+		TestPerson testPerson = mCut.generate();
+
+		// Then
+		assertEquals(NAME, testPerson.getName());
+	}
+
+	@Test
+	public void givenBuilderReturningFromListWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		final String NAME_1 = "Rocksteady";
+		final String NAME_2 = "Bebop";
+
+		List<String> namesList = Arrays.asList(NAME_1, NAME_2);
+		GenericListFieldDataProvider<String> explicitFieldDataProvider = mock(GenericListFieldDataProvider.class);
+		given(mFactory.getGenericListFieldDataProvider(namesList)).willReturn(explicitFieldDataProvider);
+		given(explicitFieldDataProvider.generate()).willReturn(NAME_2);
+
+		mCut = mBuilder
+			.withField("mName")
+			.returning(namesList)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(NAME_2, testPerson.getName());
+
+		// Given
+		given(explicitFieldDataProvider.generate()).willReturn(NAME_1);
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(NAME_1, testPerson.getName());
+	}
+
+	@Test
+	public void givenBuilderReturningBooleanWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		BooleanFieldDataProvider booleanFieldDataProvider = mock(BooleanFieldDataProvider.class);
+		given(mFactory.getBooleanFieldDataProvider()).willReturn(booleanFieldDataProvider);
+		given(booleanFieldDataProvider.generate()).willReturn(false);
+
+		mCut = mBuilder
+			.withField("mIsBrave")
+			.returningBoolean()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertFalse(testPerson.isBrave());
+
+		// Given
+		given(booleanFieldDataProvider.generate()).willReturn(true);
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertTrue(testPerson.isBrave());
+	}
+
+	@Test
+	public void givenBuilderReturningByteWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		ByteFieldDataProvider byteFieldDataProvider = mock(ByteFieldDataProvider.class);
+		given(mFactory.getByteFieldDataProvider()).willReturn(byteFieldDataProvider);
+		given(byteFieldDataProvider.generate()).willReturn((byte)3);
+
+		mCut = mBuilder
+			.withField("mBite")
+			.returningByte()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals((byte)3, testPerson.getBite());
+	}
+
+	@Test
+	public void givenBuilderReturningByteListWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		ByteListFieldDataProvider byteListFieldDataProvider = mock(ByteListFieldDataProvider.class);
+		given(mFactory.getByteListFieldDataProvider(5)).willReturn(byteListFieldDataProvider);
+		List<Byte> byteList = Arrays.asList((byte)1, (byte)2, (byte)3, (byte)4, (byte)5);
+		given(byteListFieldDataProvider.generate()).willReturn(byteList);
+
+		mCut = mBuilder
+			.withField("mBites")
+			.returningBytes(5)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(byteList, Arrays.asList(testPerson.getBites()));
+	}
+
+	@Test
+	public void givenBuilderReturningByteListWithRangeWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		ByteListFieldDataProvider byteListFieldDataProvider = mock(ByteListFieldDataProvider.class);
+		given(mFactory.getByteListFieldDataProvider(4, 5)).willReturn(byteListFieldDataProvider);
+		List<Byte> byteList = Arrays.asList((byte)1, (byte)2, (byte)3, (byte)4, (byte)5);
+		given(byteListFieldDataProvider.generate()).willReturn(byteList);
+
+		mCut = mBuilder
+			.withField("mBites")
+			.returningBytes(4, 5)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(byteList, Arrays.asList(testPerson.getBites()));
+	}
+
+	@Test
+	public void givenBuilderReturningDoubleWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		DoubleFieldDataProvider doubleFieldDataProvider = mock(DoubleFieldDataProvider.class);
+		given(mFactory.getDoubleFieldDataProvider()).willReturn(doubleFieldDataProvider);
+		final double EXPECTED_VALUE = 1.2345;
+		given(doubleFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mWealth")
+			.returningDouble()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getWealth());
+	}
+
+	@Test
+	public void givenBuilderReturningFloatWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		FloatFieldDataProvider floatFieldDataProvider = mock(FloatFieldDataProvider.class);
+		given(mFactory.getFloatFieldDataProvider()).willReturn(floatFieldDataProvider);
+		final float EXPECTED_VALUE = 1.23f;
+		given(floatFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mHeight")
+			.returningFloat()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getHeight());
+	}
+
+	@Test
+	public void givenBuilderReturningIntegerWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		IntegerFieldDataProvider integerFieldDataProvider = mock(IntegerFieldDataProvider.class);
+		given(mFactory.getIntegerFieldDataProvider()).willReturn(integerFieldDataProvider);
+		final int EXPECTED_VALUE = 400;
+		given(integerFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mCandiesCount")
+			.returningInteger()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getCandiesCount());
+	}
+
+	@Test
+	public void givenBuilderReturningLongWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		LongFieldDataProvider longFieldDataProvider = mock(LongFieldDataProvider.class);
+		given(mFactory.getLongFieldDataProvider()).willReturn(longFieldDataProvider);
+		final long EXPECTED_VALUE = 1337L;
+		given(longFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mSoLong")
+			.returningLong()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getSoLong());
+	}
+
+	@Test
+	public void givenBuilderReturningDoubleRangeWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		DoubleRangeFieldDataProvider doubleRangeFieldDataProvider = mock(DoubleRangeFieldDataProvider.class);
+		given(mFactory.getDoubleRangeFieldDataProvider(1d, 2d)).willReturn(doubleRangeFieldDataProvider);
+		final double EXPECTED_VALUE = 1.2345;
+		given(doubleRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mWealth")
+			.returning(1d, 2d)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getWealth());
+	}
+
+	@Test
+	public void givenBuilderReturningFloatRangeWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		FloatRangeFieldDataProvider floatRangeFieldDataProvider = mock(FloatRangeFieldDataProvider.class);
+		given(mFactory.getFloatRangeFieldDataProvider(1f, 2f)).willReturn(floatRangeFieldDataProvider);
+		final float EXPECTED_VALUE = 1.23f;
+		given(floatRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mHeight")
+			.returning(1f, 2f)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getHeight());
+	}
+
+	@Test
+	public void givenBuilderReturningIntegerRangeWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		IntegerRangeFieldDataProvider integerRangeFieldDataProvider = mock(IntegerRangeFieldDataProvider.class);
+		given(mFactory.getIntegerRangeFieldDataProvider(300, 500)).willReturn(integerRangeFieldDataProvider);
+		final int EXPECTED_VALUE = 400;
+		given(integerRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mCandiesCount")
+			.returning(300, 500)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getCandiesCount());
+	}
+
+	@Test
+	public void givenBuilderReturningLongRangeWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		LongRangeFieldDataProvider longRangeFieldDataProvider = mock(LongRangeFieldDataProvider.class);
+		given(mFactory.getLongRangeFieldDataProvider(1000L, 2000L)).willReturn(longRangeFieldDataProvider);
+		final long EXPECTED_VALUE = 1337L;
+		given(longRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mSoLong")
+			.returning(1000L, 2000L)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getSoLong());
+	}
+
+	@Test
+	public void givenBuilderReturningSequentialIntegerWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		SequentialIntegerFieldDataProvider sequentialIntegerFieldDataProvider = mock(SequentialIntegerFieldDataProvider.class);
+		given(mFactory.getSequentialIntegerFieldDataProvider()).willReturn(sequentialIntegerFieldDataProvider);
+		final int EXPECTED_VALUE = 1234567;
+		given(sequentialIntegerFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mId")
+			.returningSequentialInteger()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getId());
+	}
+
+	@Test
+	public void givenBuilderReturningUuidWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		UuidFieldDataProvider uuidFieldDataProvider = mock(UuidFieldDataProvider.class);
+		given(mFactory.getUuidFieldDataProvider()).willReturn(uuidFieldDataProvider);
+		final String EXPECTED_VALUE = "8b3728d0-9c1d-11e8-98d0-529269fb1459";
+		given(uuidFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mUuid")
+			.returningUuid()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getUuid());
+	}
+
+	@Test
+	public void givenBuilderReturningRgbWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		RgbFieldDataProvider rgbFieldDataProvider = mock(RgbFieldDataProvider.class);
+		RgbFieldDataProvider rgbaFieldDataProvider = mock(RgbFieldDataProvider.class);
+		given(mFactory.getRgbFieldDataProvider(false)).willReturn(rgbFieldDataProvider);
+		given(mFactory.getRgbFieldDataProvider(true)).willReturn(rgbaFieldDataProvider);
+		final String EXPECTED_VALUE_RGB = "#AABBAA";
+		final String EXPECTED_VALUE_RGBA = "#FFAABBAA";
+		given(rgbFieldDataProvider.generate()).willReturn(EXPECTED_VALUE_RGB);
+		given(rgbaFieldDataProvider.generate()).willReturn(EXPECTED_VALUE_RGBA);
+
+		mCut = mBuilder
+			.withField("mShirtColor")
+			.returningRgb(true)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE_RGBA, testPerson.getShirtColor());
+
+		// Given
+		mCut = mBuilder
+			.withField("mShirtColor")
+			.returningRgb(false)
+			.build();
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE_RGB, testPerson.getShirtColor());
+	}
+
+	@Test
+	public void givenBuilderReturningLoremIpsumWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		LoremIpsumFieldDataProvider loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
+		given(mFactory.getLoremIpsumFieldDataProvider()).willReturn(loremIpsumFieldDataProvider);
+		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
+		given(loremIpsumFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mBiography")
+			.returningLoremIpsum()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getBiography());
+	}
+
+	@Test
+	public void givenBuilderReturningLoremIpsumWithLengthWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		LoremIpsumFieldDataProvider loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
+		given(mFactory.getLoremIpsumFieldDataProvider(21)).willReturn(loremIpsumFieldDataProvider);
+		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
+		given(loremIpsumFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mBiography")
+			.returningLoremIpsum(21)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getBiography());
+	}
+
+	@Test
+	public void givenBuilderReturningLoremIpsumWithLengthRangeWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		LoremIpsumFieldDataProvider loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
+		given(mFactory.getLoremIpsumFieldDataProvider(20, 22)).willReturn(loremIpsumFieldDataProvider);
+		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
+		given(loremIpsumFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mBiography")
+			.returningLoremIpsum(20, 22)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getBiography());
+	}
+
+	@Test
+	public void givenBuilderReturningLoremIpsumWithLengthRangeAndDelimiterWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		LoremIpsumFieldDataProvider loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
+		given(mFactory.getLoremIpsumFieldDataProvider(20, 22, "\n")).willReturn(loremIpsumFieldDataProvider);
+		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
+		given(loremIpsumFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mBiography")
+			.returningLoremIpsum(20, 22, "\n")
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getBiography());
+	}
+
+	@Test
+	public void givenBuilderReturningEnumWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		RandomEnumFieldDataProvider<Gender> randomEnumFieldDataProvider = mock(RandomEnumFieldDataProvider.class);
+		given(mFactory.getRandomEnumFieldDataProvider(Gender.FEMALE)).willReturn(randomEnumFieldDataProvider);
+		given(randomEnumFieldDataProvider.generate()).willReturn(Gender.MALE);
+
+		mCut = mBuilder
+			.withField("mGender")
+			.returning(Gender.FEMALE)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(Gender.MALE, testPerson.getGender());
+	}
+
+	@Test
+	public void givenBuilderReturningFieldDataProviderWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		FieldDataProvider<String> fieldDataProvider = mock(FieldDataProvider.class);
+		String EXPECTED_VALUE = "Inigo Montoya";
+		given(fieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mName")
+			.returning(fieldDataProvider)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getName());
+	}
+
+	@Test
+	public void givenBuilderReturningCustomListFieldDataProviderWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		FieldDataProvider<String> fieldDataProvider = mock(FieldDataProvider.class);
+		CustomListFieldDataProvider<String> customListFieldDataProvider = mock(CustomListFieldDataProvider.class);
+		given(mFactory.getCustomListFieldDataProvider(3, fieldDataProvider)).willReturn(customListFieldDataProvider);
+		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
+		given(customListFieldDataProvider.generate()).willReturn(EXPECTED_VALUES);
+
+		mCut = mBuilder
+			.withField("mAliases")
+			.returning(3, fieldDataProvider)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUES, testPerson.getAliases());
+	}
+
+	@Test
+	public void givenBuilderReturningCustomListRangeFieldDataProviderWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		FieldDataProvider<String> fieldDataProvider = mock(FieldDataProvider.class);
+		CustomListRangeFieldDataProvider<String> customListRangeFieldDataProvider = mock(CustomListRangeFieldDataProvider.class);
+		given(mFactory.getCustomListRangeFieldDataProvider(2, 4, fieldDataProvider)).willReturn(customListRangeFieldDataProvider);
+		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
+		given(customListRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUES);
+
+		mCut = mBuilder
+			.withField("mAliases")
+			.returning(2, 4, fieldDataProvider)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUES, testPerson.getAliases());
+	}
+
+	@Test
+	public void givenInvalidValueWhenGenerateThenInstanceThrowsIllegalArgumentException() {
+		// Given
+		final String NAME = "Superman";
+
+		ExplicitFieldDataProvider<String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
+		given(explicitFieldDataProvider.generate()).willReturn(NAME);
+
+		mCut = mBuilder
+			.withField("mCandiesCount")
+			.returningExplicitly(NAME)
+			.build();
+
+		Throwable caughtException = null;
+
+		try {
+			// When
+			mCut.generate();
+
+		} catch (Throwable exception) {
+			// Then
+			caughtException = exception;
+		}
+
+		assertTrue(caughtException instanceof IllegalArgumentException);
+		assertEquals("Cannot set field mCandiesCount due to invalid value", caughtException.getMessage());
+	}
+
+	@Test
+	public void givenNonExistentFieldWhenGenerateThenInstanceThrowsIllegalArgumentException() {
+		// Given
+		final String NAME = "Superman";
+
+		ExplicitFieldDataProvider<String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
+		given(explicitFieldDataProvider.generate()).willReturn(NAME);
+
+		mCut = mBuilder
+			.withField("mUnknownField")
+			.returningExplicitly(NAME)
+			.build();
+
+		Throwable caughtException = null;
+
+		try {
+			// When
+			mCut.generate();
+
+		} catch (Throwable exception) {
+			// Then
+			caughtException = exception;
+		}
+
+		assertTrue(caughtException instanceof IllegalArgumentException);
+		assertEquals("Cannot set field mUnknownField - field not found", caughtException.getMessage());
+	}
+
+	@SuppressWarnings("unused") // Setting is done via RandomGen :)
+	private static class TestPerson {
+		private int mId;
+		private String mName;
+		private List<String> mAliases;
+		private boolean mIsBrave;
+		private byte mBite; // Everybody gets hungry sometimes!
+		private Byte[] mBites; // Sometimes you get even hungrier!
+		private double mWealth;
+		private float mHeight;
+		private int mCandiesCount;
+		private long mSoLong;
+		private String mUuid;
+		private String mShirtColor;
+		private String mBiography;
+		private Gender mGender;
+
+		int getId() {
+			return mId;
+		}
+
+		String getUuid() {
+			return mUuid;
+		}
+
+		String getName() {
+			return mName;
+		}
+
+		boolean isBrave() {
+			return mIsBrave;
+		}
+
+		byte getBite() {
+			return mBite;
+		}
+
+		Byte[] getBites() {
+			return mBites;
+		}
+
+		double getWealth() {
+			return mWealth;
+		}
+
+		float getHeight() {
+			return mHeight;
+		}
+
+		int getCandiesCount() { // Like taking candies from a baby!
+			return mCandiesCount;
+		}
+
+		long getSoLong() {
+			return mSoLong;
+		}
+
+		String getShirtColor() {
+			return mShirtColor;
+		}
+
+		String getBiography() {
+			return mBiography;
+		}
+
+		Gender getGender() {
+			return mGender;
+		}
+
+		List<String> getAliases() {
+			return mAliases;
+		}
+	}
+
+	private enum Gender {
+		MALE, FEMALE
+	}
+}
