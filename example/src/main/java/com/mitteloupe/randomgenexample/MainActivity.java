@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 			.returning(2, 4, planetRandomGen)
 			.build();
 
+		// Generate 1,000 star systems
 		for (int i = 0; i < 1000; ++i) {
 			StarSystem starSystem = starSystemRandomGen.generate();
 			Log.d("RandomGen", starSystem.toString() +
