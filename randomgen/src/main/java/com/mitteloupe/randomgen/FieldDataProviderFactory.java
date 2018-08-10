@@ -1,79 +1,59 @@
 package com.mitteloupe.randomgen;
 
-import com.mitteloupe.randomgen.fielddataprovider.BooleanFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.ByteFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.ByteListFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.CustomListFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.CustomListRangeFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.DoubleFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.DoubleRangeFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.ExplicitFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.FloatFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.FloatRangeFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.GenericListFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.IntegerFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.IntegerRangeFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.LongFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.LongRangeFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.LoremIpsumFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.RandomEnumFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.SequentialIntegerFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.UuidFieldDataProvider;
-
 import java.util.List;
 
 /**
  * Created by Eran Boudjnah on 07/08/2018.
  */
 interface FieldDataProviderFactory {
-	<VALUE_TYPE> ExplicitFieldDataProvider<VALUE_TYPE> getExplicitFieldDataProvider(VALUE_TYPE pValue);
+	<VALUE_TYPE> FieldDataProvider<VALUE_TYPE> getExplicitFieldDataProvider(VALUE_TYPE pValue);
 
-	<VALUE_TYPE> GenericListFieldDataProvider<VALUE_TYPE> getGenericListFieldDataProvider(List<VALUE_TYPE> pImmutableList);
+	<VALUE_TYPE> FieldDataProvider<VALUE_TYPE> getGenericListFieldDataProvider(List<VALUE_TYPE> pImmutableList);
 
-	BooleanFieldDataProvider getBooleanFieldDataProvider();
+	FieldDataProvider<Boolean> getBooleanFieldDataProvider();
 
-	ByteFieldDataProvider getByteFieldDataProvider();
+	FieldDataProvider<Byte> getByteFieldDataProvider();
 
-	ByteListFieldDataProvider getByteListFieldDataProvider(int pSize);
+	FieldDataProvider<List<Byte>> getByteListFieldDataProvider(int pSize);
 
-	ByteListFieldDataProvider getByteListFieldDataProvider(int pMinSize, int pMaxSize);
+	FieldDataProvider<List<Byte>> getByteListFieldDataProvider(int pMinSize, int pMaxSize);
 
-	DoubleFieldDataProvider getDoubleFieldDataProvider();
+	FieldDataProvider<Double> getDoubleFieldDataProvider();
 
-	FloatFieldDataProvider getFloatFieldDataProvider();
+	FieldDataProvider<Double> getDoubleFieldDataProvider(double pMinimum, double pMaximum);
 
-	IntegerFieldDataProvider getIntegerFieldDataProvider();
+	FieldDataProvider<Float> getFloatFieldDataProvider();
 
-	LongFieldDataProvider getLongFieldDataProvider();
+	FieldDataProvider<Float> getFloatFieldDataProvider(float pMinimum, float pMaximum);
 
-	DoubleRangeFieldDataProvider getDoubleRangeFieldDataProvider(double pMinimum, double pMaximum);
+	FieldDataProvider<Integer> getIntegerFieldDataProvider();
 
-	FloatRangeFieldDataProvider getFloatRangeFieldDataProvider(float pMinimum, float pMaximum);
+	FieldDataProvider<Integer> getIntegerFieldDataProvider(int pMinimum, int pMaximum);
 
-	IntegerRangeFieldDataProvider getIntegerRangeFieldDataProvider(int pMinimum, int pMaximum);
+	FieldDataProvider<Long> getLongFieldDataProvider();
 
-	LongRangeFieldDataProvider getLongRangeFieldDataProvider(long pMinimum, long pMaximum);
+	FieldDataProvider<Long> getLongFieldDataProvider(long pMinimum, long pMaximum);
 
-	SequentialIntegerFieldDataProvider getSequentialIntegerFieldDataProvider();
+	FieldDataProvider<Integer> getSequentialIntegerFieldDataProvider();
 
-	UuidFieldDataProvider getUuidFieldDataProvider();
+	FieldDataProvider<Integer> getSequentialIntegerFieldDataProvider(int pStartValue);
 
-	RgbFieldDataProvider getRgbFieldDataProvider(boolean pAlpha);
+	FieldDataProvider<String> getUuidFieldDataProvider();
 
-	LoremIpsumFieldDataProvider getLoremIpsumFieldDataProvider();
+	FieldDataProvider<String> getRgbFieldDataProvider(boolean pAlpha);
 
-	LoremIpsumFieldDataProvider getLoremIpsumFieldDataProvider(int pLength);
+	FieldDataProvider<String> getLoremIpsumFieldDataProvider();
 
-	LoremIpsumFieldDataProvider getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength);
+	FieldDataProvider<String> getLoremIpsumFieldDataProvider(int pLength);
 
-	LoremIpsumFieldDataProvider getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength, String pParagraphDelimiter);
+	FieldDataProvider<String> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength);
 
-	<ENUM_TYPE extends Enum> RandomEnumFieldDataProvider<ENUM_TYPE> getRandomEnumFieldDataProvider(ENUM_TYPE pValue);
+	FieldDataProvider<String> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength, String pParagraphDelimiter);
 
-	<VALUE_TYPE> CustomListFieldDataProvider<VALUE_TYPE> getCustomListFieldDataProvider(int pInstances,
-	                                                                                    FieldDataProvider<VALUE_TYPE> pFieldDataProvider);
+	<ENUM_TYPE extends Enum> FieldDataProvider<ENUM_TYPE> getRandomEnumFieldDataProvider(Class<ENUM_TYPE> pValue);
 
-	<VALUE_TYPE> CustomListRangeFieldDataProvider<VALUE_TYPE> getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances,
-	                                                                                              FieldDataProvider<VALUE_TYPE> pFieldDataProvider);
+	<VALUE_TYPE> FieldDataProvider<List<VALUE_TYPE>> getCustomListFieldDataProvider(int pInstances, FieldDataProvider<VALUE_TYPE> pFieldDataProvider);
+
+	<VALUE_TYPE> FieldDataProvider<List<VALUE_TYPE>> getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances,
+	                                                                                     FieldDataProvider<VALUE_TYPE> pFieldDataProvider);
 }

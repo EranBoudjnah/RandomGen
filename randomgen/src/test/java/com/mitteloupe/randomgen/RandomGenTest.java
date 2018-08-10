@@ -6,15 +6,11 @@ import com.mitteloupe.randomgen.fielddataprovider.ByteListFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.CustomListFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.CustomListRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.DoubleFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.DoubleRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.ExplicitFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.FloatFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.FloatRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.GenericListFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.IntegerFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.IntegerRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.LongFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.LongRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.LoremIpsumFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RandomEnumFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
@@ -229,6 +225,29 @@ public class RandomGenTest {
 	}
 
 	@Test
+	public void givenBuilderReturningDoubleRangeWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		DoubleFieldDataProvider doubleRangeFieldDataProvider = mock(DoubleFieldDataProvider.class);
+		given(mFactory.getDoubleFieldDataProvider(1d, 2d)).willReturn(doubleRangeFieldDataProvider);
+		final double EXPECTED_VALUE = 1.2345;
+		given(doubleRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mWealth")
+			.returning(1d, 2d)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getWealth());
+	}
+
+
+	@Test
 	public void givenBuilderReturningFloatWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
 		FloatFieldDataProvider floatFieldDataProvider = mock(FloatFieldDataProvider.class);
@@ -239,6 +258,29 @@ public class RandomGenTest {
 		mCut = mBuilder
 			.withField("mHeight")
 			.returningFloat()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getHeight());
+	}
+
+
+	@Test
+	public void givenBuilderReturningFloatRangeWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		FloatFieldDataProvider floatRangeFieldDataProvider = mock(FloatFieldDataProvider.class);
+		given(mFactory.getFloatFieldDataProvider(1f, 2f)).willReturn(floatRangeFieldDataProvider);
+		final float EXPECTED_VALUE = 1.23f;
+		given(floatRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mHeight")
+			.returning(1f, 2f)
 			.build();
 
 		TestPerson testPerson;
@@ -273,6 +315,28 @@ public class RandomGenTest {
 	}
 
 	@Test
+	public void givenBuilderReturningIntegerRangeWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		IntegerFieldDataProvider integerFieldDataProvider = mock(IntegerFieldDataProvider.class);
+		given(mFactory.getIntegerFieldDataProvider(300, 500)).willReturn(integerFieldDataProvider);
+		final int EXPECTED_VALUE = 400;
+		given(integerFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mCandiesCount")
+			.returning(300, 500)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getCandiesCount());
+	}
+
+	@Test
 	public void givenBuilderReturningLongWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
 		LongFieldDataProvider longFieldDataProvider = mock(LongFieldDataProvider.class);
@@ -295,78 +359,12 @@ public class RandomGenTest {
 	}
 
 	@Test
-	public void givenBuilderReturningDoubleRangeWhenGenerateThenInstanceHasCorrectValue() {
-		// Given
-		DoubleRangeFieldDataProvider doubleRangeFieldDataProvider = mock(DoubleRangeFieldDataProvider.class);
-		given(mFactory.getDoubleRangeFieldDataProvider(1d, 2d)).willReturn(doubleRangeFieldDataProvider);
-		final double EXPECTED_VALUE = 1.2345;
-		given(doubleRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
-
-		mCut = mBuilder
-			.withField("mWealth")
-			.returning(1d, 2d)
-			.build();
-
-		TestPerson testPerson;
-
-		// When
-		testPerson = mCut.generate();
-
-		// Then
-		assertEquals(EXPECTED_VALUE, testPerson.getWealth());
-	}
-
-	@Test
-	public void givenBuilderReturningFloatRangeWhenGenerateThenInstanceHasCorrectValue() {
-		// Given
-		FloatRangeFieldDataProvider floatRangeFieldDataProvider = mock(FloatRangeFieldDataProvider.class);
-		given(mFactory.getFloatRangeFieldDataProvider(1f, 2f)).willReturn(floatRangeFieldDataProvider);
-		final float EXPECTED_VALUE = 1.23f;
-		given(floatRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
-
-		mCut = mBuilder
-			.withField("mHeight")
-			.returning(1f, 2f)
-			.build();
-
-		TestPerson testPerson;
-
-		// When
-		testPerson = mCut.generate();
-
-		// Then
-		assertEquals(EXPECTED_VALUE, testPerson.getHeight());
-	}
-
-	@Test
-	public void givenBuilderReturningIntegerRangeWhenGenerateThenInstanceHasCorrectValue() {
-		// Given
-		IntegerRangeFieldDataProvider integerRangeFieldDataProvider = mock(IntegerRangeFieldDataProvider.class);
-		given(mFactory.getIntegerRangeFieldDataProvider(300, 500)).willReturn(integerRangeFieldDataProvider);
-		final int EXPECTED_VALUE = 400;
-		given(integerRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
-
-		mCut = mBuilder
-			.withField("mCandiesCount")
-			.returning(300, 500)
-			.build();
-
-		TestPerson testPerson;
-
-		// When
-		testPerson = mCut.generate();
-
-		// Then
-		assertEquals(EXPECTED_VALUE, testPerson.getCandiesCount());
-	}
-
-	@Test
 	public void givenBuilderReturningLongRangeWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		LongRangeFieldDataProvider longRangeFieldDataProvider = mock(LongRangeFieldDataProvider.class);
-		given(mFactory.getLongRangeFieldDataProvider(1000L, 2000L)).willReturn(longRangeFieldDataProvider);
+		LongFieldDataProvider longFieldDataProvider = mock(LongFieldDataProvider.class);
+		given(mFactory.getLongFieldDataProvider(1000L, 2000L)).willReturn(longFieldDataProvider);
 		final long EXPECTED_VALUE = 1337L;
-		given(longRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(longFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mSoLong")
@@ -393,6 +391,28 @@ public class RandomGenTest {
 		mCut = mBuilder
 			.withField("mId")
 			.returningSequentialInteger()
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getId());
+	}
+
+	@Test
+	public void givenBuilderReturningSequentialIntegerWithStartValueWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		SequentialIntegerFieldDataProvider sequentialIntegerFieldDataProvider = mock(SequentialIntegerFieldDataProvider.class);
+		given(mFactory.getSequentialIntegerFieldDataProvider(5)).willReturn(sequentialIntegerFieldDataProvider);
+		final int EXPECTED_VALUE = 5;
+		given(sequentialIntegerFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mId")
+			.returningSequentialInteger(5)
 			.build();
 
 		TestPerson testPerson;
@@ -556,12 +576,12 @@ public class RandomGenTest {
 	public void givenBuilderReturningEnumWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
 		RandomEnumFieldDataProvider<Gender> randomEnumFieldDataProvider = mock(RandomEnumFieldDataProvider.class);
-		given(mFactory.getRandomEnumFieldDataProvider(Gender.FEMALE)).willReturn(randomEnumFieldDataProvider);
+		given(mFactory.getRandomEnumFieldDataProvider(Gender.class)).willReturn(randomEnumFieldDataProvider);
 		given(randomEnumFieldDataProvider.generate()).willReturn(Gender.MALE);
 
 		mCut = mBuilder
 			.withField("mGender")
-			.returning(Gender.FEMALE)
+			.returning(Gender.class)
 			.build();
 
 		TestPerson testPerson;

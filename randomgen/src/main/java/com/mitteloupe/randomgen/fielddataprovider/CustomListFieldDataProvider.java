@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Generates a fixed number of instances of type {@link VALUE_TYPE} to populate a list or an array field with.
+ * A {@link FieldDataProvider} that generates a fixed sized list of instances of type {@link VALUE_TYPE}.
  *
  * Created by Eran Boudjnah on 25/04/2018.
  */

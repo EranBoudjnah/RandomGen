@@ -6,15 +6,11 @@ import com.mitteloupe.randomgen.fielddataprovider.ByteListFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.CustomListFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.CustomListRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.DoubleFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.DoubleRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.ExplicitFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.FloatFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.FloatRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.GenericListFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.IntegerFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.IntegerRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.LongFieldDataProvider;
-import com.mitteloupe.randomgen.fielddataprovider.LongRangeFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.LoremIpsumFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RandomEnumFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
@@ -30,8 +26,11 @@ import java.util.Random;
 class SimpleFieldDataProviderFactory implements FieldDataProviderFactory {
 	private Random mRandom;
 
-	SimpleFieldDataProviderFactory(Random pRandom) {
+	private UuidGenerator mUuidGenerator;
+
+	SimpleFieldDataProviderFactory(Random pRandom, UuidGenerator pUuidGenerator) {
 		mRandom = pRandom;
+		mUuidGenerator = pUuidGenerator;
 	}
 
 	@Override
@@ -40,8 +39,8 @@ class SimpleFieldDataProviderFactory implements FieldDataProviderFactory {
 	}
 
 	@Override
-	public <VALUE_TYPE> GenericListFieldDataProvider<VALUE_TYPE> getGenericListFieldDataProvider(List<VALUE_TYPE> pImmutableList) {
-		return new GenericListFieldDataProvider<>(mRandom, pImmutableList);
+	public <VALUE_TYPE> GenericListFieldDataProvider<VALUE_TYPE> getGenericListFieldDataProvider(List<VALUE_TYPE> pList) {
+		return new GenericListFieldDataProvider<>(mRandom, pList);
 	}
 
 	@Override
@@ -70,8 +69,18 @@ class SimpleFieldDataProviderFactory implements FieldDataProviderFactory {
 	}
 
 	@Override
+	public DoubleFieldDataProvider getDoubleFieldDataProvider(double pMinimum, double pMaximum) {
+		return new DoubleFieldDataProvider(mRandom, pMinimum, pMaximum);
+	}
+
+	@Override
 	public FloatFieldDataProvider getFloatFieldDataProvider() {
 		return new FloatFieldDataProvider(mRandom);
+	}
+
+	@Override
+	public FloatFieldDataProvider getFloatFieldDataProvider(float pMinimum, float pMaximum) {
+		return new FloatFieldDataProvider(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
@@ -80,28 +89,18 @@ class SimpleFieldDataProviderFactory implements FieldDataProviderFactory {
 	}
 
 	@Override
+	public IntegerFieldDataProvider getIntegerFieldDataProvider(int pMinimum, int pMaximum) {
+		return new IntegerFieldDataProvider(mRandom, pMinimum, pMaximum);
+	}
+
+	@Override
 	public LongFieldDataProvider getLongFieldDataProvider() {
 		return new LongFieldDataProvider(mRandom);
 	}
 
 	@Override
-	public DoubleRangeFieldDataProvider getDoubleRangeFieldDataProvider(double pMinimum, double pMaximum) {
-		return new DoubleRangeFieldDataProvider(mRandom, pMinimum, pMaximum);
-	}
-
-	@Override
-	public FloatRangeFieldDataProvider getFloatRangeFieldDataProvider(float pMinimum, float pMaximum) {
-		return new FloatRangeFieldDataProvider(mRandom, pMinimum, pMaximum);
-	}
-
-	@Override
-	public IntegerRangeFieldDataProvider getIntegerRangeFieldDataProvider(int pMinimum, int pMaximum) {
-		return new IntegerRangeFieldDataProvider(mRandom, pMinimum, pMaximum);
-	}
-
-	@Override
-	public LongRangeFieldDataProvider getLongRangeFieldDataProvider(long pMinimum, long pMaximum) {
-		return new LongRangeFieldDataProvider(mRandom, pMinimum, pMaximum);
+	public LongFieldDataProvider getLongFieldDataProvider(long pMinimum, long pMaximum) {
+		return new LongFieldDataProvider(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
@@ -110,8 +109,13 @@ class SimpleFieldDataProviderFactory implements FieldDataProviderFactory {
 	}
 
 	@Override
+	public SequentialIntegerFieldDataProvider getSequentialIntegerFieldDataProvider(int pStartValue) {
+		return new SequentialIntegerFieldDataProvider(pStartValue);
+	}
+
+	@Override
 	public UuidFieldDataProvider getUuidFieldDataProvider() {
-		return new UuidFieldDataProvider();
+		return new UuidFieldDataProvider(mUuidGenerator);
 	}
 
 	@Override
@@ -140,7 +144,7 @@ class SimpleFieldDataProviderFactory implements FieldDataProviderFactory {
 	}
 
 	@Override
-	public <ENUM_TYPE extends Enum> RandomEnumFieldDataProvider<ENUM_TYPE> getRandomEnumFieldDataProvider(ENUM_TYPE pValue) {
+	public <ENUM_TYPE extends Enum> RandomEnumFieldDataProvider<ENUM_TYPE> getRandomEnumFieldDataProvider(Class<ENUM_TYPE> pValue) {
 		return new RandomEnumFieldDataProvider<>(mRandom, pValue);
 	}
 
@@ -151,7 +155,9 @@ class SimpleFieldDataProviderFactory implements FieldDataProviderFactory {
 	}
 
 	@Override
-	public <VALUE_TYPE> CustomListRangeFieldDataProvider<VALUE_TYPE> getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances, FieldDataProvider<VALUE_TYPE> pFieldDataProvider) {
+	public <VALUE_TYPE> CustomListRangeFieldDataProvider<VALUE_TYPE>
+	getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances,
+	                                    FieldDataProvider<VALUE_TYPE> pFieldDataProvider) {
 		return new CustomListRangeFieldDataProvider<>(mRandom, pMinInstances, pMaxInstances, pFieldDataProvider);
 	}
 }

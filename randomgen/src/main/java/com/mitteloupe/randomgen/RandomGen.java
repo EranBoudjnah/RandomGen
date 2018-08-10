@@ -9,20 +9,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by Eran Boudjnah on 24/04/2018.
  */
-@SuppressWarnings("unused")
 public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 	private final InstanceProvider<OUTPUT_TYPE> mInstanceProvider;
 	private final Map<String, FieldDataProvider<?>> mDataProviders;
-	private final Map<String, Field> mPrivateFields;
+	private final Map<String, Field> mFields;
 
 	private RandomGen(InstanceProvider<OUTPUT_TYPE> pInstanceProvider, Map<String, FieldDataProvider<?>> pDataProviders) {
 		mInstanceProvider = pInstanceProvider;
 		mDataProviders = pDataProviders;
-		mPrivateFields = new HashMap<>();
+		mFields = new HashMap<>();
 
 		getAllFields();
 	}
@@ -32,12 +32,12 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 
 		for (final Map.Entry<String, FieldDataProvider<?>> entry : mDataProviders.entrySet()) {
 			final String key = entry.getKey();
-			if (!mPrivateFields.containsKey(key)) {
+			if (!mFields.containsKey(key)) {
 				throw new IllegalArgumentException("Cannot set field " + key + " - field not found");
 			}
 
-			final Field field = mPrivateFields.get(key);
-			field.setAccessible(true);
+			final Field field = mFields.get(key);
+
 			try {
 				final Object value = entry.getValue().generate();
 				setField(instance, field, value);
@@ -77,8 +77,10 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 		Field[] allFields = instance.getClass().getDeclaredFields();
 		for (Field field : allFields) {
 			if (Modifier.isPrivate(field.getModifiers())) {
-				mPrivateFields.put(field.getName(), field);
+				field.setAccessible(true);
 			}
+
+			mFields.put(field.getName(), field);
 		}
 	}
 
@@ -87,9 +89,14 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 		private final InstanceProvider<T> mInstanceProvider;
 		private FieldDataProviderFactory mFactory;
 
-		@SuppressWarnings("WeakerAccess") // Public library constructor
+		@SuppressWarnings({"unused"}) // Public library constructor
 		public Builder(InstanceProvider<T> pInstanceProvider) {
-			this(pInstanceProvider, new SimpleFieldDataProviderFactory(new Random()));
+			this(pInstanceProvider, new SimpleFieldDataProviderFactory(new Random(), new UuidGenerator() {
+				@Override
+				public String randomUUID() {
+					return UUID.randomUUID().toString();
+				}
+			}));
 		}
 
 		Builder(InstanceProvider<T> pInstanceProvider, FieldDataProviderFactory pFactory) {
@@ -168,23 +175,27 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 		}
 
 		public Builder<RETURN_TYPE> returning(final double pMinimum, final double pMaximum) {
-			return mBuilder.returning(mField, mFactory.getDoubleRangeFieldDataProvider(pMinimum, pMaximum));
+			return mBuilder.returning(mField, mFactory.getDoubleFieldDataProvider(pMinimum, pMaximum));
 		}
 
 		public Builder<RETURN_TYPE> returning(final float pMinimum, final float pMaximum) {
-			return mBuilder.returning(mField, mFactory.getFloatRangeFieldDataProvider(pMinimum, pMaximum));
+			return mBuilder.returning(mField, mFactory.getFloatFieldDataProvider(pMinimum, pMaximum));
 		}
 
 		public Builder<RETURN_TYPE> returning(final int pMinimum, final int pMaximum) {
-			return mBuilder.returning(mField, mFactory.getIntegerRangeFieldDataProvider(pMinimum, pMaximum));
+			return mBuilder.returning(mField, mFactory.getIntegerFieldDataProvider(pMinimum, pMaximum));
 		}
 
 		public Builder<RETURN_TYPE> returning(final long pMinimum, final long pMaximum) {
-			return mBuilder.returning(mField, mFactory.getLongRangeFieldDataProvider(pMinimum, pMaximum));
+			return mBuilder.returning(mField, mFactory.getLongFieldDataProvider(pMinimum, pMaximum));
 		}
 
 		public Builder<RETURN_TYPE> returningSequentialInteger() {
 			return mBuilder.returning(mField, mFactory.getSequentialIntegerFieldDataProvider());
+		}
+
+		public Builder<RETURN_TYPE> returningSequentialInteger(int pStartValue) {
+			return mBuilder.returning(mField, mFactory.getSequentialIntegerFieldDataProvider(pStartValue));
 		}
 
 		public Builder<RETURN_TYPE> returningUuid() {
@@ -234,7 +245,6 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 		 * @param pParagraphDelimiter The string to use between Lorem Ipsum paragraphs
 		 * @return A builder generating a substring of an infinite (well, kind of) Lorem Ipsum text
 		 */
-		@SuppressWarnings("WeakerAccess")
 		public Builder<RETURN_TYPE> returningLoremIpsum(int pMinLength, int pMaxLength, String pParagraphDelimiter) {
 			return mBuilder.returning(mField, mFactory.getLoremIpsumFieldDataProvider(pMinLength, pMaxLength, pParagraphDelimiter));
 		}
@@ -242,12 +252,12 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 		/**
 		 * Adds a generator of random enum values for the given field.
 		 *
-		 * @param pValue      Any of the values of the desired enum
+		 * @param pEnumClass  An enum class
 		 * @param <ENUM_TYPE> Implicit. The enum type to use
 		 * @return A builder with a data provider
 		 */
-		public <ENUM_TYPE extends Enum> Builder<RETURN_TYPE> returning(final ENUM_TYPE pValue) {
-			return mBuilder.returning(mField, mFactory.getRandomEnumFieldDataProvider(pValue));
+		public <ENUM_TYPE extends Enum> Builder<RETURN_TYPE> returning(final Class<ENUM_TYPE> pEnumClass) {
+			return mBuilder.returning(mField, mFactory.getRandomEnumFieldDataProvider(pEnumClass));
 		}
 
 		/**

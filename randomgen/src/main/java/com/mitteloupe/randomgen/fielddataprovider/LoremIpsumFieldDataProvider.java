@@ -7,6 +7,8 @@ import java.util.Random;
 /**
  * Provides strings of Lorem Ipsum.
  *
+ * See: <a href="https://www.lipsum.com/">https://www.lipsum.com/</a>
+ *
  * TODO
  * Introduce Options:
  *   Shuffle sentences
@@ -15,7 +17,6 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-@SuppressWarnings("unused")
 public final class LoremIpsumFieldDataProvider implements FieldDataProvider<String> {
 	private final static String DEFAULT_PARAGRAPH_DELIMITER = "\n\n";
 	private final static String LOREM_IPSUM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore" +
@@ -29,21 +30,55 @@ public final class LoremIpsumFieldDataProvider implements FieldDataProvider<Stri
 	private final int mMinLength;
 	private final int mMaxLength;
 
+	/**
+	 * Creates an instance of {@link LoremIpsumFieldDataProvider} generating one whole {@code String} of Lorem Ipsum.
+	 *
+	 * @param pRandom A random value generator
+	 */
 	public LoremIpsumFieldDataProvider(Random pRandom) {
 		this(pRandom, LOREM_IPSUM_LENGTH);
 	}
 
-	@SuppressWarnings("WeakerAccess")
+	/**
+	 * Creates an instance of {@link LoremIpsumFieldDataProvider} generating a {@code String} of Lorem Ipsum of the requested length.
+	 *
+	 * The Lorem Ipsum text is repeated if the requested length is longer than the length of Lorem Ipsum. In such cases, the default
+	 * delimiter {@code DEFAULT_PARAGRAPH_DELIMITER} is used.
+	 *
+	 * @param pRandom A random value generator
+	 * @param pLength The length of the returned string
+	 */
 	public LoremIpsumFieldDataProvider(Random pRandom, int pLength) {
 		this(pRandom, pLength, pLength);
 	}
 
-	@SuppressWarnings("WeakerAccess")
+	/**
+	 * Creates an instance of {@link LoremIpsumFieldDataProvider} generating a {@code String} of Lorem Ipsum with length in the range of
+	 * {@code pMinLength} to {@code pMaxLength}.
+	 *
+	 * The Lorem Ipsum text is repeated if the generated length is longer than the length of Lorem Ipsum. In such cases, the default
+	 * delimiter {@code DEFAULT_PARAGRAPH_DELIMITER} is used.
+	 *
+	 * @param pRandom    A random value generator
+	 * @param pMinLength The minimum length of the returned string
+	 * @param pMaxLength The maximum length of the returned string
+	 */
 	public LoremIpsumFieldDataProvider(Random pRandom, int pMinLength, int pMaxLength) {
 		this(pRandom, pMinLength, pMaxLength, DEFAULT_PARAGRAPH_DELIMITER);
 	}
 
-	@SuppressWarnings("WeakerAccess")
+	/**
+	 * Creates an instance of {@link LoremIpsumFieldDataProvider} generating a {@code String} of Lorem Ipsum with length in the range of
+	 * {@code pMinLength} to {@code pMaxLength}.
+	 *
+	 * The Lorem Ipsum text is repeated if the generated length is longer than the length of Lorem Ipsum. In such cases, the provided
+	 * delimiter is used.
+	 *
+	 * @param pRandom             A random value generator
+	 * @param pMinLength          The minimum length of the returned string
+	 * @param pMaxLength          The maximum length of the returned string
+	 * @param pParagraphDelimiter The delimiter to use for long Lorem Ipsums
+	 */
 	public LoremIpsumFieldDataProvider(Random pRandom, int pMinLength, int pMaxLength, String pParagraphDelimiter) {
 		mRandom = pRandom;
 		mMinLength = pMinLength;

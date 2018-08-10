@@ -5,6 +5,8 @@ import com.mitteloupe.randomgen.FieldDataProvider;
 import java.util.Random;
 
 /**
+ * A {@link FieldDataProvider} that generates a random {@code Boolean} value.
+ *
  * Created by Eran Boudjnah on 24/04/2018.
  */
 public final class BooleanFieldDataProvider implements FieldDataProvider<Boolean> {

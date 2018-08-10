@@ -2,6 +2,7 @@ package com.mitteloupe.randomgen.fielddataprovider;
 
 import com.mitteloupe.randomgen.FieldDataProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -10,15 +11,15 @@ import java.util.Random;
  */
 public final class GenericListFieldDataProvider<VALUE_TYPE> implements FieldDataProvider<VALUE_TYPE> {
 	private final Random mRandom;
-	private final List<VALUE_TYPE> mImmutableList;
+	private final List<VALUE_TYPE> mList;
 
-	public GenericListFieldDataProvider(Random pRandom, List<VALUE_TYPE> pImmutableList) {
+	public GenericListFieldDataProvider(Random pRandom, List<VALUE_TYPE> pList) {
 		mRandom = pRandom;
-		mImmutableList = pImmutableList;
+		mList = new ArrayList<>(pList);
 	}
 
 	@Override
 	public VALUE_TYPE generate() {
-		return mImmutableList.get((int)(mRandom.nextDouble() * mImmutableList.size()));
+		return mList.get((int)(mRandom.nextDouble() * mList.size()));
 	}
 }

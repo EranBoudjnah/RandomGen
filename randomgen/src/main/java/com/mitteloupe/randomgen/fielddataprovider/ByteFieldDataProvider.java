@@ -5,6 +5,8 @@ import com.mitteloupe.randomgen.FieldDataProvider;
 import java.util.Random;
 
 /**
+ * A {@link FieldDataProvider} that generates a single Byte value.
+ *
  * Created by Eran Boudjnah on 24/04/2018.
  */
 public final class ByteFieldDataProvider implements FieldDataProvider<Byte> {
