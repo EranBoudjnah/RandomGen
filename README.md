@@ -11,14 +11,24 @@ In your `build.gradle`, add the following:
 
 ```groovy
 dependencies {
-	implementation project(':randomgen')
+	implementation 'com.mitteloupe:randomgen:1.1.0'
 }
 ```
 
 To include the default data generators, also include
 ```groovy
-implementation project(':randomgen.datasource')
+implementation 'com.mitteloupe:randomgen.datasource:1.0.0'
 ```
+
+Note: To add the BinTray repository in your maven repositories, also add the following:
+```groovy
+repositories {
+	maven {
+		url "https://dl.bintray.com/shadowcra/RandomGen"
+	}
+}
+```
+
 
 ## Usage
 
