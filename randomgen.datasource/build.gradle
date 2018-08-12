@@ -1,8 +1,16 @@
 apply plugin: 'java-library'
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+ext {
+	PUBLISH_GROUP_ID = 'com.mitteloupe'
+	PUBLISH_ARTIFACT_ID = 'randomgen.datasource'
+	PUBLISH_VERSION = '1.0.0'
 }
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
+
+apply from: 'release-jar.gradle'

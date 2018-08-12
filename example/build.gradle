@@ -31,5 +31,5 @@ dependencies {
 	testImplementation 'junit:junit:4.12'
 	androidTestImplementation 'com.android.support.test:runner:1.0.2'
 	implementation 'com.mitteloupe:randomgen:1.1.0'
-	implementation project(':randomgen.datasource')
+	implementation 'com.mitteloupe:randomgen.datasource:1.0.0'
 }
