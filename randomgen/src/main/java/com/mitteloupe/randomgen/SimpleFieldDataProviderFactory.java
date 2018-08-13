@@ -23,7 +23,7 @@ import java.util.Random;
 /**
  * Created by Eran Boudjnah on 07/08/2018.
  */
-class SimpleFieldDataProviderFactory implements FieldDataProviderFactory {
+class SimpleFieldDataProviderFactory<OUTPUT_TYPE> implements FieldDataProviderFactory<OUTPUT_TYPE> {
 	private Random mRandom;
 
 	private UuidGenerator mUuidGenerator;
@@ -34,130 +34,129 @@ class SimpleFieldDataProviderFactory implements FieldDataProviderFactory {
 	}
 
 	@Override
-	public <VALUE_TYPE> ExplicitFieldDataProvider<VALUE_TYPE> getExplicitFieldDataProvider(VALUE_TYPE pValue) {
+	public <VALUE_TYPE> ExplicitFieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> getExplicitFieldDataProvider(VALUE_TYPE pValue) {
 		return new ExplicitFieldDataProvider<>(pValue);
 	}
 
 	@Override
-	public <VALUE_TYPE> GenericListFieldDataProvider<VALUE_TYPE> getGenericListFieldDataProvider(List<VALUE_TYPE> pList) {
+	public <VALUE_TYPE> GenericListFieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> getGenericListFieldDataProvider(List<VALUE_TYPE> pList) {
 		return new GenericListFieldDataProvider<>(mRandom, pList);
 	}
 
 	@Override
-	public BooleanFieldDataProvider getBooleanFieldDataProvider() {
-		return new BooleanFieldDataProvider(mRandom);
+	public BooleanFieldDataProvider<OUTPUT_TYPE> getBooleanFieldDataProvider() {
+		return new BooleanFieldDataProvider<>(mRandom);
 	}
 
 	@Override
-	public ByteFieldDataProvider getByteFieldDataProvider() {
-		return new ByteFieldDataProvider(mRandom);
+	public ByteFieldDataProvider<OUTPUT_TYPE> getByteFieldDataProvider() {
+		return new ByteFieldDataProvider<>(mRandom);
 	}
 
 	@Override
-	public ByteListFieldDataProvider getByteListFieldDataProvider(int pSize) {
-		return new ByteListFieldDataProvider(mRandom, pSize);
+	public ByteListFieldDataProvider<OUTPUT_TYPE> getByteListFieldDataProvider(int pSize) {
+		return new ByteListFieldDataProvider<>(mRandom, pSize);
 	}
 
 	@Override
-	public ByteListFieldDataProvider getByteListFieldDataProvider(int pMinSize, int pMaxSize) {
-		return new ByteListFieldDataProvider(mRandom, pMinSize, pMaxSize);
+	public ByteListFieldDataProvider<OUTPUT_TYPE> getByteListFieldDataProvider(int pMinSize, int pMaxSize) {
+		return new ByteListFieldDataProvider<>(mRandom, pMinSize, pMaxSize);
 	}
 
 	@Override
-	public DoubleFieldDataProvider getDoubleFieldDataProvider() {
-		return new DoubleFieldDataProvider(mRandom);
+	public DoubleFieldDataProvider<OUTPUT_TYPE> getDoubleFieldDataProvider() {
+		return new DoubleFieldDataProvider<>(mRandom);
 	}
 
 	@Override
-	public DoubleFieldDataProvider getDoubleFieldDataProvider(double pMinimum, double pMaximum) {
-		return new DoubleFieldDataProvider(mRandom, pMinimum, pMaximum);
+	public DoubleFieldDataProvider<OUTPUT_TYPE> getDoubleFieldDataProvider(double pMinimum, double pMaximum) {
+		return new DoubleFieldDataProvider<>(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
-	public FloatFieldDataProvider getFloatFieldDataProvider() {
-		return new FloatFieldDataProvider(mRandom);
+	public FloatFieldDataProvider<OUTPUT_TYPE> getFloatFieldDataProvider() {
+		return new FloatFieldDataProvider<>(mRandom);
 	}
 
 	@Override
-	public FloatFieldDataProvider getFloatFieldDataProvider(float pMinimum, float pMaximum) {
-		return new FloatFieldDataProvider(mRandom, pMinimum, pMaximum);
+	public FloatFieldDataProvider<OUTPUT_TYPE> getFloatFieldDataProvider(float pMinimum, float pMaximum) {
+		return new FloatFieldDataProvider<>(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
-	public IntegerFieldDataProvider getIntegerFieldDataProvider() {
-		return new IntegerFieldDataProvider(mRandom);
+	public IntegerFieldDataProvider<OUTPUT_TYPE> getIntegerFieldDataProvider() {
+		return new IntegerFieldDataProvider<>(mRandom);
 	}
 
 	@Override
-	public IntegerFieldDataProvider getIntegerFieldDataProvider(int pMinimum, int pMaximum) {
-		return new IntegerFieldDataProvider(mRandom, pMinimum, pMaximum);
+	public IntegerFieldDataProvider<OUTPUT_TYPE> getIntegerFieldDataProvider(int pMinimum, int pMaximum) {
+		return new IntegerFieldDataProvider<>(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
-	public LongFieldDataProvider getLongFieldDataProvider() {
-		return new LongFieldDataProvider(mRandom);
+	public LongFieldDataProvider<OUTPUT_TYPE> getLongFieldDataProvider() {
+		return new LongFieldDataProvider<>(mRandom);
 	}
 
 	@Override
-	public LongFieldDataProvider getLongFieldDataProvider(long pMinimum, long pMaximum) {
-		return new LongFieldDataProvider(mRandom, pMinimum, pMaximum);
+	public LongFieldDataProvider<OUTPUT_TYPE> getLongFieldDataProvider(long pMinimum, long pMaximum) {
+		return new LongFieldDataProvider<>(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
-	public SequentialIntegerFieldDataProvider getSequentialIntegerFieldDataProvider() {
-		return new SequentialIntegerFieldDataProvider();
+	public SequentialIntegerFieldDataProvider<OUTPUT_TYPE> getSequentialIntegerFieldDataProvider() {
+		return new SequentialIntegerFieldDataProvider<>();
 	}
 
 	@Override
-	public SequentialIntegerFieldDataProvider getSequentialIntegerFieldDataProvider(int pStartValue) {
-		return new SequentialIntegerFieldDataProvider(pStartValue);
+	public SequentialIntegerFieldDataProvider<OUTPUT_TYPE> getSequentialIntegerFieldDataProvider(int pStartValue) {
+		return new SequentialIntegerFieldDataProvider<>(pStartValue);
 	}
 
 	@Override
-	public UuidFieldDataProvider getUuidFieldDataProvider() {
-		return new UuidFieldDataProvider(mUuidGenerator);
+	public UuidFieldDataProvider<OUTPUT_TYPE> getUuidFieldDataProvider() {
+		return new UuidFieldDataProvider<>(mUuidGenerator);
 	}
 
 	@Override
-	public RgbFieldDataProvider getRgbFieldDataProvider(boolean pAlpha) {
-		return new RgbFieldDataProvider(mRandom, pAlpha);
+	public RgbFieldDataProvider<OUTPUT_TYPE> getRgbFieldDataProvider(boolean pAlpha) {
+		return new RgbFieldDataProvider<>(mRandom, pAlpha);
 	}
 
 	@Override
-	public LoremIpsumFieldDataProvider getLoremIpsumFieldDataProvider() {
-		return new LoremIpsumFieldDataProvider(mRandom);
+	public LoremIpsumFieldDataProvider<OUTPUT_TYPE> getLoremIpsumFieldDataProvider() {
+		return new LoremIpsumFieldDataProvider<>(mRandom);
 	}
 
 	@Override
-	public LoremIpsumFieldDataProvider getLoremIpsumFieldDataProvider(int pLength) {
-		return new LoremIpsumFieldDataProvider(mRandom, pLength);
+	public LoremIpsumFieldDataProvider<OUTPUT_TYPE> getLoremIpsumFieldDataProvider(int pLength) {
+		return new LoremIpsumFieldDataProvider<>(mRandom, pLength);
 	}
 
 	@Override
-	public LoremIpsumFieldDataProvider getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength) {
-		return new LoremIpsumFieldDataProvider(mRandom, pMinLength, pMaxLength);
+	public LoremIpsumFieldDataProvider<OUTPUT_TYPE> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength) {
+		return new LoremIpsumFieldDataProvider<>(mRandom, pMinLength, pMaxLength);
 	}
 
 	@Override
-	public LoremIpsumFieldDataProvider getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength, String pParagraphDelimiter) {
-		return new LoremIpsumFieldDataProvider(mRandom, pMinLength, pMaxLength, pParagraphDelimiter);
+	public LoremIpsumFieldDataProvider<OUTPUT_TYPE> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength, String pParagraphDelimiter) {
+		return new LoremIpsumFieldDataProvider<>(mRandom, pMinLength, pMaxLength, pParagraphDelimiter);
 	}
 
 	@Override
-	public <ENUM_TYPE extends Enum> RandomEnumFieldDataProvider<ENUM_TYPE> getRandomEnumFieldDataProvider(Class<ENUM_TYPE> pValue) {
+	public <ENUM_TYPE extends Enum> RandomEnumFieldDataProvider<OUTPUT_TYPE, ENUM_TYPE> getRandomEnumFieldDataProvider(Class<ENUM_TYPE> pValue) {
 		return new RandomEnumFieldDataProvider<>(mRandom, pValue);
 	}
 
 	@Override
-	public <VALUE_TYPE> CustomListFieldDataProvider<VALUE_TYPE> getCustomListFieldDataProvider(int pInstances,
-	                                                                                           FieldDataProvider<VALUE_TYPE> pFieldDataProvider) {
+	public <VALUE_TYPE> CustomListFieldDataProvider<OUTPUT_TYPE, VALUE_TYPE>
+	getCustomListFieldDataProvider(int pInstances, FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> pFieldDataProvider) {
 		return new CustomListFieldDataProvider<>(pInstances, pFieldDataProvider);
 	}
 
 	@Override
-	public <VALUE_TYPE> CustomListRangeFieldDataProvider<VALUE_TYPE>
-	getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances,
-	                                    FieldDataProvider<VALUE_TYPE> pFieldDataProvider) {
+	public <VALUE_TYPE> CustomListRangeFieldDataProvider<OUTPUT_TYPE, VALUE_TYPE>
+	getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances, FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> pFieldDataProvider) {
 		return new CustomListRangeFieldDataProvider<>(mRandom, pMinInstances, pMaxInstances, pFieldDataProvider);
 	}
 }

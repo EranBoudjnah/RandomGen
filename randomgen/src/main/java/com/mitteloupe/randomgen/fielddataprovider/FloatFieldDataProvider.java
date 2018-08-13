@@ -9,7 +9,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class FloatFieldDataProvider implements FieldDataProvider<Float> {
+public final class FloatFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, Float> {
 	private final Random mRandom;
 	private final float mMinimum;
 	private final float mMaximum;
@@ -37,7 +37,7 @@ public final class FloatFieldDataProvider implements FieldDataProvider<Float> {
 	}
 
 	@Override
-	public Float generate() {
+	public Float generate(OUTPUT_TYPE instance) {
 		return mRandom.nextFloat() * (mMaximum - mMinimum) + mMinimum;
 	}
 }

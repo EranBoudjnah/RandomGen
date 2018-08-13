@@ -5,55 +5,58 @@ import java.util.List;
 /**
  * Created by Eran Boudjnah on 07/08/2018.
  */
-interface FieldDataProviderFactory {
-	<VALUE_TYPE> FieldDataProvider<VALUE_TYPE> getExplicitFieldDataProvider(VALUE_TYPE pValue);
+interface FieldDataProviderFactory<OUTPUT_TYPE> {
+	<VALUE_TYPE> FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> getExplicitFieldDataProvider(VALUE_TYPE pValue);
 
-	<VALUE_TYPE> FieldDataProvider<VALUE_TYPE> getGenericListFieldDataProvider(List<VALUE_TYPE> pImmutableList);
+	<VALUE_TYPE> FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> getGenericListFieldDataProvider(List<VALUE_TYPE> pImmutableList);
 
-	FieldDataProvider<Boolean> getBooleanFieldDataProvider();
+	FieldDataProvider<OUTPUT_TYPE, Boolean> getBooleanFieldDataProvider();
 
-	FieldDataProvider<Byte> getByteFieldDataProvider();
+	FieldDataProvider<OUTPUT_TYPE, Byte> getByteFieldDataProvider();
 
-	FieldDataProvider<List<Byte>> getByteListFieldDataProvider(int pSize);
+	FieldDataProvider<OUTPUT_TYPE, List<Byte>> getByteListFieldDataProvider(int pSize);
 
-	FieldDataProvider<List<Byte>> getByteListFieldDataProvider(int pMinSize, int pMaxSize);
+	FieldDataProvider<OUTPUT_TYPE, List<Byte>> getByteListFieldDataProvider(int pMinSize, int pMaxSize);
 
-	FieldDataProvider<Double> getDoubleFieldDataProvider();
+	FieldDataProvider<OUTPUT_TYPE, Double> getDoubleFieldDataProvider();
 
-	FieldDataProvider<Double> getDoubleFieldDataProvider(double pMinimum, double pMaximum);
+	FieldDataProvider<OUTPUT_TYPE, Double> getDoubleFieldDataProvider(double pMinimum, double pMaximum);
 
-	FieldDataProvider<Float> getFloatFieldDataProvider();
+	FieldDataProvider<OUTPUT_TYPE, Float> getFloatFieldDataProvider();
 
-	FieldDataProvider<Float> getFloatFieldDataProvider(float pMinimum, float pMaximum);
+	FieldDataProvider<OUTPUT_TYPE, Float> getFloatFieldDataProvider(float pMinimum, float pMaximum);
 
-	FieldDataProvider<Integer> getIntegerFieldDataProvider();
+	FieldDataProvider<OUTPUT_TYPE, Integer> getIntegerFieldDataProvider();
 
-	FieldDataProvider<Integer> getIntegerFieldDataProvider(int pMinimum, int pMaximum);
+	FieldDataProvider<OUTPUT_TYPE, Integer> getIntegerFieldDataProvider(int pMinimum, int pMaximum);
 
-	FieldDataProvider<Long> getLongFieldDataProvider();
+	FieldDataProvider<OUTPUT_TYPE, Long> getLongFieldDataProvider();
 
-	FieldDataProvider<Long> getLongFieldDataProvider(long pMinimum, long pMaximum);
+	FieldDataProvider<OUTPUT_TYPE, Long> getLongFieldDataProvider(long pMinimum, long pMaximum);
 
-	FieldDataProvider<Integer> getSequentialIntegerFieldDataProvider();
+	FieldDataProvider<OUTPUT_TYPE, Integer> getSequentialIntegerFieldDataProvider();
 
-	FieldDataProvider<Integer> getSequentialIntegerFieldDataProvider(int pStartValue);
+	FieldDataProvider<OUTPUT_TYPE, Integer> getSequentialIntegerFieldDataProvider(int pStartValue);
 
-	FieldDataProvider<String> getUuidFieldDataProvider();
+	FieldDataProvider<OUTPUT_TYPE, String> getUuidFieldDataProvider();
 
-	FieldDataProvider<String> getRgbFieldDataProvider(boolean pAlpha);
+	FieldDataProvider<OUTPUT_TYPE, String> getRgbFieldDataProvider(boolean pAlpha);
 
-	FieldDataProvider<String> getLoremIpsumFieldDataProvider();
+	FieldDataProvider<OUTPUT_TYPE, String> getLoremIpsumFieldDataProvider();
 
-	FieldDataProvider<String> getLoremIpsumFieldDataProvider(int pLength);
+	FieldDataProvider<OUTPUT_TYPE, String> getLoremIpsumFieldDataProvider(int pLength);
 
-	FieldDataProvider<String> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength);
+	FieldDataProvider<OUTPUT_TYPE, String> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength);
 
-	FieldDataProvider<String> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength, String pParagraphDelimiter);
+	FieldDataProvider<OUTPUT_TYPE, String> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength, String pParagraphDelimiter);
 
-	<ENUM_TYPE extends Enum> FieldDataProvider<ENUM_TYPE> getRandomEnumFieldDataProvider(Class<ENUM_TYPE> pValue);
+	<ENUM_TYPE extends Enum> FieldDataProvider<OUTPUT_TYPE, ENUM_TYPE> getRandomEnumFieldDataProvider(Class<ENUM_TYPE> pValue);
 
-	<VALUE_TYPE> FieldDataProvider<List<VALUE_TYPE>> getCustomListFieldDataProvider(int pInstances, FieldDataProvider<VALUE_TYPE> pFieldDataProvider);
+	<VALUE_TYPE> FieldDataProvider<OUTPUT_TYPE, List<VALUE_TYPE>>
+	getCustomListFieldDataProvider(int pInstances,
+	                               FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> pFieldDataProvider);
 
-	<VALUE_TYPE> FieldDataProvider<List<VALUE_TYPE>> getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances,
-	                                                                                     FieldDataProvider<VALUE_TYPE> pFieldDataProvider);
+	<VALUE_TYPE> FieldDataProvider<OUTPUT_TYPE, List<VALUE_TYPE>>
+	getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances,
+	                                    FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> pFieldDataProvider);
 }

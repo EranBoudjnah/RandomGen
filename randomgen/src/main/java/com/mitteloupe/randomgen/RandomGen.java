@@ -14,12 +14,12 @@ import java.util.UUID;
 /**
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
+public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, OUTPUT_TYPE> {
 	private final InstanceProvider<OUTPUT_TYPE> mInstanceProvider;
-	private final Map<String, FieldDataProvider<?>> mDataProviders;
+	private final Map<String, FieldDataProvider<OUTPUT_TYPE, ?>> mDataProviders;
 	private final Map<String, Field> mFields;
 
-	private RandomGen(InstanceProvider<OUTPUT_TYPE> pInstanceProvider, Map<String, FieldDataProvider<?>> pDataProviders) {
+	private RandomGen(InstanceProvider<OUTPUT_TYPE> pInstanceProvider, Map<String, FieldDataProvider<OUTPUT_TYPE, ?>> pDataProviders) {
 		mInstanceProvider = pInstanceProvider;
 		mDataProviders = pDataProviders;
 		mFields = new HashMap<>();
@@ -29,8 +29,12 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 
 	public OUTPUT_TYPE generate() {
 		final OUTPUT_TYPE instance = mInstanceProvider.provideInstance();
+		return generate(instance);
+	}
 
-		for (final Map.Entry<String, FieldDataProvider<?>> entry : mDataProviders.entrySet()) {
+	@Override
+	public OUTPUT_TYPE generate(OUTPUT_TYPE instance) {
+		for (final Map.Entry<String, FieldDataProvider<OUTPUT_TYPE, ?>> entry : mDataProviders.entrySet()) {
 			final String key = entry.getKey();
 			if (!mFields.containsKey(key)) {
 				throw new IllegalArgumentException("Cannot set field " + key + " - field not found");
@@ -39,7 +43,7 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 			final Field field = mFields.get(key);
 
 			try {
-				final Object value = entry.getValue().generate();
+				final Object value = entry.getValue().generate(instance);
 				setField(instance, field, value);
 			} catch (IllegalArgumentException pE) {
 				throw new IllegalArgumentException("Cannot set field " + key + " due to invalid value", pE);
@@ -85,13 +89,13 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 	}
 
 	public static class Builder<T> {
-		private final Map<String, FieldDataProvider<?>> mDataProviders;
+		private final Map<String, FieldDataProvider<T, ?>> mDataProviders;
 		private final InstanceProvider<T> mInstanceProvider;
-		private FieldDataProviderFactory mFactory;
+		private FieldDataProviderFactory<T> mFactory;
 
 		@SuppressWarnings({"unused"}) // Public library constructor
 		public Builder(InstanceProvider<T> pInstanceProvider) {
-			this(pInstanceProvider, new SimpleFieldDataProviderFactory(new Random(), new UuidGenerator() {
+			this(pInstanceProvider, new SimpleFieldDataProviderFactory<T>(new Random(), new UuidGenerator() {
 				@Override
 				public String randomUUID() {
 					return UUID.randomUUID().toString();
@@ -99,23 +103,21 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 			}));
 		}
 
-		Builder(InstanceProvider<T> pInstanceProvider, FieldDataProviderFactory pFactory) {
+		Builder(InstanceProvider<T> pInstanceProvider, FieldDataProviderFactory<T> pFactory) {
 			mDataProviders = new HashMap<>();
 			mInstanceProvider = pInstanceProvider;
 			mFactory = pFactory;
 		}
 
-		@SuppressWarnings("unused") // Public library interface
 		public RandomGen<T> build() {
 			return new RandomGen<>(mInstanceProvider, mDataProviders);
 		}
 
-		@SuppressWarnings("unused") // Public library interface
 		public BuilderField<T> withField(String pFieldName) {
 			return new BuilderField<>(this, pFieldName, mFactory);
 		}
 
-		private <T2> Builder<T> returning(String pField, FieldDataProvider<T2> pFieldDataProvider) {
+		private <T2> Builder<T> returning(String pField, FieldDataProvider<T, T2> pFieldDataProvider) {
 			mDataProviders.put(pField, pFieldDataProvider);
 			return this;
 		}
@@ -125,9 +127,9 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 	public static class BuilderField<RETURN_TYPE> {
 		private final Builder<RETURN_TYPE> mBuilder;
 		private final String mField;
-		private final FieldDataProviderFactory mFactory;
+		private final FieldDataProviderFactory<RETURN_TYPE> mFactory;
 
-		private BuilderField(Builder<RETURN_TYPE> pBuilder, String pField, FieldDataProviderFactory pFactory) {
+		private BuilderField(Builder<RETURN_TYPE> pBuilder, String pField, FieldDataProviderFactory<RETURN_TYPE> pFactory) {
 			mBuilder = pBuilder;
 			mField = pField;
 			mFactory = pFactory;
@@ -267,16 +269,16 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE> {
 		 * @param <VALUE_TYPE>       The type returned vy the {@link FieldDataProvider}
 		 * @return An instance of the specified {@code VALUE_TYPE}
 		 */
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(FieldDataProvider<VALUE_TYPE> pFieldDataProvider) {
+		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
 			return mBuilder.returning(mField, pFieldDataProvider);
 		}
 
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pInstances, final FieldDataProvider<VALUE_TYPE> pFieldDataProvider) {
+		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pInstances, final FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
 			return mBuilder.returning(mField, mFactory.getCustomListFieldDataProvider(pInstances, pFieldDataProvider));
 		}
 
 		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pMinInstances, final int pMaxInstances,
-		                                                   final FieldDataProvider<VALUE_TYPE> pFieldDataProvider) {
+		                                                   final FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
 			return mBuilder.returning(mField, mFactory.getCustomListRangeFieldDataProvider(pMinInstances, pMaxInstances, pFieldDataProvider));
 		}
 	}

@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.given;
  * Created by Eran Boudjnah on 10/08/2018.
  */
 public class LongFieldDataProviderTest {
-	private LongFieldDataProvider mCut;
+	private LongFieldDataProvider<?> mCut;
 
 	@Mock
 	private Random mRandom;
@@ -28,11 +28,11 @@ public class LongFieldDataProviderTest {
 	@Test
 	public void givenRandomDoubleValueWhenGenerateThenReturnsLongValue() {
 		// Given
-		mCut = new LongFieldDataProvider(mRandom);
+		mCut = new LongFieldDataProvider<>(mRandom);
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When
-		long result = mCut.generate();
+		long result = mCut.generate(null);
 
 		// Then
 		assertEquals(Long.MIN_VALUE, result);
@@ -41,7 +41,7 @@ public class LongFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0.99999999999d);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(Long.MAX_VALUE, result, 500000000L);
@@ -50,11 +50,11 @@ public class LongFieldDataProviderTest {
 	@Test
 	public void givenRandomFloatValueAndRangeWhenGenerateThenReturnsCorrectValue() {
 		// Given
-		mCut = new LongFieldDataProvider(mRandom, 0L, 100L);
+		mCut = new LongFieldDataProvider<>(mRandom, 0L, 100L);
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When
-		long result = mCut.generate();
+		long result = mCut.generate(null);
 
 		// Then
 		assertEquals(0, result);
@@ -63,7 +63,7 @@ public class LongFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0.99999999999d);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(100, result);

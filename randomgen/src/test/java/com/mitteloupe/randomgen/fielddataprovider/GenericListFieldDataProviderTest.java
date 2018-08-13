@@ -16,7 +16,7 @@ import static org.mockito.BDDMockito.given;
  * Created by Eran Boudjnah on 10/08/2018.
  */
 public class GenericListFieldDataProviderTest {
-	private GenericListFieldDataProvider<String> mCut;
+	private GenericListFieldDataProvider<?, String> mCut;
 
 	@Mock
 	private Random mRandom;
@@ -38,7 +38,7 @@ public class GenericListFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("The First", result);
@@ -50,7 +50,7 @@ public class GenericListFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0.99999999999d);
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("Eternity", result);
@@ -63,7 +63,7 @@ public class GenericListFieldDataProviderTest {
 		mValues.set(0, "The Firstest");
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("The First", result);

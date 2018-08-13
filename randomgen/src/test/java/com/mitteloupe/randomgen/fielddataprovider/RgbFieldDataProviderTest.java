@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.given;
  * Created by Eran Boudjnah on 11/08/2018.
  */
 public class RgbFieldDataProviderTest {
-	private RgbFieldDataProvider mCut;
+	private RgbFieldDataProvider<?> mCut;
 
 	@Mock
 	private Random mRandom;
@@ -27,11 +27,11 @@ public class RgbFieldDataProviderTest {
 	@Test
 	public void givenARandomGeneratorAndAlphaWhenGenerateThenReturnsRGBAValue() {
 		// Given
-		mCut = new RgbFieldDataProvider(mRandom, true);
+		mCut = new RgbFieldDataProvider<>(mRandom, true);
 		given(mRandom.nextInt(255)).willReturn(  173, 250, 17, 222);
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("#deadfa11", result);
@@ -40,11 +40,11 @@ public class RgbFieldDataProviderTest {
 	@Test
 	public void givenARandomGeneratorAndNoAlphaWhenGenerateThenReturnsRGBValue() {
 		// Given
-		mCut = new RgbFieldDataProvider(mRandom, false);
+		mCut = new RgbFieldDataProvider<>(mRandom, false);
 		given(mRandom.nextInt(255)).willReturn(  176, 85, 237);
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("#b055ed", result);

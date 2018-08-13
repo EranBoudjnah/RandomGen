@@ -8,7 +8,7 @@ import com.mitteloupe.randomgen.UuidGenerator;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class UuidFieldDataProvider implements FieldDataProvider<String> {
+public final class UuidFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, String> {
 	private final UuidGenerator mUuidGenerator;
 
 	/**
@@ -21,7 +21,7 @@ public final class UuidFieldDataProvider implements FieldDataProvider<String> {
 	}
 
 	@Override
-	public String generate() {
+	public String generate(OUTPUT_TYPE instance) {
 		return mUuidGenerator.randomUUID();
 	}
 }

@@ -9,7 +9,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class BooleanFieldDataProvider implements FieldDataProvider<Boolean> {
+public final class BooleanFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, Boolean> {
 	private final Random mRandom;
 
 	public BooleanFieldDataProvider(Random pRandom) {
@@ -17,7 +17,7 @@ public final class BooleanFieldDataProvider implements FieldDataProvider<Boolean
 	}
 
 	@Override
-	public Boolean generate() {
+	public Boolean generate(OUTPUT_TYPE instance) {
 		return mRandom.nextBoolean();
 	}
 }

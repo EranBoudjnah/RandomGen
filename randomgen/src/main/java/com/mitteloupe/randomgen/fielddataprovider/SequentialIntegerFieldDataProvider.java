@@ -7,7 +7,7 @@ import com.mitteloupe.randomgen.FieldDataProvider;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class SequentialIntegerFieldDataProvider implements FieldDataProvider<Integer> {
+public final class SequentialIntegerFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, Integer> {
 	private int mCounter;
 
 	/**
@@ -29,7 +29,7 @@ public final class SequentialIntegerFieldDataProvider implements FieldDataProvid
 	}
 
 	@Override
-	public Integer generate() {
+	public Integer generate(OUTPUT_TYPE instance) {
 		return mCounter++;
 	}
 }

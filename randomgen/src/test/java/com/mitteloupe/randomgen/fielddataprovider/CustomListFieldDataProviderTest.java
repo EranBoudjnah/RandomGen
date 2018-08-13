@@ -19,10 +19,10 @@ import static org.mockito.BDDMockito.given;
 public class CustomListFieldDataProviderTest {
 	private static final int INSTANCES = 3;
 
-	private CustomListFieldDataProvider<String> mCut;
+	private CustomListFieldDataProvider<?, String> mCut;
 
 	@Mock
-	private FieldDataProvider<String> fieldDataProvider;
+	private FieldDataProvider<?, String> fieldDataProvider;
 
 	@Before
 	public void setUp() {
@@ -37,10 +37,10 @@ public class CustomListFieldDataProviderTest {
 		final String EXPECTED_RESULT_1 = "I'm the king of the world!";
 		final String EXPECTED_RESULT_2 = "I'm on a boat!";
 		final String EXPECTED_RESULT_3 = "I'm cold!";
-		given(fieldDataProvider.generate()).willReturn(EXPECTED_RESULT_1, EXPECTED_RESULT_2, EXPECTED_RESULT_3);
+		given(fieldDataProvider.generate(null)).willReturn(EXPECTED_RESULT_1, EXPECTED_RESULT_2, EXPECTED_RESULT_3);
 
 		// When
-		List<String> result = mCut.generate();
+		List<String> result = mCut.generate(null);
 
 		// Then
 		assertEquals(Arrays.asList(EXPECTED_RESULT_1, EXPECTED_RESULT_2, EXPECTED_RESULT_3), result);

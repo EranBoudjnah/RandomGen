@@ -11,8 +11,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-@SuppressWarnings("unused")
-public final class ByteListFieldDataProvider implements FieldDataProvider<List<Byte>> {
+public final class ByteListFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, List<Byte>> {
 	private final Random mRandom;
 	private final byte[] mBytes;
 	private final int mMinSize;
@@ -43,7 +42,7 @@ public final class ByteListFieldDataProvider implements FieldDataProvider<List<B
 	}
 
 	@Override
-	public List<Byte> generate() {
+	public List<Byte> generate(OUTPUT_TYPE instance) {
 		mRandom.nextBytes(mBytes);
 		int items = mRandom.nextInt(mMaxSize - mMinSize + 1) + mMinSize;
 		List<Byte> bytes = new ArrayList<>(items);

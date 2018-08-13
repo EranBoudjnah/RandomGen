@@ -34,8 +34,9 @@ import static org.mockito.Mockito.mock;
 /**
  * Created by Eran Boudjnah on 11/08/2018.
  */
+@SuppressWarnings("unchecked")
 public class SimpleFieldDataProviderFactoryTest {
-	private SimpleFieldDataProviderFactory mCut;
+	private SimpleFieldDataProviderFactory<Object> mCut;
 
 	@Mock private Random mRandom;
 	@Mock private UuidGenerator mUuidGenerator;
@@ -44,14 +45,14 @@ public class SimpleFieldDataProviderFactoryTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		mCut = new SimpleFieldDataProviderFactory(mRandom, mUuidGenerator);
+		mCut = new SimpleFieldDataProviderFactory<>(mRandom, mUuidGenerator);
 	}
 
 	@Test
 	public void whenGetExplicitFieldDataProviderThenReturnsInstanceWithExpectedValue() throws Exception {
 		// When
 		String POPCORN = "Popcorn";
-		ExplicitFieldDataProvider<String> dataProvider = mCut.getExplicitFieldDataProvider(POPCORN);
+		ExplicitFieldDataProvider<?, String> dataProvider = mCut.getExplicitFieldDataProvider(POPCORN);
 
 		// Then
 		assertFieldEquals(dataProvider, "mValue", POPCORN);
@@ -322,7 +323,7 @@ public class SimpleFieldDataProviderFactoryTest {
 	@Test
 	public void whenGetRandomEnumFieldDataProviderThenReturnsInstanceWithRandomSet() throws Exception {
 		// When
-		RandomEnumFieldDataProvider<Rings> dataProvider = mCut.getRandomEnumFieldDataProvider(Rings.class);
+		RandomEnumFieldDataProvider<?, Rings> dataProvider = mCut.getRandomEnumFieldDataProvider(Rings.class);
 
 		// Then
 		assertFieldEquals(dataProvider, "mRandom", mRandom);
@@ -335,9 +336,9 @@ public class SimpleFieldDataProviderFactoryTest {
 	public void givenInstancesCountAndFieldDataProviderWhenGetCustomListFieldDataProviderThenReturnsInstanceWithCorrectPropertiesSet()
 		throws Exception {
 		// When
-		FieldDataProvider<String> provider = mock(FieldDataProvider.class);
+		FieldDataProvider<Object, String> provider = mock(FieldDataProvider.class);
 		final int INSTANCES = 5;
-		CustomListFieldDataProvider<String> dataProvider = mCut.getCustomListFieldDataProvider(INSTANCES, provider);
+		CustomListFieldDataProvider<Object, String> dataProvider = mCut.getCustomListFieldDataProvider(INSTANCES, provider);
 
 		// Then
 		assertFieldEquals(dataProvider, "mInstances", INSTANCES);
@@ -348,10 +349,10 @@ public class SimpleFieldDataProviderFactoryTest {
 	public void givenInstancesCountRangeAndFieldDataProviderWhenGetCustomListRangeFieldDataProviderThenReturnsInstanceWithCorrectPropertiesSet()
 		throws Exception {
 		// When
-		FieldDataProvider<String> provider = mock(FieldDataProvider.class);
+		FieldDataProvider<Object, String> provider = mock(FieldDataProvider.class);
 		final int MIN_INSTANCES = 5;
 		final int MAX_INSTANCES = 5;
-		CustomListRangeFieldDataProvider<String> dataProvider = mCut.getCustomListRangeFieldDataProvider(MIN_INSTANCES, MAX_INSTANCES, provider);
+		CustomListRangeFieldDataProvider<Object, String> dataProvider = mCut.getCustomListRangeFieldDataProvider(MIN_INSTANCES, MAX_INSTANCES, provider);
 
 		// Then
 		assertFieldEquals(dataProvider, "mRandom", mRandom);

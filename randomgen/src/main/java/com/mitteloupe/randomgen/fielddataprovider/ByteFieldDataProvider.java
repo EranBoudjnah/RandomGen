@@ -9,7 +9,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class ByteFieldDataProvider implements FieldDataProvider<Byte> {
+public final class ByteFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, Byte> {
 	private final Random mRandom;
 	private final byte[] mByte = new byte[1];
 
@@ -18,7 +18,7 @@ public final class ByteFieldDataProvider implements FieldDataProvider<Byte> {
 	}
 
 	@Override
-	public Byte generate() {
+	public Byte generate(OUTPUT_TYPE instance) {
 		mRandom.nextBytes(mByte);
 		return mByte[0];
 	}

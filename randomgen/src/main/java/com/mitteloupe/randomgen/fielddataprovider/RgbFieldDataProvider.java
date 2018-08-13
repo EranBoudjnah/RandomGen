@@ -9,7 +9,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class RgbFieldDataProvider implements FieldDataProvider<String> {
+public final class RgbFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, String> {
 	private final Random mRandom;
 	private final boolean mAlpha;
 
@@ -27,7 +27,7 @@ public final class RgbFieldDataProvider implements FieldDataProvider<String> {
 	}
 
 	@Override
-	public String generate() {
+	public String generate(OUTPUT_TYPE instance) {
 		int red = mRandom.nextInt(255);
 		int green = mRandom.nextInt(255);
 		int blue = mRandom.nextInt(255);

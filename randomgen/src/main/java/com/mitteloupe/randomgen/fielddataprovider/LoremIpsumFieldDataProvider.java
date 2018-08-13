@@ -17,7 +17,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class LoremIpsumFieldDataProvider implements FieldDataProvider<String> {
+public final class LoremIpsumFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, String> {
 	private final static String DEFAULT_PARAGRAPH_DELIMITER = "\n\n";
 	private final static String LOREM_IPSUM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore" +
 		"magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure" +
@@ -87,7 +87,7 @@ public final class LoremIpsumFieldDataProvider implements FieldDataProvider<Stri
 	}
 
 	@Override
-	public String generate() {
+	public String generate(OUTPUT_TYPE instance) {
 		final int delimiterLength = mParagraphDelimiter.length();
 		int remainingLength = mRandom.nextInt(mMaxLength - mMinLength + 1) + mMinLength;
 

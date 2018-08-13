@@ -10,7 +10,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class IntegerFieldDataProvider implements FieldDataProvider<Integer> {
+public final class IntegerFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, Integer> {
 	private final Random mRandom;
 	private final int mMaximum;
 	private final int mMinimum;
@@ -39,7 +39,7 @@ public final class IntegerFieldDataProvider implements FieldDataProvider<Integer
 	}
 
 	@Override
-	public Integer generate() {
+	public Integer generate(OUTPUT_TYPE instance) {
 		BigDecimal min = BigDecimal.valueOf(mMinimum);
 		BigDecimal max = BigDecimal.valueOf(mMaximum);
 		BigDecimal value = max

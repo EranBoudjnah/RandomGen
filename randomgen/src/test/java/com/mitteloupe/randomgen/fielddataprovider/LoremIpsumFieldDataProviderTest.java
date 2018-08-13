@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.given;
  * Created by Eran Boudjnah on 10/08/2018.
  */
 public class LoremIpsumFieldDataProviderTest {
-	private LoremIpsumFieldDataProvider mCut;
+	private LoremIpsumFieldDataProvider<?> mCut;
 
 	@Mock
 	private Random mRandom;
@@ -27,10 +27,10 @@ public class LoremIpsumFieldDataProviderTest {
 	@Test
 	public void whenGenerateThenReturnsOneInstanceOfLoremIpsum() {
 		// Given
-		mCut = new LoremIpsumFieldDataProvider(mRandom);
+		mCut = new LoremIpsumFieldDataProvider<>(mRandom);
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et doloremagna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute iruredolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt inculpa qui officia deserunt mollit anim id est laborum.", result);
@@ -39,19 +39,19 @@ public class LoremIpsumFieldDataProviderTest {
 	@Test
 	public void givenLengthWhenGenerateThenReturnsCorrectLengthOfLoremIpsum() {
 		// Given
-		mCut = new LoremIpsumFieldDataProvider(mRandom, 39);
+		mCut = new LoremIpsumFieldDataProvider<>(mRandom, 39);
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("Lorem ipsum dolor sit amet, consectetur", result);
 
 		// Given
-		mCut = new LoremIpsumFieldDataProvider(mRandom, 449);
+		mCut = new LoremIpsumFieldDataProvider<>(mRandom, 449);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et doloremagna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute iruredolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt inculpa qui officia deserunt mollit anim id est laborum.\n" +
@@ -61,11 +61,11 @@ public class LoremIpsumFieldDataProviderTest {
 	@Test
 	public void givenLengthRangeWhenGenerateThenReturnsCorrectLengthOfLoremIpsum() {
 		// Given
-		mCut = new LoremIpsumFieldDataProvider(mRandom, 39, 41);
+		mCut = new LoremIpsumFieldDataProvider<>(mRandom, 39, 41);
 		given(mRandom.nextInt(3)).willReturn(0);
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("Lorem ipsum dolor sit amet, consectetur", result);
@@ -74,7 +74,7 @@ public class LoremIpsumFieldDataProviderTest {
 		given(mRandom.nextInt(3)).willReturn(2);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals("Lorem ipsum dolor sit amet, consectetur a", result);
@@ -83,11 +83,11 @@ public class LoremIpsumFieldDataProviderTest {
 	@Test
 	public void givenLengthRangeAndDelimiterWhenGenerateThenReturnsCorrectLengthOfLoremIpsum() {
 		// Given
-		mCut = new LoremIpsumFieldDataProvider(mRandom, 444, 449, "**");
+		mCut = new LoremIpsumFieldDataProvider<>(mRandom, 444, 449, "**");
 		given(mRandom.nextInt(6)).willReturn(5);
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et doloremagna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute iruredolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt inculpa qui officia deserunt mollit anim id est laborum." +
@@ -97,7 +97,7 @@ public class LoremIpsumFieldDataProviderTest {
 		given(mRandom.nextInt(6)).willReturn(0);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et doloremagna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute iruredolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt inculpa qui officia deserunt mollit anim id est laborum.",

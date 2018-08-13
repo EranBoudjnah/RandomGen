@@ -9,7 +9,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class DoubleFieldDataProvider implements FieldDataProvider<Double> {
+public final class DoubleFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, Double> {
 	private final Random mRandom;
 	private final double mMinimum;
 	private final double mMaximum;
@@ -37,7 +37,7 @@ public final class DoubleFieldDataProvider implements FieldDataProvider<Double> 
 	}
 
 	@Override
-	public Double generate() {
+	public Double generate(OUTPUT_TYPE instance) {
 		return mRandom.nextDouble() * (mMaximum - mMinimum) + mMinimum;
 	}
 }

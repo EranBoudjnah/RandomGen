@@ -10,7 +10,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class LongFieldDataProvider implements FieldDataProvider<Long> {
+public final class LongFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, Long> {
 	private final Random mRandom;
 	private final long mMinimum;
 	private final long mMaximum;
@@ -38,7 +38,7 @@ public final class LongFieldDataProvider implements FieldDataProvider<Long> {
 	}
 
 	@Override
-	public Long generate() {
+	public Long generate(OUTPUT_TYPE instance) {
 		BigDecimal min = BigDecimal.valueOf(mMinimum);
 		BigDecimal max = BigDecimal.valueOf(mMaximum);
 		BigDecimal value = max

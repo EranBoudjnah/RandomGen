@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.given;
  * Created by Eran Boudjnah on 11/08/2018.
  */
 public class UuidFieldDataProviderTest {
-	private UuidFieldDataProvider mCut;
+	private UuidFieldDataProvider<?> mCut;
 
 	@Mock
 	private UuidGenerator mUuidGenerator;
@@ -23,7 +23,7 @@ public class UuidFieldDataProviderTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		mCut = new UuidFieldDataProvider(mUuidGenerator);
+		mCut = new UuidFieldDataProvider<>(mUuidGenerator);
 	}
 
 	@Test
@@ -33,7 +33,7 @@ public class UuidFieldDataProviderTest {
 		given(mUuidGenerator.randomUUID()).willReturn(EXPECTED_VALUE);
 
 		// When
-		String result = mCut.generate();
+		String result = mCut.generate(null);
 
 		// Then
 		assertEquals(EXPECTED_VALUE, result);

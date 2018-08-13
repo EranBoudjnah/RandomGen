@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.given;
  * Created by Eran Boudjnah on 10/08/2018.
  */
 public class DoubleFieldDataProviderTest {
-	private DoubleFieldDataProvider mCut;
+	private DoubleFieldDataProvider<?> mCut;
 
 	@Mock
 	private Random mRandom;
@@ -22,17 +22,16 @@ public class DoubleFieldDataProviderTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-
 	}
 
 	@Test
 	public void givenRandomDoubleValueWhenGenerateThenReturnsSameValue() {
 		// Given
-		mCut = new DoubleFieldDataProvider(mRandom);
+		mCut = new DoubleFieldDataProvider<>(mRandom);
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When
-		double result = mCut.generate();
+		double result = mCut.generate(null);
 
 		// Then
 		assertEquals(0d, result, 0.00001);
@@ -41,7 +40,7 @@ public class DoubleFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0.99999999999d);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(1d, result, 0.00001);
@@ -50,11 +49,11 @@ public class DoubleFieldDataProviderTest {
 	@Test
 	public void givenRandomDoubleValueAndRangeWhenGenerateThenReturnsCorrectValue() {
 		// Given
-		mCut = new DoubleFieldDataProvider(mRandom, Double.MIN_VALUE, Double.MAX_VALUE);
+		mCut = new DoubleFieldDataProvider<>(mRandom, Double.MIN_VALUE, Double.MAX_VALUE);
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When
-		double result = mCut.generate();
+		double result = mCut.generate(null);
 
 		// Then
 		assertEquals(Double.MIN_VALUE, result, 0.00001);
@@ -63,7 +62,7 @@ public class DoubleFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0.99999999999d);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(Double.MAX_VALUE, result, 1.0E300d);

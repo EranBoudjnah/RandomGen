@@ -9,7 +9,7 @@ import java.util.Random;
 /**
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class GenericListFieldDataProvider<VALUE_TYPE> implements FieldDataProvider<VALUE_TYPE> {
+public final class GenericListFieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> implements FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> {
 	private final Random mRandom;
 	private final List<VALUE_TYPE> mList;
 
@@ -19,7 +19,7 @@ public final class GenericListFieldDataProvider<VALUE_TYPE> implements FieldData
 	}
 
 	@Override
-	public VALUE_TYPE generate() {
+	public VALUE_TYPE generate(OUTPUT_TYPE instance) {
 		return mList.get((int)(mRandom.nextDouble() * mList.size()));
 	}
 }

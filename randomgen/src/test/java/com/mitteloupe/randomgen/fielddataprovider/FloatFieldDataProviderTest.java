@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.given;
  * Created by Eran Boudjnah on 10/08/2018.
  */
 public class FloatFieldDataProviderTest {
-	private FloatFieldDataProvider mCut;
+	private FloatFieldDataProvider<?> mCut;
 
 	@Mock
 	private Random mRandom;
@@ -22,17 +22,16 @@ public class FloatFieldDataProviderTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-
 	}
 
 	@Test
 	public void givenRandomFloatValueWhenGenerateThenReturnsSameValue() {
 		// Given
-		mCut = new FloatFieldDataProvider(mRandom);
+		mCut = new FloatFieldDataProvider<>(mRandom);
 		given(mRandom.nextFloat()).willReturn(0f);
 
 		// When
-		double result = mCut.generate();
+		double result = mCut.generate(null);
 
 		// Then
 		assertEquals(0d, result, 0.00001);
@@ -41,7 +40,7 @@ public class FloatFieldDataProviderTest {
 		given(mRandom.nextFloat()).willReturn(1f);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(1d, result, 0.00001);
@@ -50,11 +49,11 @@ public class FloatFieldDataProviderTest {
 	@Test
 	public void givenRandomFloatValueAndRangeWhenGenerateThenReturnsCorrectValue() {
 		// Given
-		mCut = new FloatFieldDataProvider(mRandom, Float.MIN_VALUE, Float.MAX_VALUE);
+		mCut = new FloatFieldDataProvider<>(mRandom, Float.MIN_VALUE, Float.MAX_VALUE);
 		given(mRandom.nextFloat()).willReturn(0f);
 
 		// When
-		double result = mCut.generate();
+		double result = mCut.generate(null);
 
 		// Then
 		assertEquals(Float.MIN_VALUE, result, 0.00001);
@@ -63,7 +62,7 @@ public class FloatFieldDataProviderTest {
 		given(mRandom.nextFloat()).willReturn(1f);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(Float.MAX_VALUE, result, 0.00001);

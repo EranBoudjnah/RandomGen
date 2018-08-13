@@ -7,7 +7,7 @@ import com.mitteloupe.randomgen.FieldDataProvider;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class ExplicitFieldDataProvider<VALUE_TYPE> implements FieldDataProvider<VALUE_TYPE> {
+public final class ExplicitFieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> implements FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> {
 	private final VALUE_TYPE mValue;
 
 	/**
@@ -20,7 +20,7 @@ public final class ExplicitFieldDataProvider<VALUE_TYPE> implements FieldDataPro
 	}
 
 	@Override
-	public VALUE_TYPE generate() {
+	public VALUE_TYPE generate(OUTPUT_TYPE instance) {
 		return mValue;
 	}
 }

@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.given;
  * Created by Eran Boudjnah on 10/08/2018.
  */
 public class IntegerFieldDataProviderTest {
-	private IntegerFieldDataProvider mCut;
+	private IntegerFieldDataProvider<?> mCut;
 
 	@Mock
 	private Random mRandom;
@@ -28,11 +28,11 @@ public class IntegerFieldDataProviderTest {
 	@Test
 	public void givenRandomDoubleValueWhenGenerateThenReturnsIntegerValue() {
 		// Given
-		mCut = new IntegerFieldDataProvider(mRandom);
+		mCut = new IntegerFieldDataProvider<>(mRandom);
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When
-		int result = mCut.generate();
+		int result = mCut.generate(null);
 
 		// Then
 		assertEquals(Integer.MIN_VALUE, result);
@@ -41,7 +41,7 @@ public class IntegerFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0.99999999999d);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(Integer.MAX_VALUE, result);
@@ -50,11 +50,11 @@ public class IntegerFieldDataProviderTest {
 	@Test
 	public void givenRandomFloatValueAndRangeWhenGenerateThenReturnsCorrectValue() {
 		// Given
-		mCut = new IntegerFieldDataProvider(mRandom, 0, 100);
+		mCut = new IntegerFieldDataProvider<>(mRandom, 0, 100);
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When
-		int result = mCut.generate();
+		int result = mCut.generate(null);
 
 		// Then
 		assertEquals(0, result);
@@ -63,7 +63,7 @@ public class IntegerFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0.99999999999d);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(100, result);

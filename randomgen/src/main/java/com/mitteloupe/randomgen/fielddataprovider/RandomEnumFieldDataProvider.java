@@ -9,7 +9,7 @@ import java.util.Random;
  *
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public final class RandomEnumFieldDataProvider<VALUE_TYPE extends Enum> implements FieldDataProvider<VALUE_TYPE> {
+public final class RandomEnumFieldDataProvider<OUTPUT_TYPE, VALUE_TYPE extends Enum> implements FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> {
 	private final Random mRandom;
 	private final VALUE_TYPE[] mPossibleValues;
 
@@ -25,7 +25,7 @@ public final class RandomEnumFieldDataProvider<VALUE_TYPE extends Enum> implemen
 	}
 
 	@Override
-	public VALUE_TYPE generate() {
+	public VALUE_TYPE generate(OUTPUT_TYPE instance) {
 		return mPossibleValues[(int)(mRandom.nextDouble() * mPossibleValues.length)];
 	}
 }

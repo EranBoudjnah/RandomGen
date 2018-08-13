@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.given;
  * Created by Eran Boudjnah on 11/08/2018.
  */
 public class RandomEnumFieldDataProviderTest {
-	private RandomEnumFieldDataProvider<MagicColors> mCut;
+	private RandomEnumFieldDataProvider<?, MagicColors> mCut;
 
 	@Mock
 	private Random mRandom;
@@ -32,7 +32,7 @@ public class RandomEnumFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When
-		MagicColors result = mCut.generate();
+		MagicColors result = mCut.generate(null);
 
 		// Then
 		assertEquals(MagicColors.WHITE, result);
@@ -41,7 +41,7 @@ public class RandomEnumFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0.5d);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(MagicColors.BLACK, result);
@@ -50,7 +50,7 @@ public class RandomEnumFieldDataProviderTest {
 		given(mRandom.nextDouble()).willReturn(0.99999999999d);
 
 		// When
-		result = mCut.generate();
+		result = mCut.generate(null);
 
 		// Then
 		assertEquals(MagicColors.GREEN, result);

@@ -5,6 +5,6 @@ package com.mitteloupe.randomgen;
  *
  * @param <FIELD_DATA_TYPE>
  */
-public interface FieldDataProvider<FIELD_DATA_TYPE> {
-	FIELD_DATA_TYPE generate();
+public interface FieldDataProvider<OUTPUT_TYPE, FIELD_DATA_TYPE> {
+	FIELD_DATA_TYPE generate(OUTPUT_TYPE instance);
 }

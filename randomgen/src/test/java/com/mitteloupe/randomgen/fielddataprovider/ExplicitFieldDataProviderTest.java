@@ -12,10 +12,10 @@ public class ExplicitFieldDataProviderTest {
 	public void givenRandomDoubleValueWhenGenerateThenReturnsSameValue() {
 		// Given
 		String EXPECTED_RESULT = "Thou shall not pass!";
-		ExplicitFieldDataProvider<String> cut = new ExplicitFieldDataProvider<>(EXPECTED_RESULT);
+		ExplicitFieldDataProvider<?, String> cut = new ExplicitFieldDataProvider<>(EXPECTED_RESULT);
 
 		// When
-		String result = cut.generate();
+		String result = cut.generate(null);
 
 		// Then
 		assertEquals(EXPECTED_RESULT, result);

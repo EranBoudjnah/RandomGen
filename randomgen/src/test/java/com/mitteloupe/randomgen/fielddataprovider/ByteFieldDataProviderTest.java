@@ -17,7 +17,7 @@ import static org.mockito.Mockito.doAnswer;
  * Created by Eran Boudjnah on 10/08/2018.
  */
 public class ByteFieldDataProviderTest {
-	private ByteFieldDataProvider mCut;
+	private ByteFieldDataProvider<?> mCut;
 
 	@Mock
 	private Random mRandom;
@@ -41,7 +41,7 @@ public class ByteFieldDataProviderTest {
 		}).when(mRandom).nextBytes(any(byte[].class));
 
 		// When
-		byte result = mCut.generate();
+		byte result = mCut.generate(null);
 
 		// Then
 		assertEquals(113, result);

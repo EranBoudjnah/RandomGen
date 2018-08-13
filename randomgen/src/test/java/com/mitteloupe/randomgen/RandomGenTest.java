@@ -28,17 +28,19 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 /**
  * Created by Eran Boudjnah on 07/08/2018.
  */
+@SuppressWarnings("unchecked")
 public class RandomGenTest {
 	private RandomGen.Builder<TestPerson> mBuilder;
 	private RandomGen<TestPerson> mCut;
 
-	@Mock private FieldDataProviderFactory mFactory;
+	@Mock private FieldDataProviderFactory<TestPerson> mFactory;
 
 	@Before
 	public void setUp() {
@@ -57,9 +59,9 @@ public class RandomGenTest {
 		// Given
 		final String NAME = "Superman";
 
-		ExplicitFieldDataProvider<String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
+		ExplicitFieldDataProvider<TestPerson, String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
 		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
-		given(explicitFieldDataProvider.generate()).willReturn(NAME);
+		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME);
 
 		mCut = mBuilder
 			.withField("mName")
@@ -80,9 +82,9 @@ public class RandomGenTest {
 		final String NAME_2 = "Bebop";
 
 		List<String> namesList = Arrays.asList(NAME_1, NAME_2);
-		GenericListFieldDataProvider<String> explicitFieldDataProvider = mock(GenericListFieldDataProvider.class);
+		GenericListFieldDataProvider<TestPerson, String> explicitFieldDataProvider = mock(GenericListFieldDataProvider.class);
 		given(mFactory.getGenericListFieldDataProvider(namesList)).willReturn(explicitFieldDataProvider);
-		given(explicitFieldDataProvider.generate()).willReturn(NAME_2);
+		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME_2);
 
 		mCut = mBuilder
 			.withField("mName")
@@ -98,7 +100,7 @@ public class RandomGenTest {
 		assertEquals(NAME_2, testPerson.getName());
 
 		// Given
-		given(explicitFieldDataProvider.generate()).willReturn(NAME_1);
+		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME_1);
 
 		// When
 		testPerson = mCut.generate();
@@ -110,9 +112,9 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningBooleanWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		BooleanFieldDataProvider booleanFieldDataProvider = mock(BooleanFieldDataProvider.class);
+		BooleanFieldDataProvider<TestPerson> booleanFieldDataProvider = mock(BooleanFieldDataProvider.class);
 		given(mFactory.getBooleanFieldDataProvider()).willReturn(booleanFieldDataProvider);
-		given(booleanFieldDataProvider.generate()).willReturn(false);
+		given(booleanFieldDataProvider.generate(any(TestPerson.class))).willReturn(false);
 
 		mCut = mBuilder
 			.withField("mIsBrave")
@@ -128,7 +130,7 @@ public class RandomGenTest {
 		assertFalse(testPerson.isBrave());
 
 		// Given
-		given(booleanFieldDataProvider.generate()).willReturn(true);
+		given(booleanFieldDataProvider.generate(any(TestPerson.class))).willReturn(true);
 
 		// When
 		testPerson = mCut.generate();
@@ -140,9 +142,9 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningByteWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		ByteFieldDataProvider byteFieldDataProvider = mock(ByteFieldDataProvider.class);
+		ByteFieldDataProvider<TestPerson> byteFieldDataProvider = mock(ByteFieldDataProvider.class);
 		given(mFactory.getByteFieldDataProvider()).willReturn(byteFieldDataProvider);
-		given(byteFieldDataProvider.generate()).willReturn((byte)3);
+		given(byteFieldDataProvider.generate(any(TestPerson.class))).willReturn((byte)3);
 
 		mCut = mBuilder
 			.withField("mBite")
@@ -161,10 +163,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningByteListWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		ByteListFieldDataProvider byteListFieldDataProvider = mock(ByteListFieldDataProvider.class);
+		ByteListFieldDataProvider<TestPerson> byteListFieldDataProvider = mock(ByteListFieldDataProvider.class);
 		given(mFactory.getByteListFieldDataProvider(5)).willReturn(byteListFieldDataProvider);
 		List<Byte> byteList = Arrays.asList((byte)1, (byte)2, (byte)3, (byte)4, (byte)5);
-		given(byteListFieldDataProvider.generate()).willReturn(byteList);
+		given(byteListFieldDataProvider.generate(any(TestPerson.class))).willReturn(byteList);
 
 		mCut = mBuilder
 			.withField("mBites")
@@ -183,10 +185,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningByteListWithRangeWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		ByteListFieldDataProvider byteListFieldDataProvider = mock(ByteListFieldDataProvider.class);
+		ByteListFieldDataProvider<TestPerson> byteListFieldDataProvider = mock(ByteListFieldDataProvider.class);
 		given(mFactory.getByteListFieldDataProvider(4, 5)).willReturn(byteListFieldDataProvider);
 		List<Byte> byteList = Arrays.asList((byte)1, (byte)2, (byte)3, (byte)4, (byte)5);
-		given(byteListFieldDataProvider.generate()).willReturn(byteList);
+		given(byteListFieldDataProvider.generate(any(TestPerson.class))).willReturn(byteList);
 
 		mCut = mBuilder
 			.withField("mBites")
@@ -205,10 +207,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningDoubleWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		DoubleFieldDataProvider doubleFieldDataProvider = mock(DoubleFieldDataProvider.class);
+		DoubleFieldDataProvider<TestPerson> doubleFieldDataProvider = mock(DoubleFieldDataProvider.class);
 		given(mFactory.getDoubleFieldDataProvider()).willReturn(doubleFieldDataProvider);
 		final double EXPECTED_VALUE = 1.2345;
-		given(doubleFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(doubleFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mWealth")
@@ -227,10 +229,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningDoubleRangeWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		DoubleFieldDataProvider doubleRangeFieldDataProvider = mock(DoubleFieldDataProvider.class);
+		DoubleFieldDataProvider<TestPerson> doubleRangeFieldDataProvider = mock(DoubleFieldDataProvider.class);
 		given(mFactory.getDoubleFieldDataProvider(1d, 2d)).willReturn(doubleRangeFieldDataProvider);
 		final double EXPECTED_VALUE = 1.2345;
-		given(doubleRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(doubleRangeFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mWealth")
@@ -250,10 +252,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningFloatWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		FloatFieldDataProvider floatFieldDataProvider = mock(FloatFieldDataProvider.class);
+		FloatFieldDataProvider<TestPerson> floatFieldDataProvider = mock(FloatFieldDataProvider.class);
 		given(mFactory.getFloatFieldDataProvider()).willReturn(floatFieldDataProvider);
 		final float EXPECTED_VALUE = 1.23f;
-		given(floatFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(floatFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mHeight")
@@ -273,10 +275,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningFloatRangeWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		FloatFieldDataProvider floatRangeFieldDataProvider = mock(FloatFieldDataProvider.class);
+		FloatFieldDataProvider<TestPerson> floatRangeFieldDataProvider = mock(FloatFieldDataProvider.class);
 		given(mFactory.getFloatFieldDataProvider(1f, 2f)).willReturn(floatRangeFieldDataProvider);
 		final float EXPECTED_VALUE = 1.23f;
-		given(floatRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(floatRangeFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mHeight")
@@ -298,7 +300,7 @@ public class RandomGenTest {
 		IntegerFieldDataProvider integerFieldDataProvider = mock(IntegerFieldDataProvider.class);
 		given(mFactory.getIntegerFieldDataProvider()).willReturn(integerFieldDataProvider);
 		final int EXPECTED_VALUE = 400;
-		given(integerFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(integerFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mCandiesCount")
@@ -317,10 +319,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningIntegerRangeWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		IntegerFieldDataProvider integerFieldDataProvider = mock(IntegerFieldDataProvider.class);
+		IntegerFieldDataProvider<TestPerson> integerFieldDataProvider = mock(IntegerFieldDataProvider.class);
 		given(mFactory.getIntegerFieldDataProvider(300, 500)).willReturn(integerFieldDataProvider);
 		final int EXPECTED_VALUE = 400;
-		given(integerFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(integerFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mCandiesCount")
@@ -339,10 +341,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningLongWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		LongFieldDataProvider longFieldDataProvider = mock(LongFieldDataProvider.class);
+		LongFieldDataProvider<TestPerson> longFieldDataProvider = mock(LongFieldDataProvider.class);
 		given(mFactory.getLongFieldDataProvider()).willReturn(longFieldDataProvider);
 		final long EXPECTED_VALUE = 1337L;
-		given(longFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(longFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mSoLong")
@@ -361,10 +363,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningLongRangeWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		LongFieldDataProvider longFieldDataProvider = mock(LongFieldDataProvider.class);
+		LongFieldDataProvider<TestPerson> longFieldDataProvider = mock(LongFieldDataProvider.class);
 		given(mFactory.getLongFieldDataProvider(1000L, 2000L)).willReturn(longFieldDataProvider);
 		final long EXPECTED_VALUE = 1337L;
-		given(longFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(longFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mSoLong")
@@ -383,10 +385,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningSequentialIntegerWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		SequentialIntegerFieldDataProvider sequentialIntegerFieldDataProvider = mock(SequentialIntegerFieldDataProvider.class);
+		SequentialIntegerFieldDataProvider<TestPerson> sequentialIntegerFieldDataProvider = mock(SequentialIntegerFieldDataProvider.class);
 		given(mFactory.getSequentialIntegerFieldDataProvider()).willReturn(sequentialIntegerFieldDataProvider);
 		final int EXPECTED_VALUE = 1234567;
-		given(sequentialIntegerFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(sequentialIntegerFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mId")
@@ -405,10 +407,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningSequentialIntegerWithStartValueWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		SequentialIntegerFieldDataProvider sequentialIntegerFieldDataProvider = mock(SequentialIntegerFieldDataProvider.class);
+		SequentialIntegerFieldDataProvider<TestPerson> sequentialIntegerFieldDataProvider = mock(SequentialIntegerFieldDataProvider.class);
 		given(mFactory.getSequentialIntegerFieldDataProvider(5)).willReturn(sequentialIntegerFieldDataProvider);
 		final int EXPECTED_VALUE = 5;
-		given(sequentialIntegerFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(sequentialIntegerFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mId")
@@ -427,10 +429,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningUuidWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		UuidFieldDataProvider uuidFieldDataProvider = mock(UuidFieldDataProvider.class);
+		UuidFieldDataProvider<TestPerson> uuidFieldDataProvider = mock(UuidFieldDataProvider.class);
 		given(mFactory.getUuidFieldDataProvider()).willReturn(uuidFieldDataProvider);
 		final String EXPECTED_VALUE = "8b3728d0-9c1d-11e8-98d0-529269fb1459";
-		given(uuidFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(uuidFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mUuid")
@@ -449,14 +451,14 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningRgbWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		RgbFieldDataProvider rgbFieldDataProvider = mock(RgbFieldDataProvider.class);
-		RgbFieldDataProvider rgbaFieldDataProvider = mock(RgbFieldDataProvider.class);
+		RgbFieldDataProvider<TestPerson> rgbFieldDataProvider = mock(RgbFieldDataProvider.class);
+		RgbFieldDataProvider<TestPerson> rgbaFieldDataProvider = mock(RgbFieldDataProvider.class);
 		given(mFactory.getRgbFieldDataProvider(false)).willReturn(rgbFieldDataProvider);
 		given(mFactory.getRgbFieldDataProvider(true)).willReturn(rgbaFieldDataProvider);
 		final String EXPECTED_VALUE_RGB = "#AABBAA";
 		final String EXPECTED_VALUE_RGBA = "#FFAABBAA";
-		given(rgbFieldDataProvider.generate()).willReturn(EXPECTED_VALUE_RGB);
-		given(rgbaFieldDataProvider.generate()).willReturn(EXPECTED_VALUE_RGBA);
+		given(rgbFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE_RGB);
+		given(rgbaFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE_RGBA);
 
 		mCut = mBuilder
 			.withField("mShirtColor")
@@ -487,10 +489,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningLoremIpsumWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		LoremIpsumFieldDataProvider loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
+		LoremIpsumFieldDataProvider<TestPerson> loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
 		given(mFactory.getLoremIpsumFieldDataProvider()).willReturn(loremIpsumFieldDataProvider);
 		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
-		given(loremIpsumFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(loremIpsumFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mBiography")
@@ -509,10 +511,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningLoremIpsumWithLengthWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		LoremIpsumFieldDataProvider loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
+		LoremIpsumFieldDataProvider<TestPerson> loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
 		given(mFactory.getLoremIpsumFieldDataProvider(21)).willReturn(loremIpsumFieldDataProvider);
 		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
-		given(loremIpsumFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(loremIpsumFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mBiography")
@@ -531,10 +533,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningLoremIpsumWithLengthRangeWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		LoremIpsumFieldDataProvider loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
+		LoremIpsumFieldDataProvider<TestPerson> loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
 		given(mFactory.getLoremIpsumFieldDataProvider(20, 22)).willReturn(loremIpsumFieldDataProvider);
 		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
-		given(loremIpsumFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(loremIpsumFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mBiography")
@@ -553,10 +555,10 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningLoremIpsumWithLengthRangeAndDelimiterWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		LoremIpsumFieldDataProvider loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
+		LoremIpsumFieldDataProvider<TestPerson> loremIpsumFieldDataProvider = mock(LoremIpsumFieldDataProvider.class);
 		given(mFactory.getLoremIpsumFieldDataProvider(20, 22, "\n")).willReturn(loremIpsumFieldDataProvider);
 		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
-		given(loremIpsumFieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(loremIpsumFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mBiography")
@@ -575,9 +577,9 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningEnumWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		RandomEnumFieldDataProvider<Gender> randomEnumFieldDataProvider = mock(RandomEnumFieldDataProvider.class);
+		RandomEnumFieldDataProvider<TestPerson, Gender> randomEnumFieldDataProvider = mock(RandomEnumFieldDataProvider.class);
 		given(mFactory.getRandomEnumFieldDataProvider(Gender.class)).willReturn(randomEnumFieldDataProvider);
-		given(randomEnumFieldDataProvider.generate()).willReturn(Gender.MALE);
+		given(randomEnumFieldDataProvider.generate(any(TestPerson.class))).willReturn(Gender.MALE);
 
 		mCut = mBuilder
 			.withField("mGender")
@@ -596,9 +598,9 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningFieldDataProviderWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		FieldDataProvider<String> fieldDataProvider = mock(FieldDataProvider.class);
+		FieldDataProvider<TestPerson, String> fieldDataProvider = mock(FieldDataProvider.class);
 		String EXPECTED_VALUE = "Inigo Montoya";
-		given(fieldDataProvider.generate()).willReturn(EXPECTED_VALUE);
+		given(fieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
 		mCut = mBuilder
 			.withField("mName")
@@ -617,11 +619,11 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningCustomListFieldDataProviderWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		FieldDataProvider<String> fieldDataProvider = mock(FieldDataProvider.class);
-		CustomListFieldDataProvider<String> customListFieldDataProvider = mock(CustomListFieldDataProvider.class);
+		FieldDataProvider<TestPerson, String> fieldDataProvider = mock(FieldDataProvider.class);
+		CustomListFieldDataProvider<TestPerson, String> customListFieldDataProvider = mock(CustomListFieldDataProvider.class);
 		given(mFactory.getCustomListFieldDataProvider(3, fieldDataProvider)).willReturn(customListFieldDataProvider);
 		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
-		given(customListFieldDataProvider.generate()).willReturn(EXPECTED_VALUES);
+		given(customListFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUES);
 
 		mCut = mBuilder
 			.withField("mAliases")
@@ -640,11 +642,11 @@ public class RandomGenTest {
 	@Test
 	public void givenBuilderReturningCustomListRangeFieldDataProviderWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
-		FieldDataProvider<String> fieldDataProvider = mock(FieldDataProvider.class);
-		CustomListRangeFieldDataProvider<String> customListRangeFieldDataProvider = mock(CustomListRangeFieldDataProvider.class);
+		FieldDataProvider<TestPerson, String> fieldDataProvider = mock(FieldDataProvider.class);
+		CustomListRangeFieldDataProvider<TestPerson, String> customListRangeFieldDataProvider = mock(CustomListRangeFieldDataProvider.class);
 		given(mFactory.getCustomListRangeFieldDataProvider(2, 4, fieldDataProvider)).willReturn(customListRangeFieldDataProvider);
 		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
-		given(customListRangeFieldDataProvider.generate()).willReturn(EXPECTED_VALUES);
+		given(customListRangeFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUES);
 
 		mCut = mBuilder
 			.withField("mAliases")
@@ -665,9 +667,9 @@ public class RandomGenTest {
 		// Given
 		final String NAME = "Superman";
 
-		ExplicitFieldDataProvider<String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
+		ExplicitFieldDataProvider<TestPerson, String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
 		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
-		given(explicitFieldDataProvider.generate()).willReturn(NAME);
+		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME);
 
 		mCut = mBuilder
 			.withField("mCandiesCount")
@@ -694,9 +696,9 @@ public class RandomGenTest {
 		// Given
 		final String NAME = "Superman";
 
-		ExplicitFieldDataProvider<String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
+		ExplicitFieldDataProvider<TestPerson, String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
 		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
-		given(explicitFieldDataProvider.generate()).willReturn(NAME);
+		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME);
 
 		mCut = mBuilder
 			.withField("mUnknownField")
