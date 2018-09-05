@@ -52,11 +52,12 @@ interface FieldDataProviderFactory<OUTPUT_TYPE> {
 
 	<ENUM_TYPE extends Enum> FieldDataProvider<OUTPUT_TYPE, ENUM_TYPE> getRandomEnumFieldDataProvider(Class<ENUM_TYPE> pValue);
 
-	<VALUE_TYPE> FieldDataProvider<OUTPUT_TYPE, List<VALUE_TYPE>>
-	getCustomListFieldDataProvider(int pInstances,
-	                               FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> pFieldDataProvider);
+	FieldDataProvider<OUTPUT_TYPE, String>
+	getPaddedFieldDataProvider(int pMinimumLength, String pPaddingString, FieldDataProvider<OUTPUT_TYPE, ?> pFieldDataProvider);
 
 	<VALUE_TYPE> FieldDataProvider<OUTPUT_TYPE, List<VALUE_TYPE>>
-	getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances,
-	                                    FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> pFieldDataProvider);
+	getCustomListFieldDataProvider(int pInstances, FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> pFieldDataProvider);
+
+	<VALUE_TYPE> FieldDataProvider<OUTPUT_TYPE, List<VALUE_TYPE>>
+	getCustomListRangeFieldDataProvider(int pMinInstances, int pMaxInstances, FieldDataProvider<OUTPUT_TYPE, VALUE_TYPE> pFieldDataProvider);
 }

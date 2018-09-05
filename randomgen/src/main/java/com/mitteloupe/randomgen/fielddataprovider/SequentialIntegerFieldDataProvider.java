@@ -11,20 +11,28 @@ public final class SequentialIntegerFieldDataProvider<OUTPUT_TYPE> implements Fi
 	private int mCounter;
 
 	/**
-	 * Creates an instance of {@link SequentialIntegerFieldDataProvider} generating sequential {@code Integer} values, starting at 1,
+	 * Returns a new instance of {@link SequentialIntegerFieldDataProvider} generating sequential {@code Integer} values, starting at 1,
 	 * inclusive.
 	 */
-	public SequentialIntegerFieldDataProvider() {
-		this(1);
+	public static <OUTPUT_TYPE> SequentialIntegerFieldDataProvider<OUTPUT_TYPE> getInstance() {
+		return new SequentialIntegerFieldDataProvider<>();
 	}
 
 	/**
-	 * Creates an instance of {@link SequentialIntegerFieldDataProvider} generating sequential {@code Integer} values, starting at {@code pStartValue},
+	 * Returns a new instance of {@link SequentialIntegerFieldDataProvider} generating sequential {@code Integer} values, starting at {@code pStartValue},
 	 * inclusive.
 	 *
 	 * @param pStartValue The first value to generate
 	 */
-	public SequentialIntegerFieldDataProvider(int pStartValue) {
+	public static <OUTPUT_TYPE> SequentialIntegerFieldDataProvider<OUTPUT_TYPE> getInstanceWithStartValue(int pStartValue) {
+		return new SequentialIntegerFieldDataProvider<>(pStartValue);
+	}
+
+	private SequentialIntegerFieldDataProvider() {
+		this(1);
+	}
+
+	private SequentialIntegerFieldDataProvider(int pStartValue) {
 		mCounter = pStartValue;
 	}
 

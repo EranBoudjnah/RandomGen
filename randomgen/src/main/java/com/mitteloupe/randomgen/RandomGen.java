@@ -15,27 +15,34 @@ import java.util.UUID;
 /**
  * Created by Eran Boudjnah on 24/04/2018.
  */
-public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, OUTPUT_TYPE> {
-	private final InstanceProvider<OUTPUT_TYPE> mInstanceProvider;
-	private final Map<String, FieldDataProvider<OUTPUT_TYPE, ?>> mDataProviders;
+public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Object, GENERATED_INSTANCE> {
+	private final InstanceProvider<GENERATED_INSTANCE> mInstanceProvider;
+	private final Map<String, FieldDataProvider<GENERATED_INSTANCE, ?>> mDataProviders;
 	private final Map<String, Field> mFields;
+	private final List<OnGenerateCallback<GENERATED_INSTANCE>> mOnGenerateCallbacks;
 
-	private RandomGen(InstanceProvider<OUTPUT_TYPE> pInstanceProvider, Map<String, FieldDataProvider<OUTPUT_TYPE, ?>> pDataProviders) {
+	private RandomGen(
+		InstanceProvider<GENERATED_INSTANCE> pInstanceProvider,
+		Map<String, FieldDataProvider<GENERATED_INSTANCE, ?>> pDataProviders,
+		List<OnGenerateCallback<GENERATED_INSTANCE>> pOnGenerateCallbacks
+	) {
 		mInstanceProvider = pInstanceProvider;
 		mDataProviders = pDataProviders;
 		mFields = new HashMap<>();
+		mOnGenerateCallbacks = pOnGenerateCallbacks;
 
 		getAllFields();
 	}
 
-	public OUTPUT_TYPE generate() {
-		final OUTPUT_TYPE instance = mInstanceProvider.provideInstance();
-		return generate(instance);
+	public GENERATED_INSTANCE generate() {
+		return generate(null);
 	}
 
 	@Override
-	public OUTPUT_TYPE generate(OUTPUT_TYPE instance) {
-		for (final Map.Entry<String, FieldDataProvider<OUTPUT_TYPE, ?>> entry : mDataProviders.entrySet()) {
+	public GENERATED_INSTANCE generate(Object unused) {
+		final GENERATED_INSTANCE instance = mInstanceProvider.provideInstance();
+
+		for (final Map.Entry<String, FieldDataProvider<GENERATED_INSTANCE, ?>> entry : mDataProviders.entrySet()) {
 			final String key = entry.getKey();
 			if (!mFields.containsKey(key)) {
 				throw new IllegalArgumentException("Cannot set field " + key + " - field not found");
@@ -43,33 +50,51 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, OU
 
 			final Field field = mFields.get(key);
 
+			final Object value = entry.getValue().generate(instance);
+
 			try {
-				final Object value = entry.getValue().generate(instance);
 				setField(instance, field, value);
-			} catch (IllegalArgumentException pE) {
-				throw new IllegalArgumentException("Cannot set field " + key + " due to invalid value", pE);
+			} catch (AssignmentException exception) {
+				throw new IllegalArgumentException("Cannot set field " + key + " due to invalid value", exception);
 			}
+		}
+
+		for (OnGenerateCallback<GENERATED_INSTANCE> onGenerateCallbacks : mOnGenerateCallbacks) {
+			onGenerateCallbacks.onGenerate(instance);
 		}
 
 		return instance;
 	}
 
-	private void setField(OUTPUT_TYPE pInstance, Field pField, Object pValue) throws IllegalArgumentException {
-		if (isFieldArray(pField)) {
-			if (!Collection.class.isAssignableFrom(pValue.getClass())) throw new IllegalArgumentException("Expected collection value");
-			List valueAsList = (List)pValue;
-			TypedArray typedArray = new TypedArray<>(pField.getType().getComponentType(), valueAsList.size());
+	private void setField(GENERATED_INSTANCE pInstance, Field pField, Object pValue) throws IllegalArgumentException {
+		Object valueToSet = isFieldArray(pField) ?
+			getValueAsArray(pField, pValue) :
+			pValue;
 
-			try {
-				pField.set(pInstance, valueAsList.toArray(typedArray.get()));
-			} catch (IllegalAccessException ignore) {
-			}
+		setFieldToRawValue(pInstance, pField, valueToSet);
+	}
 
-		} else {
-			try {
-				pField.set(pInstance, pValue);
-			} catch (IllegalAccessException ignore) {
-			}
+	private void setFieldToRawValue(GENERATED_INSTANCE pInstance, Field pField, Object pValue) {
+		try {
+			pField.set(pInstance, pValue);
+		} catch (IllegalAccessException | IllegalArgumentException exception) {
+			throw new AssignmentException(exception);
+		}
+	}
+
+	private Object getValueAsArray(Field pField, Object pValue) {
+		if (!Collection.class.isAssignableFrom(pValue.getClass())) {
+			throw new AssignmentException(new RuntimeException("Expected collection value"));
+		}
+
+		List valueAsList = (List)pValue;
+		TypedArray typedArray = new TypedArray<>(pField.getType().getComponentType(), valueAsList.size());
+
+
+		try {
+			return valueAsList.toArray(typedArray.get());
+		} catch (ArrayStoreException exception) {
+			throw new AssignmentException(exception);
 		}
 	}
 
@@ -78,7 +103,7 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, OU
 	}
 
 	private void getAllFields() {
-		OUTPUT_TYPE instance = mInstanceProvider.provideInstance();
+		GENERATED_INSTANCE instance = mInstanceProvider.provideInstance();
 		Field[] allFields = instance.getClass().getDeclaredFields();
 		for (Field field : allFields) {
 			if (Modifier.isPrivate(field.getModifiers())) {
@@ -89,40 +114,54 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, OU
 		}
 	}
 
-	public static class Builder<T> {
-		private final Map<String, FieldDataProvider<T, ?>> mDataProviders;
-		private final InstanceProvider<T> mInstanceProvider;
-		private FieldDataProviderFactory<T> mFactory;
+	public static class Builder<GENERATED_INSTANCE> {
+		private final Map<String, FieldDataProvider<GENERATED_INSTANCE, ?>> mDataProviders;
+		private final InstanceProvider<GENERATED_INSTANCE> mInstanceProvider;
+		private FieldDataProviderFactory<GENERATED_INSTANCE> mFactory;
+		private List<OnGenerateCallback<GENERATED_INSTANCE>> mOnGenerateCallbacks = new ArrayList<>();
 
 		@SuppressWarnings({"unused"}) // Public library constructor
-		public Builder(InstanceProvider<T> pInstanceProvider) {
-			this(pInstanceProvider, new SimpleFieldDataProviderFactory<T>(new Random(), new UuidGenerator() {
-				@Override
-				public String randomUUID() {
-					return UUID.randomUUID().toString();
-				}
-			}));
+		public Builder(InstanceProvider<GENERATED_INSTANCE> pInstanceProvider) {
+			this(pInstanceProvider, new DefaultFieldDataProviderFactory<GENERATED_INSTANCE>());
 		}
 
-		Builder(InstanceProvider<T> pInstanceProvider, FieldDataProviderFactory<T> pFactory) {
+		Builder(InstanceProvider<GENERATED_INSTANCE> pInstanceProvider, FieldDataProviderFactory<GENERATED_INSTANCE> pFactory) {
 			mDataProviders = new LinkedHashMap<>();
 			mInstanceProvider = pInstanceProvider;
 			mFactory = pFactory;
 		}
 
-		public RandomGen<T> build() {
-			return new RandomGen<>(mInstanceProvider, mDataProviders);
+		public RandomGen<GENERATED_INSTANCE> build() {
+			return new RandomGen<>(mInstanceProvider, mDataProviders, mOnGenerateCallbacks);
 		}
 
-		public BuilderField<T> withField(String pFieldName) {
+		public BuilderField<GENERATED_INSTANCE> withField(String pFieldName) {
 			return new BuilderField<>(this, pFieldName, mFactory);
 		}
 
-		private <T2> Builder<T> returning(String pField, FieldDataProvider<T, T2> pFieldDataProvider) {
+		private <FIELD_DATA_TYPE> Builder<GENERATED_INSTANCE> returning(String pField,
+		                                                                FieldDataProvider<GENERATED_INSTANCE, FIELD_DATA_TYPE> pFieldDataProvider) {
 			mDataProviders.put(pField, pFieldDataProvider);
 			return this;
 		}
 
+		public Builder<GENERATED_INSTANCE> onGenerate(OnGenerateCallback<GENERATED_INSTANCE> pOnGenerateCallback) {
+			mOnGenerateCallbacks.add(pOnGenerateCallback);
+			return this;
+		}
+
+		private static class DefaultFieldDataProviderFactory<GENERATED_INSTANCE> extends SimpleFieldDataProviderFactory<GENERATED_INSTANCE> {
+			private DefaultFieldDataProviderFactory() {
+				super(new Random(), new DefaultUuidGenerator());
+			}
+		}
+
+		private static class DefaultUuidGenerator implements UuidGenerator {
+			@Override
+			public String randomUUID() {
+				return UUID.randomUUID().toString();
+			}
+		}
 	}
 
 	public static class BuilderField<RETURN_TYPE> {
@@ -263,6 +302,11 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, OU
 			return mBuilder.returning(mField, mFactory.getRandomEnumFieldDataProvider(pEnumClass));
 		}
 
+		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final RandomGen<VALUE_TYPE> pRandomGen) {
+			//noinspection unchecked - This should be safe, as RandomGen doesn't use the RETURN_TYPE.
+			return mBuilder.returning(mField, (FieldDataProvider<RETURN_TYPE, VALUE_TYPE>)pRandomGen);
+		}
+
 		/**
 		 * Adds a {@link FieldDataProvider} generated value for the given field.
 		 *
@@ -278,9 +322,22 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, OU
 			return mBuilder.returning(mField, mFactory.getCustomListFieldDataProvider(pInstances, pFieldDataProvider));
 		}
 
+		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pInstances, final RandomGen<VALUE_TYPE> pRandomGen) {
+			//noinspection unchecked - This should be safe, as RandomGen doesn't use the RETURN_TYPE.
+			return mBuilder.returning(mField, mFactory.getCustomListFieldDataProvider(pInstances,
+				(FieldDataProvider<RETURN_TYPE, VALUE_TYPE>)pRandomGen));
+		}
+
 		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pMinInstances, final int pMaxInstances,
 		                                                   final FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
 			return mBuilder.returning(mField, mFactory.getCustomListRangeFieldDataProvider(pMinInstances, pMaxInstances, pFieldDataProvider));
+		}
+
+		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pMinInstances, final int pMaxInstances,
+		                                                   final RandomGen<VALUE_TYPE> pFieldDataProvider) {
+			//noinspection unchecked - This should be safe, as RandomGen doesn't use the RETURN_TYPE.
+			return mBuilder.returning(mField, mFactory.getCustomListRangeFieldDataProvider(pMinInstances, pMaxInstances,
+				(FieldDataProvider<RETURN_TYPE, VALUE_TYPE>)pFieldDataProvider));
 		}
 	}
 
@@ -307,6 +364,16 @@ public class RandomGen<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, OU
 	 */
 	public interface InstanceProvider<INSTANCE_TYPE> {
 		INSTANCE_TYPE provideInstance();
+	}
+
+	public interface OnGenerateCallback<INSTANCE_TYPE> {
+		void onGenerate(INSTANCE_TYPE pGeneratedInstance);
+	}
+
+	private static class AssignmentException extends RuntimeException {
+		private AssignmentException(Exception pException) {
+			super(pException);
+		}
 	}
 }
 

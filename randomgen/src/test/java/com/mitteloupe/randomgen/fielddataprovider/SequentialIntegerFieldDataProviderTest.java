@@ -13,7 +13,7 @@ public class SequentialIntegerFieldDataProviderTest {
 	@Test
 	public void givenNoInitialValueWhenGenerateThenReturnsCorrectSequence() {
 		// Given
-		mCut = new SequentialIntegerFieldDataProvider<>();
+		mCut = SequentialIntegerFieldDataProvider.getInstance();
 
 		// When
 		int result = mCut.generate(null);
@@ -31,7 +31,7 @@ public class SequentialIntegerFieldDataProviderTest {
 	@Test
 	public void givenAnInitialValueWhenGenerateThenReturnsCorrectSequence() {
 		// Given
-		mCut = new SequentialIntegerFieldDataProvider<>(0xBED);
+		mCut = SequentialIntegerFieldDataProvider.getInstanceWithStartValue(0xBED);
 
 		// When
 		int result = mCut.generate(null);

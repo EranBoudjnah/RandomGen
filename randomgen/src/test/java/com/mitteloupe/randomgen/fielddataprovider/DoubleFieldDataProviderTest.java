@@ -1,9 +1,9 @@
 package com.mitteloupe.randomgen.fielddataprovider;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Random;
 
@@ -13,21 +13,17 @@ import static org.mockito.BDDMockito.given;
 /**
  * Created by Eran Boudjnah on 10/08/2018.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class DoubleFieldDataProviderTest {
 	private DoubleFieldDataProvider<?> mCut;
 
 	@Mock
 	private Random mRandom;
 
-	@Before
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-	}
-
 	@Test
 	public void givenRandomDoubleValueWhenGenerateThenReturnsSameValue() {
 		// Given
-		mCut = new DoubleFieldDataProvider<>(mRandom);
+		mCut = DoubleFieldDataProvider.getInstance(mRandom);
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When
@@ -49,7 +45,7 @@ public class DoubleFieldDataProviderTest {
 	@Test
 	public void givenRandomDoubleValueAndRangeWhenGenerateThenReturnsCorrectValue() {
 		// Given
-		mCut = new DoubleFieldDataProvider<>(mRandom, Double.MIN_VALUE, Double.MAX_VALUE);
+		mCut = DoubleFieldDataProvider.getInstanceWithRange(mRandom, Double.MIN_VALUE, Double.MAX_VALUE);
 		given(mRandom.nextDouble()).willReturn(0d);
 
 		// When

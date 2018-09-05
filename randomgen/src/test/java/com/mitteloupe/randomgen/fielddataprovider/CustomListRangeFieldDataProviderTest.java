@@ -4,8 +4,9 @@ import com.mitteloupe.randomgen.FieldDataProvider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,21 +18,18 @@ import static org.mockito.BDDMockito.given;
 /**
  * Created by Eran Boudjnah on 10/08/2018.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class CustomListRangeFieldDataProviderTest {
 	private static final int MIN_INSTANCES = 1;
 	private static final int MAX_INSTANCES = 5;
 
 	private CustomListRangeFieldDataProvider<?, String> mCut;
 
-	@Mock
-	private Random mRandom;
-	@Mock
-	private FieldDataProvider<?, String> fieldDataProvider;
+	@Mock private Random mRandom;
+	@Mock private FieldDataProvider<?, String> fieldDataProvider;
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-
 		mCut = new CustomListRangeFieldDataProvider<>(mRandom, MIN_INSTANCES, MAX_INSTANCES, fieldDataProvider);
 	}
 

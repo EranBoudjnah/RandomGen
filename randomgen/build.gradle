@@ -4,7 +4,7 @@ dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 	testCompileOnly(
-		'junit:junit:4.4',
+		'junit:junit:4.12',
 		"org.mockito:mockito-core:2.7.2"
 	)
 }

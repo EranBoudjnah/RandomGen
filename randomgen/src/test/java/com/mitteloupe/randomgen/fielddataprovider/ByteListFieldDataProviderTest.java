@@ -1,10 +1,10 @@
 package com.mitteloupe.randomgen.fielddataprovider;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
@@ -19,16 +19,11 @@ import static org.mockito.Mockito.doAnswer;
 /**
  * Created by Eran Boudjnah on 10/08/2018.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ByteListFieldDataProviderTest {
 	private ByteListFieldDataProvider<?> mCut;
 
-	@Mock
-	private Random mRandom;
-
-	@Before
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-	}
+	@Mock private Random mRandom;
 
 	@Test
 	public void givenFixedSizeListOfRandomBytesWhenGenerateThenReturnsSameBytes() {
@@ -46,7 +41,7 @@ public class ByteListFieldDataProviderTest {
 			}
 		}).when(mRandom).nextBytes(any(byte[].class));
 
-		mCut = new ByteListFieldDataProvider<>(mRandom, 3);
+		mCut = ByteListFieldDataProvider.getInstanceWithSize(mRandom, 3);
 
 		// When
 		List<Byte> result = mCut.generate(null);
@@ -72,7 +67,7 @@ public class ByteListFieldDataProviderTest {
 			}
 		}).when(mRandom).nextBytes(any(byte[].class));
 
-		mCut = new ByteListFieldDataProvider<>(mRandom, 1, 5);
+		mCut = ByteListFieldDataProvider.getInstanceWithSizeRange(mRandom, 1, 5);
 
 		// When
 		List<Byte> result = mCut.generate(null);

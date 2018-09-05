@@ -16,22 +16,30 @@ public final class LongFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvid
 	private final long mMaximum;
 
 	/**
-	 * Creates an instance of {@link LongFieldDataProvider} generating a {@code Long} between {@code Long.MIN_VALUE} and {@code Long.MAX_VALUE}.
+	 * Returns a new instance of {@link LongFieldDataProvider} generating a {@code Long} between {@code Long.MIN_VALUE} and {@code Long.MAX_VALUE}.
 	 *
 	 * @param pRandom A random value generator
 	 */
-	public LongFieldDataProvider(Random pRandom) {
-		this(pRandom, Long.MIN_VALUE, Long.MAX_VALUE);
+	public static <OUTPUT_TYPE> LongFieldDataProvider<OUTPUT_TYPE> getInstance(Random pRandom) {
+		return new LongFieldDataProvider<>(pRandom);
 	}
 
 	/**
-	 * Creates an instance of {@link LongFieldDataProvider} generating a {@code Long} between {@code pMinimum} and {@code pMaximum}.
+	 * Returns a new instance of {@link LongFieldDataProvider} generating a {@code Long} between {@code pMinimum} and {@code pMaximum}.
 	 *
 	 * @param pRandom A random value generator
 	 * @param pMinimum The lowest possible value
 	 * @param pMaximum The highest possible value
 	 */
-	public LongFieldDataProvider(Random pRandom, long pMinimum, long pMaximum) {
+	public static <OUTPUT_TYPE> LongFieldDataProvider<OUTPUT_TYPE> getInstanceWithRange(Random pRandom, long pMinimum, long pMaximum) {
+		return new LongFieldDataProvider<>(pRandom, pMinimum, pMaximum);
+	}
+
+	private LongFieldDataProvider(Random pRandom) {
+		this(pRandom, Long.MIN_VALUE, Long.MAX_VALUE);
+	}
+
+	private LongFieldDataProvider(Random pRandom, long pMinimum, long pMaximum) {
 		mRandom = pRandom;
 		mMinimum = pMinimum;
 		mMaximum = pMaximum;

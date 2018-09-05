@@ -1,9 +1,9 @@
 package com.mitteloupe.randomgen.fielddataprovider;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Random;
 
@@ -13,22 +13,17 @@ import static org.mockito.BDDMockito.given;
 /**
  * Created by Eran Boudjnah on 11/08/2018.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class RgbFieldDataProviderTest {
 	private RgbFieldDataProvider<?> mCut;
 
-	@Mock
-	private Random mRandom;
-
-	@Before
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-	}
+	@Mock private Random mRandom;
 
 	@Test
 	public void givenARandomGeneratorAndAlphaWhenGenerateThenReturnsRGBAValue() {
 		// Given
 		mCut = new RgbFieldDataProvider<>(mRandom, true);
-		given(mRandom.nextInt(255)).willReturn(  173, 250, 17, 222);
+		givenRandomValues(173, 250, 17, 222);
 
 		// When
 		String result = mCut.generate(null);
@@ -41,12 +36,16 @@ public class RgbFieldDataProviderTest {
 	public void givenARandomGeneratorAndNoAlphaWhenGenerateThenReturnsRGBValue() {
 		// Given
 		mCut = new RgbFieldDataProvider<>(mRandom, false);
-		given(mRandom.nextInt(255)).willReturn(  176, 85, 237);
+		givenRandomValues(  176, 85, 237);
 
 		// When
 		String result = mCut.generate(null);
 
 		// Then
 		assertEquals("#b055ed", result);
+	}
+
+	private void givenRandomValues(Integer pValue, Integer... pMoreValues) {
+		given(mRandom.nextInt(255)).willReturn(pValue, pMoreValues);
 	}
 }

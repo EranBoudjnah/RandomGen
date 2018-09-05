@@ -12,6 +12,7 @@ import com.mitteloupe.randomgen.fielddataprovider.GenericListFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.IntegerFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.LongFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.LoremIpsumFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.PaddedFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RandomEnumFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.SequentialIntegerFieldDataProvider;
@@ -55,62 +56,62 @@ class SimpleFieldDataProviderFactory<OUTPUT_TYPE> implements FieldDataProviderFa
 
 	@Override
 	public ByteListFieldDataProvider<OUTPUT_TYPE> getByteListFieldDataProvider(int pSize) {
-		return new ByteListFieldDataProvider<>(mRandom, pSize);
+		return ByteListFieldDataProvider.getInstanceWithSize(mRandom, pSize);
 	}
 
 	@Override
 	public ByteListFieldDataProvider<OUTPUT_TYPE> getByteListFieldDataProvider(int pMinSize, int pMaxSize) {
-		return new ByteListFieldDataProvider<>(mRandom, pMinSize, pMaxSize);
+		return ByteListFieldDataProvider.getInstanceWithSizeRange(mRandom, pMinSize, pMaxSize);
 	}
 
 	@Override
 	public DoubleFieldDataProvider<OUTPUT_TYPE> getDoubleFieldDataProvider() {
-		return new DoubleFieldDataProvider<>(mRandom);
+		return DoubleFieldDataProvider.getInstance(mRandom);
 	}
 
 	@Override
 	public DoubleFieldDataProvider<OUTPUT_TYPE> getDoubleFieldDataProvider(double pMinimum, double pMaximum) {
-		return new DoubleFieldDataProvider<>(mRandom, pMinimum, pMaximum);
+		return DoubleFieldDataProvider.getInstanceWithRange(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
 	public FloatFieldDataProvider<OUTPUT_TYPE> getFloatFieldDataProvider() {
-		return new FloatFieldDataProvider<>(mRandom);
+		return FloatFieldDataProvider.getInstance(mRandom);
 	}
 
 	@Override
 	public FloatFieldDataProvider<OUTPUT_TYPE> getFloatFieldDataProvider(float pMinimum, float pMaximum) {
-		return new FloatFieldDataProvider<>(mRandom, pMinimum, pMaximum);
+		return FloatFieldDataProvider.getInstanceWithRange(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
 	public IntegerFieldDataProvider<OUTPUT_TYPE> getIntegerFieldDataProvider() {
-		return new IntegerFieldDataProvider<>(mRandom);
+		return IntegerFieldDataProvider.getInstance(mRandom);
 	}
 
 	@Override
 	public IntegerFieldDataProvider<OUTPUT_TYPE> getIntegerFieldDataProvider(int pMinimum, int pMaximum) {
-		return new IntegerFieldDataProvider<>(mRandom, pMinimum, pMaximum);
+		return IntegerFieldDataProvider.getInstanceWithRange(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
 	public LongFieldDataProvider<OUTPUT_TYPE> getLongFieldDataProvider() {
-		return new LongFieldDataProvider<>(mRandom);
+		return LongFieldDataProvider.getInstance(mRandom);
 	}
 
 	@Override
 	public LongFieldDataProvider<OUTPUT_TYPE> getLongFieldDataProvider(long pMinimum, long pMaximum) {
-		return new LongFieldDataProvider<>(mRandom, pMinimum, pMaximum);
+		return LongFieldDataProvider.getInstanceWithRange(mRandom, pMinimum, pMaximum);
 	}
 
 	@Override
 	public SequentialIntegerFieldDataProvider<OUTPUT_TYPE> getSequentialIntegerFieldDataProvider() {
-		return new SequentialIntegerFieldDataProvider<>();
+		return SequentialIntegerFieldDataProvider.getInstance();
 	}
 
 	@Override
 	public SequentialIntegerFieldDataProvider<OUTPUT_TYPE> getSequentialIntegerFieldDataProvider(int pStartValue) {
-		return new SequentialIntegerFieldDataProvider<>(pStartValue);
+		return SequentialIntegerFieldDataProvider.getInstanceWithStartValue(pStartValue);
 	}
 
 	@Override
@@ -125,27 +126,33 @@ class SimpleFieldDataProviderFactory<OUTPUT_TYPE> implements FieldDataProviderFa
 
 	@Override
 	public LoremIpsumFieldDataProvider<OUTPUT_TYPE> getLoremIpsumFieldDataProvider() {
-		return new LoremIpsumFieldDataProvider<>(mRandom);
+		return LoremIpsumFieldDataProvider.getInstance();
 	}
 
 	@Override
 	public LoremIpsumFieldDataProvider<OUTPUT_TYPE> getLoremIpsumFieldDataProvider(int pLength) {
-		return new LoremIpsumFieldDataProvider<>(mRandom, pLength);
+		return LoremIpsumFieldDataProvider.getInstanceWithLength(pLength);
 	}
 
 	@Override
 	public LoremIpsumFieldDataProvider<OUTPUT_TYPE> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength) {
-		return new LoremIpsumFieldDataProvider<>(mRandom, pMinLength, pMaxLength);
+		return LoremIpsumFieldDataProvider.getInstanceWithRange(mRandom, pMinLength, pMaxLength);
 	}
 
 	@Override
 	public LoremIpsumFieldDataProvider<OUTPUT_TYPE> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength, String pParagraphDelimiter) {
-		return new LoremIpsumFieldDataProvider<>(mRandom, pMinLength, pMaxLength, pParagraphDelimiter);
+		return LoremIpsumFieldDataProvider.getInstanceWithRangeAndDelimiter(mRandom, pMinLength, pMaxLength, pParagraphDelimiter);
 	}
 
 	@Override
 	public <ENUM_TYPE extends Enum> RandomEnumFieldDataProvider<OUTPUT_TYPE, ENUM_TYPE> getRandomEnumFieldDataProvider(Class<ENUM_TYPE> pValue) {
 		return new RandomEnumFieldDataProvider<>(mRandom, pValue);
+	}
+
+	@Override
+	public FieldDataProvider<OUTPUT_TYPE, String>
+	getPaddedFieldDataProvider(int pMinimumLength, String pPaddingString, FieldDataProvider<OUTPUT_TYPE, ?> pFieldDataProvider) {
+		return new PaddedFieldDataProvider<>(pMinimumLength, pPaddingString, pFieldDataProvider);
 	}
 
 	@Override

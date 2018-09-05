@@ -31,25 +31,22 @@ public final class LoremIpsumFieldDataProvider<OUTPUT_TYPE> implements FieldData
 	private final int mMaxLength;
 
 	/**
-	 * Creates an instance of {@link LoremIpsumFieldDataProvider} generating one whole {@code String} of Lorem Ipsum.
-	 *
-	 * @param pRandom A random value generator
+	 * Returns a new instance of {@link LoremIpsumFieldDataProvider} generating one whole {@code String} of Lorem Ipsum.
 	 */
-	public LoremIpsumFieldDataProvider(Random pRandom) {
-		this(pRandom, LOREM_IPSUM_LENGTH);
+	public static <OUTPUT_TYPE> LoremIpsumFieldDataProvider<OUTPUT_TYPE> getInstance() {
+		return new LoremIpsumFieldDataProvider<>();
 	}
 
 	/**
-	 * Creates an instance of {@link LoremIpsumFieldDataProvider} generating a {@code String} of Lorem Ipsum of the requested length.
+	 * Returns a new instance of {@link LoremIpsumFieldDataProvider} generating a {@code String} of Lorem Ipsum of the requested length.
 	 *
 	 * The Lorem Ipsum text is repeated if the requested length is longer than the length of Lorem Ipsum. In such cases, the default
 	 * delimiter {@code DEFAULT_PARAGRAPH_DELIMITER} is used.
 	 *
-	 * @param pRandom A random value generator
 	 * @param pLength The length of the returned string
 	 */
-	public LoremIpsumFieldDataProvider(Random pRandom, int pLength) {
-		this(pRandom, pLength, pLength);
+	public static <OUTPUT_TYPE> LoremIpsumFieldDataProvider<OUTPUT_TYPE> getInstanceWithLength(int pLength) {
+		return new LoremIpsumFieldDataProvider<>(pLength);
 	}
 
 	/**
@@ -63,8 +60,8 @@ public final class LoremIpsumFieldDataProvider<OUTPUT_TYPE> implements FieldData
 	 * @param pMinLength The minimum length of the returned string
 	 * @param pMaxLength The maximum length of the returned string
 	 */
-	public LoremIpsumFieldDataProvider(Random pRandom, int pMinLength, int pMaxLength) {
-		this(pRandom, pMinLength, pMaxLength, DEFAULT_PARAGRAPH_DELIMITER);
+	public static <OUTPUT_TYPE> LoremIpsumFieldDataProvider<OUTPUT_TYPE> getInstanceWithRange(Random pRandom, int pMinLength, int pMaxLength) {
+		return new LoremIpsumFieldDataProvider<>(pRandom, pMinLength, pMaxLength);
 	}
 
 	/**
@@ -79,7 +76,28 @@ public final class LoremIpsumFieldDataProvider<OUTPUT_TYPE> implements FieldData
 	 * @param pMaxLength          The maximum length of the returned string
 	 * @param pParagraphDelimiter The delimiter to use for long Lorem Ipsums
 	 */
-	public LoremIpsumFieldDataProvider(Random pRandom, int pMinLength, int pMaxLength, String pParagraphDelimiter) {
+	public static <OUTPUT_TYPE> LoremIpsumFieldDataProvider<OUTPUT_TYPE> getInstanceWithRangeAndDelimiter(
+		Random pRandom,
+		int pMinLength,
+		int pMaxLength,
+		String pParagraphDelimiter
+	) {
+		return new LoremIpsumFieldDataProvider<>(pRandom, pMinLength, pMaxLength, pParagraphDelimiter);
+	}
+
+	private LoremIpsumFieldDataProvider() {
+		this(LOREM_IPSUM_LENGTH);
+	}
+
+	private LoremIpsumFieldDataProvider(int pLength) {
+		this(new FakeRandom(), pLength, pLength);
+	}
+
+	private LoremIpsumFieldDataProvider(Random pRandom, int pMinLength, int pMaxLength) {
+		this(pRandom, pMinLength, pMaxLength, DEFAULT_PARAGRAPH_DELIMITER);
+	}
+
+	private LoremIpsumFieldDataProvider(Random pRandom, int pMinLength, int pMaxLength, String pParagraphDelimiter) {
 		mRandom = pRandom;
 		mMinLength = pMinLength;
 		mMaxLength = pMaxLength;
@@ -88,27 +106,38 @@ public final class LoremIpsumFieldDataProvider<OUTPUT_TYPE> implements FieldData
 
 	@Override
 	public String generate(OUTPUT_TYPE instance) {
-		final int delimiterLength = mParagraphDelimiter.length();
 		int remainingLength = mRandom.nextInt(mMaxLength - mMinLength + 1) + mMinLength;
 
+		return getLoremIpsumString(remainingLength);
+	}
+
+	private String getLoremIpsumString(int pRemainingLength) {
+		final int delimiterLength = mParagraphDelimiter.length();
 		StringBuilder stringBuilder = new StringBuilder();
 
-		while (remainingLength >= LOREM_IPSUM_LENGTH + delimiterLength) {
+		while (pRemainingLength >= LOREM_IPSUM_LENGTH + delimiterLength) {
 			stringBuilder
 				.append(LOREM_IPSUM)
 				.append(mParagraphDelimiter);
-			remainingLength -= (LOREM_IPSUM_LENGTH + delimiterLength);
+			pRemainingLength -= (LOREM_IPSUM_LENGTH + delimiterLength);
 		}
 
-		if (remainingLength == 0) {
+		if (pRemainingLength == 0) {
 			if (stringBuilder.length() != 0) {
 				stringBuilder.delete((stringBuilder.length() - delimiterLength), stringBuilder.length());
 			}
 
 		} else {
-				stringBuilder.append(LOREM_IPSUM.substring(0, remainingLength));
+				stringBuilder.append(LOREM_IPSUM.substring(0, pRemainingLength));
 		}
 
 		return stringBuilder.toString();
+	}
+
+	private static class FakeRandom extends Random {
+		@Override
+		public int nextInt() {
+			return 0;
+		}
 	}
 }

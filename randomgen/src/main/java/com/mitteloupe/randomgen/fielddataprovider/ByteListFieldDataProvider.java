@@ -18,23 +18,31 @@ public final class ByteListFieldDataProvider<OUTPUT_TYPE> implements FieldDataPr
 	private final int mMaxSize;
 
 	/**
-	 * Creates an instance of {@link ByteListFieldDataProvider} generating precisely {@code pSize} Bytes.
+	 * Returns a new instance of {@link ByteListFieldDataProvider} generating precisely {@code pSize} Bytes.
 	 *
 	 * @param pRandom A random value generator
 	 * @param pSize   The number of Bytes to generate
 	 */
-	public ByteListFieldDataProvider(Random pRandom, int pSize) {
-		this(pRandom, pSize, pSize);
+	public static <OUTPUT_TYPE> ByteListFieldDataProvider<OUTPUT_TYPE> getInstanceWithSize(Random pRandom, int pSize) {
+		return new ByteListFieldDataProvider<>(pRandom, pSize);
 	}
 
 	/**
-	 * Creates an instance of {@link ByteListFieldDataProvider} generating between {@code pMinSize} and {@code pMaxSize} Bytes (inclusive).
+	 * Returns a new instance of {@link ByteListFieldDataProvider} generating between {@code pMinSize} and {@code pMaxSize} Bytes (inclusive).
 	 *
 	 * @param pRandom  A random value generator
 	 * @param pMinSize The minimal number of Bytes to generate
 	 * @param pMaxSize The maximal number of Bytes to generate
 	 */
-	public ByteListFieldDataProvider(Random pRandom, int pMinSize, int pMaxSize) {
+	public static <OUTPUT_TYPE> ByteListFieldDataProvider<OUTPUT_TYPE> getInstanceWithSizeRange(Random pRandom, int pMinSize, int pMaxSize) {
+		return new ByteListFieldDataProvider<>(pRandom, pMinSize, pMaxSize);
+	}
+
+	private ByteListFieldDataProvider(Random pRandom, int pSize) {
+		this(pRandom, pSize, pSize);
+	}
+
+	private ByteListFieldDataProvider(Random pRandom, int pMinSize, int pMaxSize) {
 		mRandom = pRandom;
 		mMinSize = pMinSize;
 		mMaxSize = pMaxSize;

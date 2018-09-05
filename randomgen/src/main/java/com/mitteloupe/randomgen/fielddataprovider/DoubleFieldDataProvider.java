@@ -15,22 +15,30 @@ public final class DoubleFieldDataProvider<OUTPUT_TYPE> implements FieldDataProv
 	private final double mMaximum;
 
 	/**
-	 * Creates an instance of {@link DoubleFieldDataProvider} generating a {@code Double} between {@code 0.0} and {@code 1.0}.
+	 * Returns a new instance of {@link DoubleFieldDataProvider} generating a {@code Double} between {@code 0.0} and {@code 1.0}.
 	 *
 	 * @param pRandom A random value generator
 	 */
-	public DoubleFieldDataProvider(Random pRandom) {
-		this(pRandom, 0d, 1d);
+	public static <OUTPUT_TYPE> DoubleFieldDataProvider<OUTPUT_TYPE> getInstance(Random pRandom) {
+		return new DoubleFieldDataProvider<>(pRandom);
 	}
 
 	/**
-	 * Creates an instance of {@link DoubleFieldDataProvider} generating a {@code Double} between {@code pMinimum} and {@code pMaximum}.
+	 * Returns a new instance of {@link DoubleFieldDataProvider} generating a {@code Double} between {@code pMinimum} and {@code pMaximum}.
 	 *
 	 * @param pRandom A random value generator
 	 * @param pMinimum The lowest possible value
 	 * @param pMaximum The highest possible value
 	 */
-	public DoubleFieldDataProvider(Random pRandom, double pMinimum, double pMaximum) {
+	public static <OUTPUT_TYPE> DoubleFieldDataProvider<OUTPUT_TYPE> getInstanceWithRange(Random pRandom, double pMinimum, double pMaximum) {
+		return new DoubleFieldDataProvider<>(pRandom, pMinimum, pMaximum);
+	}
+
+	private DoubleFieldDataProvider(Random pRandom) {
+		this(pRandom, 0d, 1d);
+	}
+
+	private DoubleFieldDataProvider(Random pRandom, double pMinimum, double pMaximum) {
 		mRandom = pRandom;
 		mMinimum = pMinimum;
 		mMaximum = pMaximum;

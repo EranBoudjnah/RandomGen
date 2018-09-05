@@ -2,8 +2,9 @@ package com.mitteloupe.randomgen.fielddataprovider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Random;
 
@@ -13,16 +14,14 @@ import static org.mockito.BDDMockito.given;
 /**
  * Created by Eran Boudjnah on 10/08/2018.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class BooleanFieldDataProviderTest {
 	private BooleanFieldDataProvider<?> mCut;
 
-	@Mock
-	private Random mRandom;
+	@Mock private Random mRandom;
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-
 		mCut = new BooleanFieldDataProvider<>(mRandom);
 	}
 

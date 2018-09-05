@@ -4,8 +4,9 @@ import com.mitteloupe.randomgen.UuidGenerator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -13,16 +14,14 @@ import static org.mockito.BDDMockito.given;
 /**
  * Created by Eran Boudjnah on 11/08/2018.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class UuidFieldDataProviderTest {
 	private UuidFieldDataProvider<?> mCut;
 
-	@Mock
-	private UuidGenerator mUuidGenerator;
+	@Mock private UuidGenerator mUuidGenerator;
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-
 		mCut = new UuidFieldDataProvider<>(mUuidGenerator);
 	}
 

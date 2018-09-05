@@ -19,24 +19,29 @@ import com.mitteloupe.randomgen.fielddataprovider.UuidFieldDataProvider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by Eran Boudjnah on 07/08/2018.
  */
 @SuppressWarnings("unchecked")
+@RunWith(MockitoJUnitRunner.class)
 public class RandomGenTest {
+	private static final double EQUALS_PRECISION = 0.0001d;
+
 	private RandomGen.Builder<TestPerson> mBuilder;
 	private RandomGen<TestPerson> mCut;
 
@@ -44,8 +49,6 @@ public class RandomGenTest {
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-
 		mBuilder = new RandomGen.Builder<>(new RandomGen.InstanceProvider<TestPerson>() {
 			@Override
 			public TestPerson provideInstance() {
@@ -223,7 +226,7 @@ public class RandomGenTest {
 		testPerson = mCut.generate();
 
 		// Then
-		assertEquals(EXPECTED_VALUE, testPerson.getWealth());
+		assertEquals(EXPECTED_VALUE, testPerson.getWealth(), 0.0001d);
 	}
 
 	@Test
@@ -245,7 +248,7 @@ public class RandomGenTest {
 		testPerson = mCut.generate();
 
 		// Then
-		assertEquals(EXPECTED_VALUE, testPerson.getWealth());
+		assertEquals(EXPECTED_VALUE, testPerson.getWealth(), 0.0001d);
 	}
 
 
@@ -268,7 +271,7 @@ public class RandomGenTest {
 		testPerson = mCut.generate();
 
 		// Then
-		assertEquals(EXPECTED_VALUE, testPerson.getHeight());
+		assertEquals(EXPECTED_VALUE, testPerson.getHeight(), 0.0001d);
 	}
 
 
@@ -291,7 +294,7 @@ public class RandomGenTest {
 		testPerson = mCut.generate();
 
 		// Then
-		assertEquals(EXPECTED_VALUE, testPerson.getHeight());
+		assertEquals(EXPECTED_VALUE, testPerson.getHeight(), EQUALS_PRECISION);
 	}
 
 	@Test
@@ -607,17 +610,34 @@ public class RandomGenTest {
 			.returning(fieldDataProvider)
 			.build();
 
-		TestPerson testPerson;
-
 		// When
-		testPerson = mCut.generate();
+		TestPerson testPerson = mCut.generate();
 
 		// Then
 		assertEquals(EXPECTED_VALUE, testPerson.getName());
 	}
 
 	@Test
-	public void givenBuilderReturningCustomListFieldDataProviderWhenGenerateThenInstanceHasCorrectValue() {
+	public void givenBuilderReturningRandomGenWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		RandomGen<String> randomGen = mock(RandomGen.class);
+		String EXPECTED_VALUE = "Inigo Montoya";
+		given(randomGen.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
+
+		mCut = mBuilder
+			.withField("mName")
+			.returning(randomGen)
+			.build();
+
+		// When
+		TestPerson testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUE, testPerson.getName());
+	}
+
+	@Test
+	public void givenBuilderReturningCustomListFieldDataProviderInstancesWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
 		FieldDataProvider<TestPerson, String> fieldDataProvider = mock(FieldDataProvider.class);
 		CustomListFieldDataProvider<TestPerson, String> customListFieldDataProvider = mock(CustomListFieldDataProvider.class);
@@ -640,7 +660,30 @@ public class RandomGenTest {
 	}
 
 	@Test
-	public void givenBuilderReturningCustomListRangeFieldDataProviderWhenGenerateThenInstanceHasCorrectValue() {
+	public void givenBuilderReturningRandomGenInstancesWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		RandomGen<TestPerson> randomGen = mock(RandomGen.class);
+		CustomListFieldDataProvider<TestPerson, String> customListFieldDataProvider = mock(CustomListFieldDataProvider.class);
+		given(mFactory.getCustomListFieldDataProvider(3, (FieldDataProvider)randomGen)).willReturn(customListFieldDataProvider);
+		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
+		given(customListFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUES);
+
+		mCut = mBuilder
+			.withField("mAliases")
+			.returning(3, randomGen)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUES, testPerson.getAliases());
+	}
+
+	@Test
+	public void givenBuilderReturningRangeAndCustomListFieldDataProviderWhenGenerateThenInstanceHasCorrectValue() {
 		// Given
 		FieldDataProvider<TestPerson, String> fieldDataProvider = mock(FieldDataProvider.class);
 		CustomListRangeFieldDataProvider<TestPerson, String> customListRangeFieldDataProvider = mock(CustomListRangeFieldDataProvider.class);
@@ -651,6 +694,29 @@ public class RandomGenTest {
 		mCut = mBuilder
 			.withField("mAliases")
 			.returning(2, 4, fieldDataProvider)
+			.build();
+
+		TestPerson testPerson;
+
+		// When
+		testPerson = mCut.generate();
+
+		// Then
+		assertEquals(EXPECTED_VALUES, testPerson.getAliases());
+	}
+
+	@Test
+	public void givenBuilderReturningRangeAndRandomGenWhenGenerateThenInstanceHasCorrectValue() {
+		// Given
+		RandomGen<TestPerson> randomGen = mock(RandomGen.class);
+		CustomListRangeFieldDataProvider<TestPerson, String> customListRangeFieldDataProvider = mock(CustomListRangeFieldDataProvider.class);
+		given(mFactory.getCustomListRangeFieldDataProvider(2, 4, (FieldDataProvider)randomGen)).willReturn(customListRangeFieldDataProvider);
+		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
+		given(customListRangeFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUES);
+
+		mCut = mBuilder
+			.withField("mAliases")
+			.returning(2, 4, randomGen)
 			.build();
 
 		TestPerson testPerson;
@@ -689,6 +755,68 @@ public class RandomGenTest {
 
 		assertTrue(caughtException instanceof IllegalArgumentException);
 		assertEquals("Cannot set field mCandiesCount due to invalid value", caughtException.getMessage());
+		assertEquals("java.lang.IllegalArgumentException: Can not set int field com.mitteloupe.randomgen.RandomGenTest$TestPerson.mCandiesCount to java.lang.String", caughtException.getCause().getMessage());
+	}
+
+	@Test
+	public void givenNonListValueForListFieldWhenGenerateThenInstanceThrowsIllegalArgumentException() {
+		// Given
+		final String NAME = "Superman";
+
+		ExplicitFieldDataProvider<TestPerson, String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
+		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME);
+
+		mCut = mBuilder
+			.withField("mBites")
+			.returningExplicitly(NAME)
+			.build();
+
+		Throwable caughtException = null;
+
+		try {
+			// When
+			mCut.generate();
+
+		} catch (Throwable exception) {
+			// Then
+			caughtException = exception;
+		}
+
+		assertTrue(caughtException instanceof IllegalArgumentException);
+		assertEquals("Cannot set field mBites due to invalid value", caughtException.getMessage());
+		assertEquals("java.lang.RuntimeException: Expected collection value", caughtException.getCause().getMessage());
+	}
+
+	@Test
+	public void givenInvalidValueForListWhenGenerateThenInstanceThrowsIllegalArgumentException() {
+		// Given
+		final String[] NAMES_ARRAY = {"Superman"};
+		final List<String> NAMES = Arrays.asList(NAMES_ARRAY);
+
+		ExplicitFieldDataProvider<TestPerson, List<String>> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider(NAMES)).willReturn(explicitFieldDataProvider);
+		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAMES);
+
+		mCut = mBuilder
+			.withField("mBites")
+			.returningExplicitly(NAMES)
+			.build();
+
+		Throwable caughtException = null;
+
+		try {
+			// When
+			mCut.generate();
+
+		} catch (Throwable exception) {
+			// Then
+			caughtException = exception;
+		}
+
+		assertTrue(caughtException instanceof IllegalArgumentException);
+		assertEquals("Cannot set field mBites due to invalid value", caughtException.getMessage());
+		assertEquals("java.lang.ArrayStoreException", caughtException.getCause().getMessage());
 	}
 
 	@Test
@@ -718,6 +846,22 @@ public class RandomGenTest {
 
 		assertTrue(caughtException instanceof IllegalArgumentException);
 		assertEquals("Cannot set field mUnknownField - field not found", caughtException.getMessage());
+	}
+
+	@Test
+	public void givenBuilderWithOnGenerateSetWhenGenerateThenOnGenerateCalled() {
+		// Given
+		RandomGen.OnGenerateCallback<TestPerson> onGenerateCallback = mock(RandomGen.OnGenerateCallback.class);
+
+		mCut = mBuilder
+			.onGenerate(onGenerateCallback)
+			.build();
+
+		// When
+		TestPerson testPerson = mCut.generate();
+
+		// Then
+		verify(onGenerateCallback).onGenerate(testPerson);
 	}
 
 	@SuppressWarnings("unused") // Setting is done via RandomGen :)

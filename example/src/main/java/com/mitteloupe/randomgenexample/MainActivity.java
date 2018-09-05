@@ -1,58 +1,110 @@
 package com.mitteloupe.randomgenexample;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
+import android.widget.ViewFlipper;
 
 import com.mitteloupe.randomgen.RandomGen;
-import com.mitteloupe.randomgen.datasource.AstronomyDataSource;
-import com.mitteloupe.randomgenexample.data.Planet;
-import com.mitteloupe.randomgenexample.data.StarSystem;
+import com.mitteloupe.randomgenexample.data.flat.Flat;
+import com.mitteloupe.randomgenexample.data.person.Person;
+import com.mitteloupe.randomgenexample.data.planet.PlanetarySystem;
+import com.mitteloupe.randomgenexample.generator.FlatGeneratorFactory;
+import com.mitteloupe.randomgenexample.generator.PersonGeneratorFactory;
+import com.mitteloupe.randomgenexample.generator.PlanetarySystemGeneratorFactory;
+import com.mitteloupe.randomgenexample.widget.FlatView;
+import com.mitteloupe.randomgenexample.widget.PersonView;
+import com.mitteloupe.randomgenexample.widget.PlanetarySystemView;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+	private Handler mHandler = new Handler();
+	private FlatGeneratorFactory mFlatGeneratorFactory;
+	private PersonGeneratorFactory mPersonGeneratorFactory;
+	private PlanetarySystemGeneratorFactory mPlanetarySystemGeneratorFactory;
+
+	private RandomGen<Person> mPersonRandomGen;
+	private PersonView mPersonView;
+
+	private RandomGen<PlanetarySystem> mPlanetarySystemRandomGen;
+	private PlanetarySystemView mPlanetarySystemView;
+
+	private RandomGen<Flat> mFlatRandomGen;
+	private FlatView mFlatView;
+
+	private ViewFlipper mViewFlipper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// Create a random planet generator
-		RandomGen<Planet> planetRandomGen = new RandomGen.Builder<>(new RandomGen.InstanceProvider<Planet>() {
-			@Override
-			public Planet provideInstance() {
-				return new Planet();
-			}
-		})
-			.withField("id")
-			.returningSequentialInteger()
-			.withField("uuid")
-			.returningUuid()
-			.withField("name")
-			.returning(AstronomyDataSource.getInstance().getStars())
-			.withField("diameter")
-			.returning(400L, 500L)
-			.withField("planetClass")
-			.returning(Planet.PlanetClass.class)
-			.build();
+		mViewFlipper = findViewById(R.id.content_container);
+		mPersonView = findViewById(R.id.person_view);
+		mPlanetarySystemView = findViewById(R.id.planetary_system_view);
+		mFlatView = findViewById(R.id.flat_view);
 
-		// Create a random star system with 2 to 4 planets
-		RandomGen<StarSystem> starSystemRandomGen = new RandomGen.Builder<>(new RandomGen.InstanceProvider<StarSystem>() {
+		mHandler.post(new Runnable() {
 			@Override
-			public StarSystem provideInstance() {
-				return new StarSystem();
+			public void run() {
+				initGenerators();
 			}
-		})
-			.withField("name")
-			.returningExplicitly("System A")
-			.withField("stars")
-			.returning(2, 4, planetRandomGen)
-			.build();
+		});
+	}
 
-		// Generate 1,000 star systems
-		for (int i = 0; i < 1000; ++i) {
-			StarSystem starSystem = starSystemRandomGen.generate();
-			Log.d("RandomGen", starSystem.toString() +
-				"\n--");
-		}
+	private void initGenerators() {
+		mFlatGeneratorFactory = new FlatGeneratorFactory(new Random());
+		mPersonGeneratorFactory = new PersonGeneratorFactory();
+		mPlanetarySystemGeneratorFactory = new PlanetarySystemGeneratorFactory();
+		mPersonRandomGen = mPersonGeneratorFactory.getNewPersonGenerator();
+		mPlanetarySystemRandomGen = mPlanetarySystemGeneratorFactory.getNewPlanetarySystemGenerator();
+		mFlatRandomGen = mFlatGeneratorFactory.getNewFlatGenerator();
+	}
+
+	public void onPersonClick(View view) {
+		mHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				generatePerson();
+			}
+		});
+	}
+
+	public void onPlanetarySystemClick(View view) {
+		mHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				generatePlanetarySystem();
+			}
+		});
+	}
+
+	public void onFlatClick(View view) {
+		mHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				generateFlat();
+			}
+		});
+	}
+
+	private void generatePerson() {
+		Person person = mPersonRandomGen.generate();
+		mViewFlipper.setDisplayedChild(1);
+		mPersonView.setPerson(person);
+	}
+
+	private void generatePlanetarySystem() {
+		PlanetarySystem planetarySystem = mPlanetarySystemRandomGen.generate();
+		mViewFlipper.setDisplayedChild(2);
+		mPlanetarySystemView.setPlanetarySystem(planetarySystem);
+	}
+
+	private void generateFlat() {
+		Flat flat = mFlatRandomGen.generate();
+		mViewFlipper.setDisplayedChild(3);
+		mFlatView.setFlat(flat);
 	}
 }

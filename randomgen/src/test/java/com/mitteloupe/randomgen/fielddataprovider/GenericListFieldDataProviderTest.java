@@ -2,8 +2,9 @@ package com.mitteloupe.randomgen.fielddataprovider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,18 +16,16 @@ import static org.mockito.BDDMockito.given;
 /**
  * Created by Eran Boudjnah on 10/08/2018.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class GenericListFieldDataProviderTest {
 	private GenericListFieldDataProvider<?, String> mCut;
 
-	@Mock
-	private Random mRandom;
+	@Mock private Random mRandom;
 
 	private List<String> mValues;
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-
 		mValues = Arrays.asList("The First", "The Last", "Eternity");
 
 		mCut = new GenericListFieldDataProvider<>(mRandom, mValues);

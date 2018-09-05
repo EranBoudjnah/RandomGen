@@ -19,8 +19,9 @@ import com.mitteloupe.randomgen.fielddataprovider.UuidFieldDataProvider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -35,6 +36,7 @@ import static org.mockito.Mockito.mock;
  * Created by Eran Boudjnah on 11/08/2018.
  */
 @SuppressWarnings("unchecked")
+@RunWith(MockitoJUnitRunner.class)
 public class SimpleFieldDataProviderFactoryTest {
 	private SimpleFieldDataProviderFactory<Object> mCut;
 
@@ -43,8 +45,6 @@ public class SimpleFieldDataProviderFactoryTest {
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-
 		mCut = new SimpleFieldDataProviderFactory<>(mRandom, mUuidGenerator);
 	}
 

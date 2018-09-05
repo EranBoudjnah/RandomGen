@@ -16,23 +16,31 @@ public final class IntegerFieldDataProvider<OUTPUT_TYPE> implements FieldDataPro
 	private final int mMinimum;
 
 	/**
-	 * Creates an instance of {@link IntegerFieldDataProvider} generating an {@code Integer}
+	 * Returns a new instance of {@link IntegerFieldDataProvider} generating an {@code Integer}
 	 * between {@code Integer.MIN_VALUE} and {@code Integer.MAX_VALUE}.
 	 *
 	 * @param pRandom A random value generator
 	 */
-	public IntegerFieldDataProvider(Random pRandom) {
-		this(pRandom, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	public static <OUTPUT_TYPE> IntegerFieldDataProvider<OUTPUT_TYPE> getInstance(Random pRandom) {
+		return new IntegerFieldDataProvider<>(pRandom);
 	}
 
 	/**
-	 * Creates an instance of {@link IntegerFieldDataProvider} generating an {@code Integer} between {@code pMinimum} and {@code pMaximum}.
+	 * Returns a new instance of {@link IntegerFieldDataProvider} generating an {@code Integer} between {@code pMinimum} and {@code pMaximum}.
 	 *
 	 * @param pRandom A random value generator
 	 * @param pMinimum The lowest possible value
 	 * @param pMaximum The highest possible value
 	 */
-	public IntegerFieldDataProvider(Random pRandom, int pMinimum, int pMaximum) {
+	public static <OUTPUT_TYPE> IntegerFieldDataProvider<OUTPUT_TYPE> getInstanceWithRange(Random pRandom, int pMinimum, int pMaximum) {
+		return new IntegerFieldDataProvider<>(pRandom, pMinimum, pMaximum);
+	}
+
+	private IntegerFieldDataProvider(Random pRandom) {
+		this(pRandom, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+
+	private IntegerFieldDataProvider(Random pRandom, int pMinimum, int pMaximum) {
 		mRandom = pRandom;
 		mMinimum = pMinimum;
 		mMaximum = pMaximum;
