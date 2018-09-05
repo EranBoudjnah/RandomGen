@@ -11,8 +11,8 @@
 	<android.support.constraint.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="8dp"
 		android:background="@color/colorPrimary"
+		android:padding="8dp"
 		>
 
 
@@ -78,8 +78,9 @@
 			android:layout_marginLeft="8dp"
 			android:layout_marginStart="8dp"
 			android:textColor="@android:color/white"
+			android:textSize="11sp"
+			app:layout_constraintBottom_toBottomOf="@+id/text_age"
 			app:layout_constraintStart_toEndOf="@+id/text_age"
-			app:layout_constraintTop_toTopOf="@+id/text_age"
 			tools:text="35"
 			/>
 
@@ -103,8 +104,9 @@
 			android:layout_marginLeft="8dp"
 			android:layout_marginStart="8dp"
 			android:textColor="@android:color/white"
+			android:textSize="11sp"
+			app:layout_constraintBottom_toBottomOf="@+id/text_occupation"
 			app:layout_constraintStart_toEndOf="@+id/text_occupation"
-			app:layout_constraintTop_toTopOf="@+id/text_occupation"
 			tools:text="Plumber"
 			/>
 
@@ -123,14 +125,15 @@
 
 		<TextView
 			android:id="@+id/text_phone_value"
-			android:layout_width="140dp"
+			android:layout_width="120dp"
 			android:layout_height="wrap_content"
 			android:layout_marginLeft="8dp"
 			android:layout_marginStart="8dp"
 			android:gravity="end"
 			android:textColor="@android:color/white"
+			android:textSize="11sp"
+			app:layout_constraintBottom_toBottomOf="@+id/text_phone"
 			app:layout_constraintStart_toEndOf="@+id/text_phone"
-			app:layout_constraintTop_toTopOf="@+id/text_phone"
 			tools:text="+44 734 153 17500"
 			/>
 

@@ -5,7 +5,10 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -85,7 +88,7 @@ public class PlanetarySystemView extends FrameLayout {
 		inflate(context, R.layout.view_planetary_system, this);
 
 		setWillNotDraw(false);
-		setBackgroundResource(R.color.colorPrimary);
+		setUpBackground();
 
 		mRenderFrame = findViewById(R.id.render_frame);
 
@@ -94,6 +97,12 @@ public class PlanetarySystemView extends FrameLayout {
 		initPlanetTextViews();
 
 		initTimers();
+	}
+
+	private void setUpBackground() {
+		Drawable drawable = getResources().getDrawable(android.R.drawable.dialog_holo_light_frame);
+		drawable.setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY));
+		setBackgroundDrawable(drawable);
 	}
 
 	private void initTimers() {

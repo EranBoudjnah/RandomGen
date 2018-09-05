@@ -16,7 +16,11 @@
 			android:id="@+id/render_frame"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
-			android:layout_margin="8dp"
+			android:layout_marginEnd="0dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginRight="0dp"
+			android:layout_marginStart="8dp"
+			android:layout_marginTop="16dp"
 			app:layout_constraintDimensionRatio="10:7"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
@@ -43,9 +47,9 @@
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/text_star_age"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_star_age"
-			app:layout_constraintBottom_toBottomOf="@+id/text_star_age"
 			tools:text="4 BY"
 			/>
 
@@ -69,9 +73,9 @@
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/text_star_diameter"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_star_diameter"
-			app:layout_constraintBottom_toBottomOf="@+id/text_star_diameter"
 			tools:text="5.23 SR"
 			/>
 
@@ -95,9 +99,9 @@
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/text_star_mass"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_star_mass"
-			app:layout_constraintBottom_toBottomOf="@+id/text_star_mass"
 			tools:text="4.25 Suns"
 			/>
 
@@ -121,9 +125,9 @@
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/text_planets_count"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_planets_count"
-			app:layout_constraintBottom_toBottomOf="@+id/text_planets_count"
 			tools:text="5"
 			/>
 
@@ -160,9 +164,9 @@
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/text_planet_diameter"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_planet_diameter"
-			app:layout_constraintBottom_toBottomOf="@+id/text_planet_diameter"
 			tools:text="5.23 Earths"
 			/>
 
@@ -186,9 +190,9 @@
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/text_planet_mass"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_planet_mass"
-			app:layout_constraintBottom_toBottomOf="@+id/text_planet_mass"
 			tools:text="5.23 SM"
 			/>
 
@@ -212,9 +216,9 @@
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/text_planet_orbital_period"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_planet_orbital_period"
-			app:layout_constraintBottom_toBottomOf="@+id/text_planet_orbital_period"
 			tools:text="3 Years"
 			/>
 
@@ -238,9 +242,9 @@
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/text_planet_rotation_period"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_planet_rotation_period"
-			app:layout_constraintBottom_toBottomOf="@+id/text_planet_rotation_period"
 			tools:text="3 Days"
 			/>
 
@@ -264,9 +268,9 @@
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/text_planet_moons"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_planet_moons"
-			app:layout_constraintBottom_toBottomOf="@+id/text_planet_moons"
 			tools:text="3"
 			/>
 
@@ -300,11 +304,11 @@
 			android:id="@+id/text_planet_atmosphere_value"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="3dp"
 			android:lines="2"
 			android:textColor="@android:color/white"
 			android:textSize="11sp"
 			android:textStyle="bold"
-			android:layout_marginTop="3dp"
 			app:layout_constraintHeight_percent="0.5"
 			app:layout_constraintStart_toEndOf="@+id/text_planet_atmosphere"
 			app:layout_constraintTop_toTopOf="@+id/text_planet_atmosphere"

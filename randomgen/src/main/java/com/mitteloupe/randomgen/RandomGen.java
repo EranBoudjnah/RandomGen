@@ -42,6 +42,14 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 	public GENERATED_INSTANCE generate(Object unused) {
 		final GENERATED_INSTANCE instance = mInstanceProvider.provideInstance();
 
+		setAllFields(instance);
+
+		notifyOnGenerateCallbacks(instance);
+
+		return instance;
+	}
+
+	private void setAllFields(GENERATED_INSTANCE pInstance) {
 		for (final Map.Entry<String, FieldDataProvider<GENERATED_INSTANCE, ?>> entry : mDataProviders.entrySet()) {
 			final String key = entry.getKey();
 			if (!mFields.containsKey(key)) {
@@ -50,20 +58,14 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 
 			final Field field = mFields.get(key);
 
-			final Object value = entry.getValue().generate(instance);
+			final Object value = entry.getValue().generate(pInstance);
 
 			try {
-				setField(instance, field, value);
+				setField(pInstance, field, value);
 			} catch (AssignmentException exception) {
 				throw new IllegalArgumentException("Cannot set field " + key + " due to invalid value", exception);
 			}
 		}
-
-		for (OnGenerateCallback<GENERATED_INSTANCE> onGenerateCallbacks : mOnGenerateCallbacks) {
-			onGenerateCallbacks.onGenerate(instance);
-		}
-
-		return instance;
 	}
 
 	private void setField(GENERATED_INSTANCE pInstance, Field pField, Object pValue) throws IllegalArgumentException {
@@ -74,12 +76,8 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		setFieldToRawValue(pInstance, pField, valueToSet);
 	}
 
-	private void setFieldToRawValue(GENERATED_INSTANCE pInstance, Field pField, Object pValue) {
-		try {
-			pField.set(pInstance, pValue);
-		} catch (IllegalAccessException | IllegalArgumentException exception) {
-			throw new AssignmentException(exception);
-		}
+	private boolean isFieldArray(Field pField) {
+		return pField.getType().isArray();
 	}
 
 	private Object getValueAsArray(Field pField, Object pValue) {
@@ -90,7 +88,6 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		List valueAsList = (List)pValue;
 		TypedArray typedArray = new TypedArray<>(pField.getType().getComponentType(), valueAsList.size());
 
-
 		try {
 			return valueAsList.toArray(typedArray.get());
 		} catch (ArrayStoreException exception) {
@@ -98,8 +95,18 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		}
 	}
 
-	private boolean isFieldArray(Field pField) {
-		return pField.getType().isArray();
+	private void setFieldToRawValue(GENERATED_INSTANCE pInstance, Field pField, Object pValue) {
+		try {
+			pField.set(pInstance, pValue);
+		} catch (IllegalAccessException | IllegalArgumentException exception) {
+			throw new AssignmentException(exception);
+		}
+	}
+
+	private void notifyOnGenerateCallbacks(GENERATED_INSTANCE pInstance) {
+		for (OnGenerateCallback<GENERATED_INSTANCE> onGenerateCallbacks : mOnGenerateCallbacks) {
+			onGenerateCallbacks.onGenerate(pInstance);
+		}
 	}
 
 	private void getAllFields() {
@@ -345,8 +352,7 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		private ELEMENT_TYPE[] mTypedArray;
 
 		TypedArray(Class<ELEMENT_TYPE> pElementClass, int pCapacity) {
-			// Use Array native method to create array
-			// of a type only known at run time
+			// Use Array native method to create array of a type only known at run time
 			final Object newInstance = Array.newInstance(pElementClass, pCapacity);
 			//noinspection unchecked We just generated the instance, we know what type to expect.
 			mTypedArray = (ELEMENT_TYPE[])newInstance;

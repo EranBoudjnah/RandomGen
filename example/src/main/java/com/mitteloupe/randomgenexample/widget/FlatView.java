@@ -3,7 +3,10 @@ package com.mitteloupe.randomgenexample.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -35,7 +38,13 @@ public class FlatView extends FrameLayout {
 		super(context, attrs, defStyleAttr);
 
 		setWillNotDraw(false);
-		setBackgroundResource(R.color.colorPrimary);
+		setUpBackground();
+	}
+
+	private void setUpBackground() {
+		Drawable drawable = getResources().getDrawable(android.R.drawable.dialog_holo_light_frame);
+		drawable.setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY));
+		setBackgroundDrawable(drawable);
 	}
 
 	public void setFlat(Flat pFlat) {
@@ -53,8 +62,8 @@ public class FlatView extends FrameLayout {
 		mPaint.setTextAlign(Paint.Align.CENTER);
 		mPaint.setTextSize(24f);
 
-		float flatWidth = 900f;
-		float flatHeight = 600f;
+		float flatWidth = getWidth() - 100;
+		float flatHeight = getHeight() - 100;
 		mBoundingWalls.set(50, 50, flatWidth + 50, flatHeight + 50);
 		pCanvas.drawRect(mBoundingWalls, mPaint);
 
