@@ -4,7 +4,7 @@ def groupId = project.PUBLISH_GROUP_ID
 def artifactId = project.PUBLISH_ARTIFACT_ID
 def version = project.PUBLISH_VERSION
 
-def localReleaseDest = "${buildDir}/release/${version}"
+def localReleaseDest = "${buildDir}/release/${version}/com/mitteloupe/randomgen"
 
 uploadArchives {
 	repositories.mavenDeployer {
