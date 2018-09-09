@@ -1,7 +1,11 @@
 # RandomGen
+>
 > Initialize instances of any class with generated data.
 >
-> ![Example](https://github.com/EranBoudjnah/RandomGen/raw/master/example/videocap.gif)
+
+[![Build Status](https://travis-ci.com/EranBoudjnah/RandomGen.svg?branch=master)](https://travis-ci.com/EranBoudjnah/RandomGen)
+
+![Example](https://github.com/EranBoudjnah/RandomGen/raw/master/example/videocap.gif)
 
 Inspired by [Cesar Ferreira](https://cesarferreira.com)'s [RxPeople](https://github.com/cesarferreira/RxPeople), I thought I'd implement an abstraction of the idea, so you could generate random instances of any class.
 
