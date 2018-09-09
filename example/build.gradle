@@ -30,6 +30,7 @@ dependencies {
 	implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 	testImplementation 'junit:junit:4.12'
 	androidTestImplementation 'com.android.support.test:runner:1.0.2'
-	implementation 'com.mitteloupe:randomgen:1.1.0'
+
+	implementation 'com.mitteloupe:randomgen:1.3.0'
 	implementation 'com.mitteloupe:randomgen.datasource:1.0.0'
 }
