@@ -23,12 +23,8 @@ public class PersonGeneratorFactory {
 	public RandomGen<Person> getNewPersonGenerator() {
 		Random random = new Random();
 
-		return new RandomGen.Builder<>(new RandomGen.InstanceProvider<Person>() {
-			@Override
-			public Person provideInstance() {
-				return new Person(null, null, 0, null, null);
-			}
-		})
+		return new RandomGen.Builder<Person>()
+			.ofClass(Person.class)
 			.withField("mGender")
 			.returning(Gender.class)
 			.withField("mName")

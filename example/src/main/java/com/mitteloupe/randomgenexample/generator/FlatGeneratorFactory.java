@@ -21,24 +21,21 @@ public class FlatGeneratorFactory {
 	}
 
 	public RandomGen<Flat> getNewFlatGenerator() {
-		return new RandomGen.Builder<>(new RandomGen.InstanceProvider<Flat>() {
-			@Override
-			public Flat provideInstance() {
-				return new Flat(newRoom());
-			}
-		})
+		return new RandomGen.Builder<Flat>()
+			.withProvider(new RandomGen.InstanceProvider<Flat>() {
+				@Override
+				public Flat provideInstance() {
+					return new Flat(newRoom());
+				}
+			})
 			.withField("mRooms")
 			.returning(newContainerRoomRandomGen())
 			.build();
 	}
 
 	private RandomGen<Room> newContainerRoomRandomGen() {
-		return new RandomGen.Builder<>(new RandomGen.InstanceProvider<Room>() {
-			@Override
-			public Room provideInstance() {
-				return newRoom();
-			}
-		})
+		return new RandomGen.Builder<Room>()
+			.ofClass(Room.class)
 			.withField("mRoomType")
 			.returning(RoomType.class)
 			.onGenerate(new RandomGen.OnGenerateCallback<Room>() {
@@ -53,12 +50,8 @@ public class FlatGeneratorFactory {
 	}
 
 	private RandomGen<Room> newRoomRandomGen() {
-		return new RandomGen.Builder<>(new RandomGen.InstanceProvider<Room>() {
-			@Override
-			public Room provideInstance() {
-				return newRoom();
-			}
-		})
+		return new RandomGen.Builder<Room>()
+			.ofClass(Room.class)
 			.withField("mRoomType")
 			.returning(RoomType.class)
 			.build();
@@ -70,12 +63,8 @@ public class FlatGeneratorFactory {
 	}
 
 	private void splitRoomUsingRandomGen(final Room pRoom, RandomGen<Room> pRoomRandomGen, DivisionType pDivisionType) {
-		new RandomGen.Builder<>(new RandomGen.InstanceProvider<Room>() {
-			@Override
-			public Room provideInstance() {
-				return pRoom;
-			}
-		})
+		new RandomGen.Builder<Room>()
+			.withProvider(getSpecificRoomProvider(pRoom))
 			.withField("mFirstRoom")
 			.returning(pRoomRandomGen)
 			.withField("mSecondRoom")
@@ -86,6 +75,16 @@ public class FlatGeneratorFactory {
 			.returning(0.25f, 0.75f)
 			.build()
 			.generate();
+	}
+
+	@NonNull
+	private RandomGen.InstanceProvider<Room> getSpecificRoomProvider(final Room pRoom) {
+		return new RandomGen.InstanceProvider<Room>() {
+			@Override
+			public Room provideInstance() {
+				return pRoom;
+			}
+		};
 	}
 
 	private void splitRooms(Room pRoom, int pRoomsRemaining, DivisionType pLastDivisionType) {
