@@ -50,8 +50,10 @@ public class SimpleFieldDataProviderFactoryTest {
 
 	@Test
 	public void whenGetExplicitFieldDataProviderThenReturnsInstanceWithExpectedValue() throws Exception {
-		// When
+		// Given
 		String POPCORN = "Popcorn";
+
+		// When
 		ExplicitFieldDataProvider<?, String> dataProvider = mCut.getExplicitFieldDataProvider(POPCORN);
 
 		// Then
@@ -131,6 +133,7 @@ public class SimpleFieldDataProviderFactoryTest {
 
 	@Test
 	public void givenRangeWhenGetDoubleFieldDataProviderThenReturnsReturnsInstanceWithCorrectMinAndMax() throws Exception {
+		// Given
 		final double MIN_VALUE = -3d;
 		final double MAX_VALUE = 3d;
 
@@ -156,6 +159,7 @@ public class SimpleFieldDataProviderFactoryTest {
 
 	@Test
 	public void givenRangeWhenGetFloatFieldDataProviderThenReturnsReturnsInstanceWithCorrectMinAndMax() throws Exception {
+		// Given
 		final float MIN_VALUE = -3f;
 		final float MAX_VALUE = 3f;
 
@@ -181,6 +185,7 @@ public class SimpleFieldDataProviderFactoryTest {
 
 	@Test
 	public void givenRangeWhenGetIntegerFieldDataProviderThenReturnsReturnsInstanceWithCorrectMinAndMax() throws Exception {
+		// Given
 		final int MIN_VALUE = -3;
 		final int MAX_VALUE = 3;
 
@@ -206,6 +211,7 @@ public class SimpleFieldDataProviderFactoryTest {
 
 	@Test
 	public void givenRangeWhenGetLongFieldDataProviderThenReturnsReturnsInstanceWithCorrectMinAndMax() throws Exception {
+		// Given
 		final long MIN_VALUE = -3L;
 		final long MAX_VALUE = 3L;
 
@@ -333,11 +339,30 @@ public class SimpleFieldDataProviderFactoryTest {
 	}
 
 	@Test
+	public void givenParamsAndFieldDataProviderWhenGetPaddedFieldDataProviderThenReturnsInstanceWithCorrectPropertiesSet()
+		throws Exception {
+		// Given
+		final String PADDING_STRING = "00";
+		final int MINIMUM_LENGTH = 2;
+		FieldDataProvider<Object, String> provider = mock(FieldDataProvider.class);
+
+		// When
+		FieldDataProvider<Object, String> dataProvider = mCut.getPaddedFieldDataProvider(MINIMUM_LENGTH, PADDING_STRING, provider);
+
+		// Then
+		assertFieldEquals(dataProvider, "mMinimumLength", MINIMUM_LENGTH);
+		assertFieldEquals(dataProvider, "mPaddingString", PADDING_STRING);
+		assertFieldEquals(dataProvider, "mFieldDataProvider", provider);
+	}
+
+	@Test
 	public void givenInstancesCountAndFieldDataProviderWhenGetCustomListFieldDataProviderThenReturnsInstanceWithCorrectPropertiesSet()
 		throws Exception {
-		// When
-		FieldDataProvider<Object, String> provider = mock(FieldDataProvider.class);
+		// Given
 		final int INSTANCES = 5;
+		FieldDataProvider<Object, String> provider = mock(FieldDataProvider.class);
+
+		// When
 		CustomListFieldDataProvider<Object, String> dataProvider = mCut.getCustomListFieldDataProvider(INSTANCES, provider);
 
 		// Then
@@ -348,10 +373,12 @@ public class SimpleFieldDataProviderFactoryTest {
 	@Test
 	public void givenInstancesCountRangeAndFieldDataProviderWhenGetCustomListRangeFieldDataProviderThenReturnsInstanceWithCorrectPropertiesSet()
 		throws Exception {
-		// When
+		// Given
 		FieldDataProvider<Object, String> provider = mock(FieldDataProvider.class);
 		final int MIN_INSTANCES = 5;
 		final int MAX_INSTANCES = 5;
+
+		// When
 		CustomListRangeFieldDataProvider<Object, String> dataProvider = mCut.getCustomListRangeFieldDataProvider(MIN_INSTANCES, MAX_INSTANCES, provider);
 
 		// Then
