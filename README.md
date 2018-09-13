@@ -51,7 +51,7 @@ RandomGen<ObjectClass> randomGen = new RandomGen.Builder<ObjectClass>()
 
 ### Kotlin
 ```kotlin
-val randomGen = RandomGen.Builder<Person>()
+val randomGen = RandomGen.Builder<ObjectClass>()
 	.ofClass(ObjectClass::class.java)
 	.withField("id")
 	.returningSequentialInteger()
