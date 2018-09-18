@@ -85,7 +85,7 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 			throw new AssignmentException(new RuntimeException("Expected collection value"));
 		}
 
-		List valueAsList = (List)pValue;
+		List valueAsList = (List) pValue;
 		TypedArray typedArray = new TypedArray<>(pField.getType().getComponentType(), valueAsList.size());
 
 		try {
@@ -122,39 +122,22 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 	}
 
 	public static class Builder<GENERATED_INSTANCE> {
-		private final Map<String, FieldDataProvider<GENERATED_INSTANCE, ?>> mDataProviders;
-		private final InstanceProvider<GENERATED_INSTANCE> mInstanceProvider;
-		private FieldDataProviderFactory<GENERATED_INSTANCE> mFactory;
-		private List<OnGenerateCallback<GENERATED_INSTANCE>> mOnGenerateCallbacks = new ArrayList<>();
-
-		@SuppressWarnings({"unused"}) // Public library constructor
-		public Builder(InstanceProvider<GENERATED_INSTANCE> pInstanceProvider) {
-			this(pInstanceProvider, new DefaultFieldDataProviderFactory<GENERATED_INSTANCE>());
+		public BuilderField<GENERATED_INSTANCE> ofClass(Class<GENERATED_INSTANCE> pClass) {
+			return new BuilderField<>(pClass, new DefaultFieldDataProviderFactory<GENERATED_INSTANCE>());
 		}
 
-		Builder(InstanceProvider<GENERATED_INSTANCE> pInstanceProvider, FieldDataProviderFactory<GENERATED_INSTANCE> pFactory) {
-			mDataProviders = new LinkedHashMap<>();
-			mInstanceProvider = pInstanceProvider;
-			mFactory = pFactory;
+		BuilderField<GENERATED_INSTANCE> ofClassWithFactory(@SuppressWarnings("SameParameterValue") Class<GENERATED_INSTANCE> pClass,
+		                                                    FieldDataProviderFactory<GENERATED_INSTANCE> pFactory) {
+			return new BuilderField<>(pClass, pFactory);
 		}
 
-		public RandomGen<GENERATED_INSTANCE> build() {
-			return new RandomGen<>(mInstanceProvider, mDataProviders, mOnGenerateCallbacks);
+		public BuilderField<GENERATED_INSTANCE> withProvider(InstanceProvider<GENERATED_INSTANCE> pInstanceProvider) {
+			return new BuilderField<>(pInstanceProvider, new DefaultFieldDataProviderFactory<GENERATED_INSTANCE>());
 		}
 
-		public BuilderField<GENERATED_INSTANCE> withField(String pFieldName) {
-			return new BuilderField<>(this, pFieldName, mFactory);
-		}
-
-		private <FIELD_DATA_TYPE> Builder<GENERATED_INSTANCE> returning(String pField,
-		                                                                FieldDataProvider<GENERATED_INSTANCE, FIELD_DATA_TYPE> pFieldDataProvider) {
-			mDataProviders.put(pField, pFieldDataProvider);
-			return this;
-		}
-
-		public Builder<GENERATED_INSTANCE> onGenerate(OnGenerateCallback<GENERATED_INSTANCE> pOnGenerateCallback) {
-			mOnGenerateCallbacks.add(pOnGenerateCallback);
-			return this;
+		BuilderField<GENERATED_INSTANCE> withProviderAndFactory(InstanceProvider<GENERATED_INSTANCE> pInstanceProvider,
+		                                                        FieldDataProviderFactory<GENERATED_INSTANCE> pFactory) {
+			return new BuilderField<>(pInstanceProvider, pFactory);
 		}
 
 		private static class DefaultFieldDataProviderFactory<GENERATED_INSTANCE> extends SimpleFieldDataProviderFactory<GENERATED_INSTANCE> {
@@ -171,88 +154,148 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		}
 	}
 
-	public static class BuilderField<RETURN_TYPE> {
-		private final Builder<RETURN_TYPE> mBuilder;
+	public static class BuilderField<GENERATED_INSTANCE> {
+		private final Map<String, FieldDataProvider<GENERATED_INSTANCE, ?>> mDataProviders;
+		private final FieldDataProviderFactory<GENERATED_INSTANCE> mFactory;
+		private InstanceProvider<GENERATED_INSTANCE> mInstanceProvider;
+		private Class<GENERATED_INSTANCE> mClass;
+		private List<OnGenerateCallback<GENERATED_INSTANCE>> mOnGenerateCallbacks = new ArrayList<>();
+
+		BuilderField(Class<GENERATED_INSTANCE> pClass,
+		             FieldDataProviderFactory<GENERATED_INSTANCE> pFactory) {
+			this(pFactory);
+
+			mClass = pClass;
+		}
+
+		BuilderField(InstanceProvider<GENERATED_INSTANCE> pInstanceProvider,
+		             FieldDataProviderFactory<GENERATED_INSTANCE> pFactory) {
+			this(pFactory);
+
+			mInstanceProvider = pInstanceProvider;
+		}
+
+		private BuilderField(FieldDataProviderFactory<GENERATED_INSTANCE> pFactory) {
+			mDataProviders = new LinkedHashMap<>();
+			mFactory = pFactory;
+		}
+
+		public RandomGen<GENERATED_INSTANCE> build() {
+			if (mInstanceProvider == null) {
+				mInstanceProvider = new DefaultValuesInstanceProvider<>(mClass);
+			}
+
+			RandomGen<GENERATED_INSTANCE> randomGen =
+				new RandomGen<>(mInstanceProvider,
+					new HashMap<>(mDataProviders),
+					new ArrayList<>(mOnGenerateCallbacks));
+
+			mDataProviders.clear();
+			mOnGenerateCallbacks.clear();
+
+			return randomGen;
+		}
+
+		public BuilderReturnValue<GENERATED_INSTANCE> withField(String pFieldName) {
+			return new BuilderReturnValue<>(this, pFieldName, mFactory);
+		}
+
+		private <FIELD_DATA_TYPE> BuilderField<GENERATED_INSTANCE> returning(String pField,
+		                                                                     FieldDataProvider<GENERATED_INSTANCE, FIELD_DATA_TYPE> pFieldDataProvider) {
+			mDataProviders.put(pField, pFieldDataProvider);
+			return this;
+		}
+
+		public BuilderField<GENERATED_INSTANCE> onGenerate(OnGenerateCallback<GENERATED_INSTANCE> pOnGenerateCallback) {
+			mOnGenerateCallbacks.add(pOnGenerateCallback);
+			return this;
+		}
+	}
+
+	@SuppressWarnings("WeakerAccess")
+	public static class BuilderReturnValue<RETURN_TYPE> {
+		private final BuilderField<RETURN_TYPE> mBuilderField;
 		private final String mField;
 		private final FieldDataProviderFactory<RETURN_TYPE> mFactory;
 
-		private BuilderField(Builder<RETURN_TYPE> pBuilder, String pField, FieldDataProviderFactory<RETURN_TYPE> pFactory) {
-			mBuilder = pBuilder;
+		private BuilderReturnValue(BuilderField<RETURN_TYPE> pBuilderField, String pField,
+		                           FieldDataProviderFactory<RETURN_TYPE> pFactory) {
+			mBuilderField = pBuilderField;
 			mField = pField;
 			mFactory = pFactory;
 		}
 
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returningExplicitly(final VALUE_TYPE pValue) {
-			return mBuilder.returning(mField, mFactory.getExplicitFieldDataProvider(pValue));
+		public <VALUE_TYPE> BuilderField<RETURN_TYPE> returningExplicitly(final VALUE_TYPE pValue) {
+			return mBuilderField.returning(mField, mFactory.getExplicitFieldDataProvider(pValue));
 		}
 
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(List<VALUE_TYPE> pList) {
+		public <VALUE_TYPE> BuilderField<RETURN_TYPE> returning(List<VALUE_TYPE> pList) {
 			final List<VALUE_TYPE> immutableList = new ArrayList<>(pList);
-			return mBuilder.returning(mField, mFactory.getGenericListFieldDataProvider(immutableList));
+			return mBuilderField.returning(mField, mFactory.getGenericListFieldDataProvider(immutableList));
 		}
 
-		public Builder<RETURN_TYPE> returningBoolean() {
-			return mBuilder.returning(mField, mFactory.getBooleanFieldDataProvider());
+		public BuilderField<RETURN_TYPE> returningBoolean() {
+			return mBuilderField.returning(mField, mFactory.getBooleanFieldDataProvider());
 		}
 
-		public Builder<RETURN_TYPE> returningByte() {
-			return mBuilder.returning(mField, mFactory.getByteFieldDataProvider());
+		public BuilderField<RETURN_TYPE> returningByte() {
+			return mBuilderField.returning(mField, mFactory.getByteFieldDataProvider());
 		}
 
-		public Builder<RETURN_TYPE> returningBytes(int pSize) {
-			return mBuilder.returning(mField, mFactory.getByteListFieldDataProvider(pSize));
+		public BuilderField<RETURN_TYPE> returningBytes(int pSize) {
+			return mBuilderField.returning(mField, mFactory.getByteListFieldDataProvider(pSize));
 		}
 
-		public Builder<RETURN_TYPE> returningBytes(int pMinSize, int pMaxSize) {
-			return mBuilder.returning(mField, mFactory.getByteListFieldDataProvider(pMinSize, pMaxSize));
+		public BuilderField<RETURN_TYPE> returningBytes(int pMinSize, int pMaxSize) {
+			return mBuilderField.returning(mField, mFactory.getByteListFieldDataProvider(pMinSize, pMaxSize));
 		}
 
-		public Builder<RETURN_TYPE> returningDouble() {
-			return mBuilder.returning(mField, mFactory.getDoubleFieldDataProvider());
+		public BuilderField<RETURN_TYPE> returningDouble() {
+			return mBuilderField.returning(mField, mFactory.getDoubleFieldDataProvider());
 		}
 
-		public Builder<RETURN_TYPE> returningFloat() {
-			return mBuilder.returning(mField, mFactory.getFloatFieldDataProvider());
+		public BuilderField<RETURN_TYPE> returningFloat() {
+			return mBuilderField.returning(mField, mFactory.getFloatFieldDataProvider());
 		}
 
-		public Builder<RETURN_TYPE> returningInteger() {
-			return mBuilder.returning(mField, mFactory.getIntegerFieldDataProvider());
+		public BuilderField<RETURN_TYPE> returningInteger() {
+			return mBuilderField.returning(mField, mFactory.getIntegerFieldDataProvider());
 		}
 
-		public Builder<RETURN_TYPE> returningLong() {
-			return mBuilder.returning(mField, mFactory.getLongFieldDataProvider());
+		public BuilderField<RETURN_TYPE> returningLong() {
+			return mBuilderField.returning(mField, mFactory.getLongFieldDataProvider());
 		}
 
-		public Builder<RETURN_TYPE> returning(final double pMinimum, final double pMaximum) {
-			return mBuilder.returning(mField, mFactory.getDoubleFieldDataProvider(pMinimum, pMaximum));
+		public BuilderField<RETURN_TYPE> returning(final double pMinimum, final double pMaximum) {
+			return mBuilderField.returning(mField, mFactory.getDoubleFieldDataProvider(pMinimum, pMaximum));
 		}
 
-		public Builder<RETURN_TYPE> returning(final float pMinimum, final float pMaximum) {
-			return mBuilder.returning(mField, mFactory.getFloatFieldDataProvider(pMinimum, pMaximum));
+		public BuilderField<RETURN_TYPE> returning(final float pMinimum, final float pMaximum) {
+			return mBuilderField.returning(mField, mFactory.getFloatFieldDataProvider(pMinimum, pMaximum));
 		}
 
-		public Builder<RETURN_TYPE> returning(final int pMinimum, final int pMaximum) {
-			return mBuilder.returning(mField, mFactory.getIntegerFieldDataProvider(pMinimum, pMaximum));
+		public BuilderField<RETURN_TYPE> returning(final int pMinimum, final int pMaximum) {
+			return mBuilderField.returning(mField, mFactory.getIntegerFieldDataProvider(pMinimum, pMaximum));
 		}
 
-		public Builder<RETURN_TYPE> returning(final long pMinimum, final long pMaximum) {
-			return mBuilder.returning(mField, mFactory.getLongFieldDataProvider(pMinimum, pMaximum));
+		public BuilderField<RETURN_TYPE> returning(final long pMinimum, final long pMaximum) {
+			return mBuilderField.returning(mField, mFactory.getLongFieldDataProvider(pMinimum, pMaximum));
 		}
 
-		public Builder<RETURN_TYPE> returningSequentialInteger() {
-			return mBuilder.returning(mField, mFactory.getSequentialIntegerFieldDataProvider());
+		public BuilderField<RETURN_TYPE> returningSequentialInteger() {
+			return mBuilderField.returning(mField, mFactory.getSequentialIntegerFieldDataProvider());
 		}
 
-		public Builder<RETURN_TYPE> returningSequentialInteger(int pStartValue) {
-			return mBuilder.returning(mField, mFactory.getSequentialIntegerFieldDataProvider(pStartValue));
+		public BuilderField<RETURN_TYPE> returningSequentialInteger(int pStartValue) {
+			return mBuilderField.returning(mField, mFactory.getSequentialIntegerFieldDataProvider(pStartValue));
 		}
 
-		public Builder<RETURN_TYPE> returningUuid() {
-			return mBuilder.returning(mField, mFactory.getUuidFieldDataProvider());
+		public BuilderField<RETURN_TYPE> returningUuid() {
+			return mBuilderField.returning(mField, mFactory.getUuidFieldDataProvider());
 		}
 
-		public Builder<RETURN_TYPE> returningRgb(boolean pAlpha) {
-			return mBuilder.returning(mField, mFactory.getRgbFieldDataProvider(pAlpha));
+		public BuilderField<RETURN_TYPE> returningRgb(boolean pAlpha) {
+			return mBuilderField.returning(mField, mFactory.getRgbFieldDataProvider(pAlpha));
 		}
 
 		/**
@@ -260,8 +303,8 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		 *
 		 * @return builder generating one copy of the Lorem Ipsum text
 		 */
-		public Builder<RETURN_TYPE> returningLoremIpsum() {
-			return mBuilder.returning(mField, mFactory.getLoremIpsumFieldDataProvider());
+		public BuilderField<RETURN_TYPE> returningLoremIpsum() {
+			return mBuilderField.returning(mField, mFactory.getLoremIpsumFieldDataProvider());
 		}
 
 		/**
@@ -270,8 +313,8 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		 * @param pLength The number of characters to return
 		 * @return A builder generating a substring of an infinite (well, kind of) Lorem Ipsum text
 		 */
-		public Builder<RETURN_TYPE> returningLoremIpsum(int pLength) {
-			return mBuilder.returning(mField, mFactory.getLoremIpsumFieldDataProvider(pLength));
+		public BuilderField<RETURN_TYPE> returningLoremIpsum(int pLength) {
+			return mBuilderField.returning(mField, mFactory.getLoremIpsumFieldDataProvider(pLength));
 		}
 
 		/**
@@ -281,21 +324,21 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		 * @param pMaxLength The maximal number of characters to return
 		 * @return A builder generating a substring of an infinite (well, kind of) Lorem Ipsum text
 		 */
-		public Builder<RETURN_TYPE> returningLoremIpsum(int pMinLength, int pMaxLength) {
-			return mBuilder.returning(mField, mFactory.getLoremIpsumFieldDataProvider(pMinLength, pMaxLength));
+		public BuilderField<RETURN_TYPE> returningLoremIpsum(int pMinLength, int pMaxLength) {
+			return mBuilderField.returning(mField, mFactory.getLoremIpsumFieldDataProvider(pMinLength, pMaxLength));
 		}
 
 		/**
 		 * Adds a String containing Lorem Ipsum. Length determines how many characters of Lorem Ipsum to return. The content will repeat itself if
 		 * the requested length exceeds the length of Lorem Ipsum.
 		 *
-		 * @param pMinLength The minimal number of characters to return
-		 * @param pMaxLength The maximal number of characters to return
+		 * @param pMinLength          The minimal number of characters to return
+		 * @param pMaxLength          The maximal number of characters to return
 		 * @param pParagraphDelimiter The string to use between Lorem Ipsum paragraphs
 		 * @return A builder generating a substring of an infinite (well, kind of) Lorem Ipsum text
 		 */
-		public Builder<RETURN_TYPE> returningLoremIpsum(int pMinLength, int pMaxLength, String pParagraphDelimiter) {
-			return mBuilder.returning(mField, mFactory.getLoremIpsumFieldDataProvider(pMinLength, pMaxLength, pParagraphDelimiter));
+		public BuilderField<RETURN_TYPE> returningLoremIpsum(int pMinLength, int pMaxLength, String pParagraphDelimiter) {
+			return mBuilderField.returning(mField, mFactory.getLoremIpsumFieldDataProvider(pMinLength, pMaxLength, pParagraphDelimiter));
 		}
 
 		/**
@@ -305,13 +348,13 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		 * @param <ENUM_TYPE> Implicit. The enum type to use
 		 * @return A builder with a data provider
 		 */
-		public <ENUM_TYPE extends Enum> Builder<RETURN_TYPE> returning(final Class<ENUM_TYPE> pEnumClass) {
-			return mBuilder.returning(mField, mFactory.getRandomEnumFieldDataProvider(pEnumClass));
+		public <ENUM_TYPE extends Enum> BuilderField<RETURN_TYPE> returning(final Class<ENUM_TYPE> pEnumClass) {
+			return mBuilderField.returning(mField, mFactory.getRandomEnumFieldDataProvider(pEnumClass));
 		}
 
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final RandomGen<VALUE_TYPE> pRandomGen) {
+		public <VALUE_TYPE> BuilderField<RETURN_TYPE> returning(final RandomGen<VALUE_TYPE> pRandomGen) {
 			//noinspection unchecked - This should be safe, as RandomGen doesn't use the RETURN_TYPE.
-			return mBuilder.returning(mField, (FieldDataProvider<RETURN_TYPE, VALUE_TYPE>)pRandomGen);
+			return mBuilderField.returning(mField, (FieldDataProvider<RETURN_TYPE, VALUE_TYPE>) pRandomGen);
 		}
 
 		/**
@@ -321,30 +364,30 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 		 * @param <VALUE_TYPE>       The type returned vy the {@link FieldDataProvider}
 		 * @return An instance of the specified {@code VALUE_TYPE}
 		 */
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
-			return mBuilder.returning(mField, pFieldDataProvider);
+		public <VALUE_TYPE> BuilderField<RETURN_TYPE> returning(FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
+			return mBuilderField.returning(mField, pFieldDataProvider);
 		}
 
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pInstances, final FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
-			return mBuilder.returning(mField, mFactory.getCustomListFieldDataProvider(pInstances, pFieldDataProvider));
+		public <VALUE_TYPE> BuilderField<RETURN_TYPE> returning(final int pInstances, final FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
+			return mBuilderField.returning(mField, mFactory.getCustomListFieldDataProvider(pInstances, pFieldDataProvider));
 		}
 
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pInstances, final RandomGen<VALUE_TYPE> pRandomGen) {
+		public <VALUE_TYPE> BuilderField<RETURN_TYPE> returning(final int pInstances, final RandomGen<VALUE_TYPE> pRandomGen) {
 			//noinspection unchecked - This should be safe, as RandomGen doesn't use the RETURN_TYPE.
-			return mBuilder.returning(mField, mFactory.getCustomListFieldDataProvider(pInstances,
-				(FieldDataProvider<RETURN_TYPE, VALUE_TYPE>)pRandomGen));
+			return mBuilderField.returning(mField, mFactory.getCustomListFieldDataProvider(pInstances,
+				(FieldDataProvider<RETURN_TYPE, VALUE_TYPE>) pRandomGen));
 		}
 
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pMinInstances, final int pMaxInstances,
-		                                                   final FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
-			return mBuilder.returning(mField, mFactory.getCustomListRangeFieldDataProvider(pMinInstances, pMaxInstances, pFieldDataProvider));
+		public <VALUE_TYPE> BuilderField<RETURN_TYPE> returning(final int pMinInstances, final int pMaxInstances,
+		                                                        final FieldDataProvider<RETURN_TYPE, VALUE_TYPE> pFieldDataProvider) {
+			return mBuilderField.returning(mField, mFactory.getCustomListRangeFieldDataProvider(pMinInstances, pMaxInstances, pFieldDataProvider));
 		}
 
-		public <VALUE_TYPE> Builder<RETURN_TYPE> returning(final int pMinInstances, final int pMaxInstances,
-		                                                   final RandomGen<VALUE_TYPE> pFieldDataProvider) {
+		public <VALUE_TYPE> BuilderField<RETURN_TYPE> returning(final int pMinInstances, final int pMaxInstances,
+		                                                        final RandomGen<VALUE_TYPE> pFieldDataProvider) {
 			//noinspection unchecked - This should be safe, as RandomGen doesn't use the RETURN_TYPE.
-			return mBuilder.returning(mField, mFactory.getCustomListRangeFieldDataProvider(pMinInstances, pMaxInstances,
-				(FieldDataProvider<RETURN_TYPE, VALUE_TYPE>)pFieldDataProvider));
+			return mBuilderField.returning(mField, mFactory.getCustomListRangeFieldDataProvider(pMinInstances, pMaxInstances,
+				(FieldDataProvider<RETURN_TYPE, VALUE_TYPE>) pFieldDataProvider));
 		}
 	}
 
@@ -355,7 +398,7 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 			// Use Array native method to create array of a type only known at run time
 			final Object newInstance = Array.newInstance(pElementClass, pCapacity);
 			//noinspection unchecked We just generated the instance, we know what type to expect.
-			mTypedArray = (ELEMENT_TYPE[])newInstance;
+			mTypedArray = (ELEMENT_TYPE[]) newInstance;
 		}
 
 		ELEMENT_TYPE[] get() {

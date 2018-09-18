@@ -19,7 +19,7 @@ lintOptions {
 ext {
 	PUBLISH_GROUP_ID = 'com.mitteloupe'
 	PUBLISH_ARTIFACT_ID = 'randomgen'
-	PUBLISH_VERSION = '1.3.0'
+	PUBLISH_VERSION = '1.4.0'
 }
 
 sourceCompatibility = "1.7"

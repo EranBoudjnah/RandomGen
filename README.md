@@ -17,7 +17,7 @@ In your `build.gradle`, add the following:
 
 ```groovy
 dependencies {
-	implementation 'com.mitteloupe:randomgen:1.3.0'
+	implementation 'com.mitteloupe:randomgen:1.4.0'
 }
 ```
 
@@ -40,12 +40,8 @@ repositories {
 
 ### Java
 ```java
-RandomGen<ObjectClass> randomGen = new RandomGen.Builder<>(new RandomGen.InstanceProvider<ObjectClass>() {
-	@Override
-	public ObjectClass provideInstance() {
-		return new ObjectClass();
-	}
-})
+RandomGen<ObjectClass> randomGen = new RandomGen.Builder<ObjectClass>()
+	.ofClass(ObjectClass.class)
 	.withField("id")
 	.returningSequentialInteger()
 	.withField("uuid")
@@ -55,7 +51,8 @@ RandomGen<ObjectClass> randomGen = new RandomGen.Builder<>(new RandomGen.Instanc
 
 ### Kotlin
 ```kotlin
-val randomGen = RandomGen.Builder(RandomGen.InstanceProvider { ObjectClass() })
+val randomGen = RandomGen.Builder<ObjectClass>()
+	.ofClass(ObjectClass::class.java)
 	.withField("id")
 	.returningSequentialInteger()
 	.withField("uuid")
