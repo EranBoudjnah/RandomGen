@@ -11,6 +11,8 @@ import sun.reflect.ReflectionFactory;
 class DefaultValuesInstanceProvider<GENERATED_INSTANCE> implements RandomGen.InstanceProvider<GENERATED_INSTANCE> {
 	private final Class<GENERATED_INSTANCE> mClass;
 
+	private Constructor<GENERATED_INSTANCE> mValidConstructor;
+
 	DefaultValuesInstanceProvider(Class<GENERATED_INSTANCE> pClass) {
 		mClass = pClass;
 	}
@@ -29,6 +31,10 @@ class DefaultValuesInstanceProvider<GENERATED_INSTANCE> implements RandomGen.Ins
 	}
 
 	private GENERATED_INSTANCE getInstanceFromAnyConstructor() throws Exception {
+		if (mValidConstructor != null) {
+			return getInstance(mValidConstructor);
+		}
+
 		List<Constructor<GENERATED_INSTANCE>> publicConstructors = getAllPublicConstructors();
 
 		Constructor<GENERATED_INSTANCE> constructorToUse = null;
@@ -36,7 +42,9 @@ class DefaultValuesInstanceProvider<GENERATED_INSTANCE> implements RandomGen.Ins
 		while (constructorToUse == null && !publicConstructors.isEmpty()) {
 			try {
 				constructorToUse = getPreferredConstructor(publicConstructors);
-				return getInstance(constructorToUse);
+				GENERATED_INSTANCE instance = getInstance(constructorToUse);
+				mValidConstructor = constructorToUse;
+				return instance;
 
 			} catch (Exception exception) {
 				publicConstructors.remove(constructorToUse);
