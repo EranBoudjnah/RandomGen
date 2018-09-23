@@ -32,13 +32,13 @@ public class LongFieldDataProviderTest {
 		assertEquals(Long.MIN_VALUE, result);
 
 		// Given
-		given(mRandom.nextDouble()).willReturn(0.99999999999d);
+		given(mRandom.nextDouble()).willReturn(0.9999999999999999d);
 
 		// When
 		result = mCut.generate(null);
 
 		// Then
-		assertEquals(Long.MAX_VALUE, result, 500000000L);
+		assertEquals(Long.MAX_VALUE, result, 1L);
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class LongFieldDataProviderTest {
 		assertEquals(0, result);
 
 		// Given
-		given(mRandom.nextDouble()).willReturn(0.99999999999d);
+		given(mRandom.nextDouble()).willReturn(0.9999999999999999d);
 
 		// When
 		result = mCut.generate(null);

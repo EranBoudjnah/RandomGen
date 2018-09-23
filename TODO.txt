@@ -7,7 +7,6 @@ TODO:
   .withRandom() - Allowing for different random generators (useful to control deviation).
   timestamp
   bitmaps
-  date
   standard date string
   hex string (ranged/fixed length)
   Android:

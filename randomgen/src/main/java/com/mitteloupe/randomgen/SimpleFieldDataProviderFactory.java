@@ -5,6 +5,7 @@ import com.mitteloupe.randomgen.fielddataprovider.ByteFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.ByteListFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.CustomListFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.CustomListRangeFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.DateFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.DoubleFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.ExplicitFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.FloatFieldDataProvider;
@@ -18,6 +19,7 @@ import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.SequentialIntegerFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.UuidFieldDataProvider;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -122,6 +124,21 @@ class SimpleFieldDataProviderFactory<OUTPUT_TYPE> implements FieldDataProviderFa
 	@Override
 	public RgbFieldDataProvider<OUTPUT_TYPE> getRgbFieldDataProvider(boolean pAlpha) {
 		return new RgbFieldDataProvider<>(mRandom, pAlpha);
+	}
+
+	@Override
+	public FieldDataProvider<OUTPUT_TYPE, Date> getDateFieldDataProvider() {
+		return DateFieldDataProvider.getInstance(mRandom);
+	}
+
+	@Override
+	public FieldDataProvider<OUTPUT_TYPE, Date> getDateFieldDataProvider(long pLatestTimestamp) {
+		return DateFieldDataProvider.getInstanceWithLatestTimestamp(mRandom, pLatestTimestamp);
+	}
+
+	@Override
+	public FieldDataProvider<OUTPUT_TYPE, Date> getDateFieldDataProvider(long pEarliestTimestamp, long pLatestTimestamp) {
+		return DateFieldDataProvider.getInstanceWithRange(mRandom, pEarliestTimestamp, pLatestTimestamp);
 	}
 
 	@Override

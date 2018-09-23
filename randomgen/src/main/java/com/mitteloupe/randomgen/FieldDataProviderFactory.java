@@ -1,5 +1,6 @@
 package com.mitteloupe.randomgen;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +42,12 @@ interface FieldDataProviderFactory<OUTPUT_TYPE> {
 	FieldDataProvider<OUTPUT_TYPE, String> getUuidFieldDataProvider();
 
 	FieldDataProvider<OUTPUT_TYPE, String> getRgbFieldDataProvider(boolean pAlpha);
+
+	FieldDataProvider<OUTPUT_TYPE, Date> getDateFieldDataProvider();
+
+	FieldDataProvider<OUTPUT_TYPE, Date> getDateFieldDataProvider(long pLatestTimestamp);
+
+	FieldDataProvider<OUTPUT_TYPE, Date> getDateFieldDataProvider(long pEarliestTimestamp, long pLatestTimestamp);
 
 	FieldDataProvider<OUTPUT_TYPE, String> getLoremIpsumFieldDataProvider();
 
