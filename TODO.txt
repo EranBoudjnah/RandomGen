@@ -3,7 +3,6 @@ TODO:
   From file
   Coordinate
   Char (random, fixed)
-  returning().or().returning()
   .withRandom() - Allowing for different random generators (useful to control deviation).
   timestamp
   bitmaps

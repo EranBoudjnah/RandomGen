@@ -18,6 +18,7 @@ import com.mitteloupe.randomgen.fielddataprovider.RandomEnumFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.SequentialIntegerFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.UuidFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.WeightedFieldDataProvidersFieldDataProvider;
 
 import java.util.Date;
 import java.util.List;
@@ -159,6 +160,11 @@ class SimpleFieldDataProviderFactory<OUTPUT_TYPE> implements FieldDataProviderFa
 	@Override
 	public LoremIpsumFieldDataProvider<OUTPUT_TYPE> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength, String pParagraphDelimiter) {
 		return LoremIpsumFieldDataProvider.getInstanceWithRangeAndDelimiter(mRandom, pMinLength, pMaxLength, pParagraphDelimiter);
+	}
+
+	@Override
+	public FieldDataProvider<OUTPUT_TYPE, ?> getWeightedFieldDataProvidersFieldDataProvider(FieldDataProvider<OUTPUT_TYPE, ?> pFieldDataProvider) {
+		return new WeightedFieldDataProvidersFieldDataProvider<>(mRandom, pFieldDataProvider);
 	}
 
 	@Override

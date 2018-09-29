@@ -57,6 +57,8 @@ interface FieldDataProviderFactory<OUTPUT_TYPE> {
 
 	FieldDataProvider<OUTPUT_TYPE, String> getLoremIpsumFieldDataProvider(int pMinLength, int pMaxLength, String pParagraphDelimiter);
 
+	FieldDataProvider<OUTPUT_TYPE, ?> getWeightedFieldDataProvidersFieldDataProvider(FieldDataProvider<OUTPUT_TYPE, ?> pFieldDataProvider);
+
 	<ENUM_TYPE extends Enum> FieldDataProvider<OUTPUT_TYPE, ENUM_TYPE> getRandomEnumFieldDataProvider(Class<ENUM_TYPE> pValue);
 
 	FieldDataProvider<OUTPUT_TYPE, String>

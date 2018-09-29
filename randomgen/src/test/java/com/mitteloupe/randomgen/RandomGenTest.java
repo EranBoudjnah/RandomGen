@@ -16,6 +16,7 @@ import com.mitteloupe.randomgen.fielddataprovider.RandomEnumFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.RgbFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.SequentialIntegerFieldDataProvider;
 import com.mitteloupe.randomgen.fielddataprovider.UuidFieldDataProvider;
+import com.mitteloupe.randomgen.fielddataprovider.WeightedFieldDataProvidersFieldDataProvider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,7 @@ import static org.mockito.Mockito.verify;
 public class RandomGenTest {
 	private static final double EQUALS_PRECISION = 0.0001d;
 
-	private final RandomGen.BuilderField<TestPerson> mBuilderField;
+	private final RandomGen.IncompleteBuilderField<TestPerson> mIncompleteBuilderField;
 	private final FieldDataProviderFactory<TestPerson> mFactory;
 
 	private RandomGen<TestPerson> mCut;
@@ -51,7 +52,7 @@ public class RandomGenTest {
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() {
 		FieldDataProviderFactory factory = mock(FieldDataProviderFactory.class);
-		RandomGen.BuilderField<TestPerson> builderFieldWithProviderAndFactory =
+		RandomGen.IncompleteBuilderField<TestPerson> incompleteBuilderFieldWithProviderAndFactory =
 				new RandomGen.Builder<TestPerson>()
 						.withProviderAndFactory(new RandomGen.InstanceProvider<TestPerson>() {
 							@Override
@@ -60,19 +61,19 @@ public class RandomGenTest {
 							}
 						}, factory);
 
-		RandomGen.BuilderField<TestPerson> builderFieldOfClassAndFactory =
+		RandomGen.IncompleteBuilderField<TestPerson> incompleteBuilderFieldOfClassAndFactory =
 				new RandomGen.Builder<TestPerson>()
 						.ofClassWithFactory(TestPerson.class, factory);
 
 		return Arrays.asList(new Object[][]{
-				{builderFieldWithProviderAndFactory, factory},
-				{builderFieldOfClassAndFactory, factory}
+				{incompleteBuilderFieldWithProviderAndFactory, factory},
+				{incompleteBuilderFieldOfClassAndFactory, factory}
 		});
 	}
 
-	public RandomGenTest(RandomGen.BuilderField<TestPerson> pBuilderField,
+	public RandomGenTest(RandomGen.IncompleteBuilderField<TestPerson> pIncompleteBuilderField,
 	                     FieldDataProviderFactory<TestPerson> pFactory) {
-		mBuilderField = pBuilderField;
+		mIncompleteBuilderField = pIncompleteBuilderField;
 		mFactory = pFactory;
 
 		reset(mFactory);
@@ -87,7 +88,7 @@ public class RandomGenTest {
 		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
 		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mName")
 				.returningExplicitly(NAME)
 				.build();
@@ -110,7 +111,7 @@ public class RandomGenTest {
 		given(mFactory.getGenericListFieldDataProvider(namesList)).willReturn(explicitFieldDataProvider);
 		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME_2);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mName")
 				.returning(namesList)
 				.build();
@@ -140,7 +141,7 @@ public class RandomGenTest {
 		given(mFactory.getBooleanFieldDataProvider()).willReturn(booleanFieldDataProvider);
 		given(booleanFieldDataProvider.generate(any(TestPerson.class))).willReturn(false);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mIsBrave")
 				.returningBoolean()
 				.build();
@@ -170,7 +171,7 @@ public class RandomGenTest {
 		given(mFactory.getByteFieldDataProvider()).willReturn(byteFieldDataProvider);
 		given(byteFieldDataProvider.generate(any(TestPerson.class))).willReturn((byte) 3);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mBite")
 				.returningByte()
 				.build();
@@ -192,7 +193,7 @@ public class RandomGenTest {
 		List<Byte> byteList = Arrays.asList((byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5);
 		given(byteListFieldDataProvider.generate(any(TestPerson.class))).willReturn(byteList);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mBites")
 				.returningBytes(5)
 				.build();
@@ -214,7 +215,7 @@ public class RandomGenTest {
 		List<Byte> byteList = Arrays.asList((byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5);
 		given(byteListFieldDataProvider.generate(any(TestPerson.class))).willReturn(byteList);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mBites")
 				.returningBytes(4, 5)
 				.build();
@@ -236,7 +237,7 @@ public class RandomGenTest {
 		final double EXPECTED_VALUE = 1.2345;
 		given(doubleFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mWealth")
 				.returningDouble()
 				.build();
@@ -258,7 +259,7 @@ public class RandomGenTest {
 		final double EXPECTED_VALUE = 1.2345;
 		given(doubleRangeFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mWealth")
 				.returning(1d, 2d)
 				.build();
@@ -281,7 +282,7 @@ public class RandomGenTest {
 		final float EXPECTED_VALUE = 1.23f;
 		given(floatFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mHeight")
 				.returningFloat()
 				.build();
@@ -304,7 +305,7 @@ public class RandomGenTest {
 		final float EXPECTED_VALUE = 1.23f;
 		given(floatRangeFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mHeight")
 				.returning(1f, 2f)
 				.build();
@@ -326,7 +327,7 @@ public class RandomGenTest {
 		final int EXPECTED_VALUE = 400;
 		given(integerFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mCandiesCount")
 				.returningInteger()
 				.build();
@@ -348,7 +349,7 @@ public class RandomGenTest {
 		final int EXPECTED_VALUE = 400;
 		given(integerFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mCandiesCount")
 				.returning(300, 500)
 				.build();
@@ -370,7 +371,7 @@ public class RandomGenTest {
 		final long EXPECTED_VALUE = 1337L;
 		given(longFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mSoLong")
 				.returningLong()
 				.build();
@@ -392,7 +393,7 @@ public class RandomGenTest {
 		final long EXPECTED_VALUE = 1337L;
 		given(longFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mSoLong")
 				.returning(1000L, 2000L)
 				.build();
@@ -414,7 +415,7 @@ public class RandomGenTest {
 		final int EXPECTED_VALUE = 1234567;
 		given(sequentialIntegerFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mId")
 				.returningSequentialInteger()
 				.build();
@@ -436,7 +437,7 @@ public class RandomGenTest {
 		final int EXPECTED_VALUE = 5;
 		given(sequentialIntegerFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mId")
 				.returningSequentialInteger(5)
 				.build();
@@ -458,7 +459,7 @@ public class RandomGenTest {
 		final String EXPECTED_VALUE = "8b3728d0-9c1d-11e8-98d0-529269fb1459";
 		given(uuidFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mUuid")
 				.returningUuid()
 				.build();
@@ -484,7 +485,7 @@ public class RandomGenTest {
 		given(rgbFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE_RGB);
 		given(rgbaFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE_RGBA);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mShirtColor")
 				.returningRgb(true)
 				.build();
@@ -498,7 +499,7 @@ public class RandomGenTest {
 		assertEquals(EXPECTED_VALUE_RGBA, testPerson.getShirtColor());
 
 		// Given
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mShirtColor")
 				.returningRgb(false)
 				.build();
@@ -518,7 +519,7 @@ public class RandomGenTest {
 		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
 		given(loremIpsumFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mBiography")
 				.returningLoremIpsum()
 				.build();
@@ -540,7 +541,7 @@ public class RandomGenTest {
 		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
 		given(loremIpsumFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mBiography")
 				.returningLoremIpsum(21)
 				.build();
@@ -562,7 +563,7 @@ public class RandomGenTest {
 		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
 		given(loremIpsumFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mBiography")
 				.returningLoremIpsum(20, 22)
 				.build();
@@ -584,7 +585,7 @@ public class RandomGenTest {
 		final String EXPECTED_VALUE = "Lorem ipsum and stuff";
 		given(loremIpsumFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mBiography")
 				.returningLoremIpsum(20, 22, "\n")
 				.build();
@@ -605,7 +606,7 @@ public class RandomGenTest {
 		given(mFactory.getRandomEnumFieldDataProvider(Gender.class)).willReturn(randomEnumFieldDataProvider);
 		given(randomEnumFieldDataProvider.generate(any(TestPerson.class))).willReturn(Gender.MALE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mGender")
 				.returning(Gender.class)
 				.build();
@@ -626,7 +627,7 @@ public class RandomGenTest {
 		String EXPECTED_VALUE = "Inigo Montoya";
 		given(fieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mName")
 				.returning(fieldDataProvider)
 				.build();
@@ -645,7 +646,7 @@ public class RandomGenTest {
 		String EXPECTED_VALUE = "Inigo Montoya";
 		given(randomGen.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUE);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mName")
 				.returning(randomGen)
 				.build();
@@ -666,7 +667,7 @@ public class RandomGenTest {
 		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
 		given(customListFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUES);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mAliases")
 				.returning(3, fieldDataProvider)
 				.build();
@@ -689,7 +690,7 @@ public class RandomGenTest {
 		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
 		given(customListFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUES);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mAliases")
 				.returning(3, randomGen)
 				.build();
@@ -712,7 +713,7 @@ public class RandomGenTest {
 		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
 		given(customListRangeFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUES);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mAliases")
 				.returning(2, 4, fieldDataProvider)
 				.build();
@@ -735,7 +736,7 @@ public class RandomGenTest {
 		List<String> EXPECTED_VALUES = Arrays.asList("The Shadow", "Captain Hammer", "Mr. Nobody");
 		given(customListRangeFieldDataProvider.generate(any(TestPerson.class))).willReturn(EXPECTED_VALUES);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mAliases")
 				.returning(2, 4, randomGen)
 				.build();
@@ -758,7 +759,7 @@ public class RandomGenTest {
 		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
 		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mCandiesCount")
 				.returningExplicitly(NAME)
 				.build();
@@ -788,7 +789,7 @@ public class RandomGenTest {
 		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
 		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mBites")
 				.returningExplicitly(NAME)
 				.build();
@@ -819,7 +820,7 @@ public class RandomGenTest {
 		given(mFactory.getExplicitFieldDataProvider(NAMES)).willReturn(explicitFieldDataProvider);
 		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAMES);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mBites")
 				.returningExplicitly(NAMES)
 				.build();
@@ -849,7 +850,7 @@ public class RandomGenTest {
 		given(mFactory.getExplicitFieldDataProvider(NAME)).willReturn(explicitFieldDataProvider);
 		given(explicitFieldDataProvider.generate(any(TestPerson.class))).willReturn(NAME);
 
-		mCut = mBuilderField
+		mCut = mIncompleteBuilderField
 				.withField("mUnknownField")
 				.returningExplicitly(NAME)
 				.build();
@@ -874,8 +875,14 @@ public class RandomGenTest {
 		// Given
 		RandomGen.OnGenerateCallback<TestPerson> onGenerateCallback = mock(RandomGen.OnGenerateCallback.class);
 
-		mCut = mBuilderField
+		// Minimal requirement for instance creation is one value.
+		ExplicitFieldDataProvider<TestPerson, String> explicitFieldDataProvider = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider("")).willReturn(explicitFieldDataProvider);
+
+		mCut = mIncompleteBuilderField
 				.onGenerate(onGenerateCallback)
+				.withField("mName")
+				.returningExplicitly("")
 				.build();
 
 		// When
@@ -883,6 +890,75 @@ public class RandomGenTest {
 
 		// Then
 		verify(onGenerateCallback).onGenerate(testPerson);
+	}
+
+	@Test
+	public void givenBuilderReturningExplicitValueOrAnotherWhenGenerateThenSecondProviderAddedAndInstanceHasCorrectValue() {
+		// Given
+		final String NAME1 = "Superman";
+		final String NAME2 = "Spider Man";
+
+		ExplicitFieldDataProvider<TestPerson, String> explicitFieldDataProvider1 = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider(NAME1)).willReturn(explicitFieldDataProvider1);
+		ExplicitFieldDataProvider<TestPerson, String> explicitFieldDataProvider2 = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider(NAME2)).willReturn(explicitFieldDataProvider2);
+
+		FieldDataProvider weightedFieldDataProvidersFieldDataProvider =
+			mock(WeightedFieldDataProvidersFieldDataProvider.class);
+		given(mFactory.getWeightedFieldDataProvidersFieldDataProvider(explicitFieldDataProvider1))
+			.willReturn(weightedFieldDataProvidersFieldDataProvider);
+		given(weightedFieldDataProvidersFieldDataProvider.generate(any(TestPerson.class)))
+			.willReturn(NAME1);
+
+		mCut = mIncompleteBuilderField
+			.withField("mName")
+			.returningExplicitly(NAME1)
+			.or()
+			.returningExplicitly(NAME2)
+			.build();
+
+		// When
+		TestPerson testPerson = mCut.generate();
+
+		// Then
+		verify(((WeightedFieldDataProvidersFieldDataProvider)weightedFieldDataProvidersFieldDataProvider))
+			.addFieldDataProvider(explicitFieldDataProvider2, 1d);
+		assertEquals(NAME1, testPerson.getName());
+	}
+
+	@Test
+	public void givenBuilderReturningExplicitValueOrAnotherWithWeightWhenGenerateThenSecondProviderAddedAndInstanceHasCorrectValue() {
+		// Given
+		final String NAME1 = "Superman";
+		final String NAME2 = "Spider Man";
+		final double WEIGHT = 2d;
+
+		ExplicitFieldDataProvider<TestPerson, String> explicitFieldDataProvider1 = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider(NAME1)).willReturn(explicitFieldDataProvider1);
+		ExplicitFieldDataProvider<TestPerson, String> explicitFieldDataProvider2 = mock(ExplicitFieldDataProvider.class);
+		given(mFactory.getExplicitFieldDataProvider(NAME2)).willReturn(explicitFieldDataProvider2);
+
+		FieldDataProvider weightedFieldDataProvidersFieldDataProvider =
+			mock(WeightedFieldDataProvidersFieldDataProvider.class);
+		given(mFactory.getWeightedFieldDataProvidersFieldDataProvider(explicitFieldDataProvider1))
+			.willReturn(weightedFieldDataProvidersFieldDataProvider);
+		given(weightedFieldDataProvidersFieldDataProvider.generate(any(TestPerson.class)))
+			.willReturn(NAME1);
+
+		mCut = mIncompleteBuilderField
+			.withField("mName")
+			.returningExplicitly(NAME1)
+			.orWithWeight(WEIGHT)
+			.returningExplicitly(NAME2)
+			.build();
+
+		// When
+		TestPerson testPerson = mCut.generate();
+
+		// Then
+		verify(((WeightedFieldDataProvidersFieldDataProvider)weightedFieldDataProvidersFieldDataProvider))
+			.addFieldDataProvider(explicitFieldDataProvider2, WEIGHT);
+		assertEquals(NAME1, testPerson.getName());
 	}
 
 	@SuppressWarnings("unused") // Setting is done via RandomGen :)
