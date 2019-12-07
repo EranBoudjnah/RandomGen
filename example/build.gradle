@@ -31,5 +31,5 @@ dependencies {
 	testImplementation 'junit:junit:4.12'
 	testImplementation 'org.hamcrest:hamcrest-core:2.2'
 	androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-	implementation 'com.mitteloupe:randomgen:1.4.0'
+	implementation 'com.mitteloupe:randomgen:1.4.1'
 }
