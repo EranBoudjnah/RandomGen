@@ -128,7 +128,7 @@ public final class LoremIpsumFieldDataProvider<OUTPUT_TYPE> implements FieldData
 			}
 
 		} else {
-				stringBuilder.append(LOREM_IPSUM.substring(0, pRemainingLength));
+			stringBuilder.append(LOREM_IPSUM, 0, pRemainingLength);
 		}
 
 		return stringBuilder.toString();
