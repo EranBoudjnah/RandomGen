@@ -68,7 +68,7 @@ public class DefaultValuesInstanceProviderTest {
     private static class TestClassWithNoFields implements TestClass {
         private final boolean mSet;
 
-        TestClassWithNoFields() {
+        public TestClassWithNoFields() {
             mSet = true;
         }
 
