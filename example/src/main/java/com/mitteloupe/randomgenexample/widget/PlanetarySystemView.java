@@ -36,7 +36,7 @@ public class PlanetarySystemView extends FrameLayout {
 
 	private static final float ASPECT_RATIO = 0.7f;
 	private static final float RING_ASPECT_RATIO = 0.5f;
-	public static final float RING_TO_STAR_RATIO = 1.4f;
+	private static final float RING_TO_STAR_RATIO = 1.4f;
 
 	private PlanetarySystem mPlanetarySystem;
 	private PlanetAnimation[] mPlanetAnimations = new PlanetAnimation[0];
