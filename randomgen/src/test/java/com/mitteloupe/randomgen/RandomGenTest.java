@@ -48,7 +48,6 @@ public class RandomGenTest {
 
 	private RandomGen<TestPerson> mCut;
 
-
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() {
 		FieldDataProviderFactory factory = mock(FieldDataProviderFactory.class);

@@ -1,6 +1,6 @@
 package com.mitteloupe.randomgenexample.data.planet;
 
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;

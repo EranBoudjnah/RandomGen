@@ -1,6 +1,6 @@
 package com.mitteloupe.randomgenexample.generator;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.mitteloupe.randomgen.RandomGen;
 import com.mitteloupe.randomgenexample.data.flat.DivisionType;

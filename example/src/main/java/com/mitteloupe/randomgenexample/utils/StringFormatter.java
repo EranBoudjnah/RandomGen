@@ -1,6 +1,6 @@
 package com.mitteloupe.randomgenexample.utils;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by Eran Boudjnah on 29/08/2018.

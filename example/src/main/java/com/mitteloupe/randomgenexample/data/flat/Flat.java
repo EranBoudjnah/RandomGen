@@ -1,6 +1,6 @@
 package com.mitteloupe.randomgenexample.data.flat;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by Eran Boudjnah on 26/08/2018.

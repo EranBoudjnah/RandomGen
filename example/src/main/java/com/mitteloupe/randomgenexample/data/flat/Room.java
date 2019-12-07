@@ -1,7 +1,7 @@
 package com.mitteloupe.randomgenexample.data.flat;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Created by Eran Boudjnah on 26/08/2018.
