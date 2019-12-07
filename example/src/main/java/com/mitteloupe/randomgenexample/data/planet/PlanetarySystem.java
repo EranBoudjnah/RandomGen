@@ -4,10 +4,10 @@ package com.mitteloupe.randomgenexample.data.planet;
  * Created by Eran Boudjnah on 25/04/2018.
  */
 public class PlanetarySystem {
-	private float mStarAgeBillionYears;
-	private double mStarDiameterSunRadii;
-	private double mStarSolarMass;
-	private Planet[] mPlanets;
+	private final float mStarAgeBillionYears;
+	private final double mStarDiameterSunRadii;
+	private final double mStarSolarMass;
+	private final Planet[] mPlanets;
 
 	public PlanetarySystem(float pStarAgeBillionYears, double pStarDiameterSunRadii, double pStarSolarMass, Planet[] pPlanets) {
 		mStarAgeBillionYears = pStarAgeBillionYears;

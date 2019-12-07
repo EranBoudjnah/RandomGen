@@ -5,7 +5,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class AstronomyDataSource {
-	private static AstronomyDataSource sDataSource = new AstronomyDataSource();
+	private final static AstronomyDataSource sDataSource = new AstronomyDataSource();
 
 	public static AstronomyDataSource getInstance() {
 		return sDataSource;

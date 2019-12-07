@@ -42,19 +42,19 @@ public class PlanetarySystemView extends FrameLayout {
 	private PlanetAnimation[] mPlanetAnimations = new PlanetAnimation[0];
 	private int mPlanetsCount;
 
-	private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+	private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-	private RectF mVisualRect = new RectF();
+	private final RectF mVisualRect = new RectF();
 	private float mVisualSize;
-	private PointF mVisualCenter = new PointF();
+	private final PointF mVisualCenter = new PointF();
 	private float mOrbitRingSpacing;
 
-	private PointF mPlanetCenter = new PointF();
+	private final PointF mPlanetCenter = new PointF();
 	private float mPlanetSize;
 
-	private RectF mPlanetRingRect = new RectF();
+	private final RectF mPlanetRingRect = new RectF();
 
-	private View mRenderFrame;
+	private final View mRenderFrame;
 	private TextView starAgeTextView;
 	private TextView starDiameterTextView;
 	private TextView starMassTextView;

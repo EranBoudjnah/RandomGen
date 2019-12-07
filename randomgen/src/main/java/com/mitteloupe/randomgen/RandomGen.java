@@ -495,7 +495,7 @@ public final class RandomGen<GENERATED_INSTANCE> implements FieldDataProvider<Ob
 	}
 
 	private class TypedArray<ELEMENT_TYPE> {
-		private ELEMENT_TYPE[] mTypedArray;
+		private final ELEMENT_TYPE[] mTypedArray;
 
 		TypedArray(Class<ELEMENT_TYPE> pElementClass, int pCapacity) {
 			// Use Array native method to create array of a type only known at run time

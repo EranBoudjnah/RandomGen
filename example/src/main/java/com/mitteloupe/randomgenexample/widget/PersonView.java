@@ -16,12 +16,12 @@ import com.mitteloupe.randomgenexample.data.person.Person;
  * Created by Eran Boudjnah on 18/08/2018.
  */
 public class PersonView extends FrameLayout {
-	private View mIconFemaleView;
-	private View mIconMaleView;
-	private TextView mNameView;
-	private TextView mAgeView;
-	private TextView mOccupationView;
-	private TextView mPhoneNumberView;
+	private final View mIconFemaleView;
+	private final View mIconMaleView;
+	private final TextView mNameView;
+	private final TextView mAgeView;
+	private final TextView mOccupationView;
+	private final TextView mPhoneNumberView;
 
 	public PersonView(@NonNull Context context) {
 		this(context, null);

@@ -28,9 +28,9 @@ import java.util.Random;
  * Created by Eran Boudjnah on 07/08/2018.
  */
 class SimpleFieldDataProviderFactory<OUTPUT_TYPE> implements FieldDataProviderFactory<OUTPUT_TYPE> {
-	private Random mRandom;
+	private final Random mRandom;
 
-	private UuidGenerator mUuidGenerator;
+	private final UuidGenerator mUuidGenerator;
 
 	SimpleFieldDataProviderFactory(Random pRandom, UuidGenerator pUuidGenerator) {
 		mRandom = pRandom;

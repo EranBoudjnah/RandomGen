@@ -8,7 +8,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class ColorsDataSource {
-	private static ColorsDataSource sDataSource = new ColorsDataSource();
+	private final static ColorsDataSource sDataSource = new ColorsDataSource();
 
 	public static ColorsDataSource getInstance() {
 		return sDataSource;

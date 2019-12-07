@@ -11,8 +11,8 @@ import java.util.List;
 public final class ConcatenateFieldDataProvider<OUTPUT_TYPE> implements FieldDataProvider<OUTPUT_TYPE, String> {
 	private static final String DEFAULT_DELIMITER = "";
 
-	private String mDelimiter;
-	private List<FieldDataProvider<OUTPUT_TYPE, ?>> mFieldDataProviders;
+	private final String mDelimiter;
+	private final List<FieldDataProvider<OUTPUT_TYPE, ?>> mFieldDataProviders;
 
 	/**
 	 * Returns a new instance of {@link ConcatenateFieldDataProvider} generating a concatenated {@code String} of

@@ -23,8 +23,8 @@ import com.mitteloupe.randomgenexample.data.flat.Room;
 public class FlatView extends FrameLayout {
 	private Flat mFlat;
 
-	private Paint mPaint = new Paint();
-	private RectF mBoundingWalls = new RectF();
+	private final Paint mPaint = new Paint();
+	private final RectF mBoundingWalls = new RectF();
 
 	public FlatView(@NonNull Context context) {
 		this(context, null);

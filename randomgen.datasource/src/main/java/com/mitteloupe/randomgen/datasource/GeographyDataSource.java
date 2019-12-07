@@ -8,7 +8,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class GeographyDataSource {
-	private static GeographyDataSource sDataSource = new GeographyDataSource();
+	private static final GeographyDataSource sDataSource = new GeographyDataSource();
 
 	public static GeographyDataSource getInstance() {
 		return sDataSource;

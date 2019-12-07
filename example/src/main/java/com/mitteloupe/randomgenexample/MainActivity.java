@@ -20,7 +20,7 @@ import com.mitteloupe.randomgenexample.widget.PlanetarySystemView;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-	private Handler mHandler = new Handler();
+	private final Handler mHandler = new Handler();
 
 	private RandomGen<Person> mPersonRandomGen;
 	private PersonView mPersonView;
