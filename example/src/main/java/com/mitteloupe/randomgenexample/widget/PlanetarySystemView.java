@@ -262,7 +262,7 @@ public class PlanetarySystemView extends FrameLayout {
 		for (Pair<String, Integer> elementCompound : material.getCompound()) {
 			stringBuilder
 				.append(elementCompound.first);
-			if (elementCompound.second != 1) {
+			if (elementCompound.second != null && elementCompound.second != 1) {
 				stringBuilder
 					.append("<small><sub>")
 					.append(elementCompound.second)
