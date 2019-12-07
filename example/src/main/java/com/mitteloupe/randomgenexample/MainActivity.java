@@ -21,9 +21,6 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 	private Handler mHandler = new Handler();
-	private FlatGeneratorFactory mFlatGeneratorFactory;
-	private PersonGeneratorFactory mPersonGeneratorFactory;
-	private PlanetarySystemGeneratorFactory mPlanetarySystemGeneratorFactory;
 
 	private RandomGen<Person> mPersonRandomGen;
 	private PersonView mPersonView;
@@ -55,12 +52,12 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void initGenerators() {
-		mFlatGeneratorFactory = new FlatGeneratorFactory(new Random());
-		mPersonGeneratorFactory = new PersonGeneratorFactory();
-		mPlanetarySystemGeneratorFactory = new PlanetarySystemGeneratorFactory();
-		mPersonRandomGen = mPersonGeneratorFactory.getNewPersonGenerator();
-		mPlanetarySystemRandomGen = mPlanetarySystemGeneratorFactory.getNewPlanetarySystemGenerator();
-		mFlatRandomGen = mFlatGeneratorFactory.getNewFlatGenerator();
+		FlatGeneratorFactory flatGeneratorFactory = new FlatGeneratorFactory(new Random());
+		mFlatRandomGen = flatGeneratorFactory.getNewFlatGenerator();
+		PersonGeneratorFactory personGeneratorFactory = new PersonGeneratorFactory();
+		mPersonRandomGen = personGeneratorFactory.getNewPersonGenerator();
+		PlanetarySystemGeneratorFactory planetarySystemGeneratorFactory = new PlanetarySystemGeneratorFactory();
+		mPlanetarySystemRandomGen = planetarySystemGeneratorFactory.getNewPlanetarySystemGenerator();
 	}
 
 	public void onPersonClick(View view) {
